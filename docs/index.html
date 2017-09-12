@@ -91,6 +91,7 @@ suitable browser, or they can be given a PDF version.</p>
 
 &lt;section>
 &lt;h2>Slide&lt;/h2>
+&lt;p>Paragraph&lt;/p>
 &lt;/section>
 
 &lt;/body>
@@ -98,26 +99,46 @@ suitable browser, or they can be given a PDF version.</p>
 </pre>
 
 <p>This can can be used as a skeleton starting point for a new presentation by
-copying it into a file <code>index.html</code>.</p>
+copying it into a file <code>index.html</code>.  If it is viewed, its one slide
+is displayed in the default web-page style, which does not yet look much like a
+presentation.</p>
 
-<p>This is a normal HTML5 web page.  The attribute
-<code>xmlns="http://www.w3.org/1999/xhtml"</code> on the <code>html</code> tag
-is not strictly necessary.  However, if the provided custom server is used for
-development, it is needed so that the server can deliver the page as XHTML, a
-strict variant of HTML which ensures that any syntax error is reported
-immediately by the browser.</p>
-
-<p>Each slide in the presentation is written between <code>&lt;section></code>
-and <code>&lt;/section></code> tags.  If there are multiple slides, PageDown (or
-right arrow, down arrow, space, enter) takes you to the next one, and PageUp (or
-left arrow, up arrow, backspace) takes you to the previous one.  A clicker
-normally sends PageDown and PageUp signals, so that can be used too.</p>
+<p>This is a normal HTML5 web page, with each slide in the presentation being
+written between <code>&lt;section></code> and <code>&lt;/section></code> tags.
+The attribute <code>xmlns="http://www.w3.org/1999/xhtml"</code> on the
+<code>html</code> tag is not strictly necessary.  However, if the provided
+custom server is used for development, it is needed so that the server can
+deliver the page as XHTML, a strict variant of HTML which ensures that any
+syntax error is reported immediately by the browser.</p>
 
 <h2 id="slides">Slides</h2>
 
-<p>A: normal, may be only one, authoring via editor with help or specialized
+<p>Wrap supports the idea of organising a presentation as a series of slides, in
+the traditional style.  However, there is no desire to curb creativity by
+forcing the author into a mold.  An unconventional presentation could consist of
+a single slide with a complex custom interactive behaviour.</p>
+
+<p>It is assumed in this documentation that a presentation is going to be
+authored directly in HTML by writing a plain text file using an ordinary editor.
+The restrictive XHTML variation is recommended, in order to ensure correctness,
+which makes various subtle problems a lot less likely.  But XHTML is fussy, like
+a programming language so, as with programming, instant feedback on syntax
+errors is needed.  That's why the custom web server is provided.</p>
+
+<p>However, any approach can be taken to the production of syntactically correct
+HTML.  Some text editors such as <a href="http://brackets.io/">Brackets</a> have
+extensive support for web authoring.  Alternatively, a presentation can be
+authored in a markdown language or, to ensure that the whole of HTML is
+available, a templating language such as Pug can be used.</p>
+
+<p>authoring via editor with help or specialized
 editor brackets, or sufficiently good markdown translator or templating
 language.</p>
+
+<p>  If there are multiple slides, PageDown (or
+right arrow, down arrow, space, enter) takes you to the next one, and PageUp (or
+left arrow, up arrow, backspace) takes you to the previous one.  A clicker
+normally sends PageDown and PageUp signals, so that can be used too.</p>
 
 </body>
 </html>

@@ -368,11 +368,14 @@ function wrap() {
         pos = here.indexOf('#');
         if (pos >= 0) {
             here = here.substring(pos+1);
-            if (here in slides) { show(here); return; }
+            if (here in slides && slides[here].type != 'template') {
+                show(here);
+                return;
+            }
         }
         var id = localStorage.getItem(url+"#slide");
-        if (id) show(id);
-        else show(slides['title']);
+        if (id in slides && slides[id].type != 'template') show(id);
+        else show('title');
     }
 
     // Display a slide or aside
