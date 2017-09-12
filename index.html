@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<!-- Deliver as XHTML -->
+<head>
+<meta charset="UTF-8"/>
+<meta name="author" content="ian"/>
+<title>OOP with Java</title>
+<link href="../share/style.css" rel="stylesheet" type="text/css" />
+<link href="../share/xcode.min.css" rel="stylesheet" />
+<script src="../share/highlight.min.js"></script>
+<script src="../share/java.min.js"></script>
+<script src='../share/wrap.js'></script>
+</head>
+<body>
+
+<template>
+  <div class='icon'>
+    <img alt="java1" src="java1.png" />
+  </div>
+  <div class='navigation'>
+    <a class="jump prev" href="">&lt; </a>
+    <span class="here">1</span>
+    <a class="jump next" href=""> &gt;</a>
+  </div>
+</template>
+
+<section>
+<h1 class="title">Object Oriented Programming<br/>with Java</h1>
+<footer>
+<p class="signature">Ian Holyer</p>
+<p>COMSM0103</p>
+</footer>
+</section>
+
+<section>
+<h2>Contents</h2>
+<p><em>Programming:</em> in Java</p>
+<p><em>Design:</em> in the Object Oriented (OO) style</p>
+<p><em>Development:</em> just setting good examples and avoiding bad
+habits</p>
+<p>&#160;</p>
+<p>These subjects are big, and they change, so this unit is only an
+introduction to start off your
+<a href="https://en.wikipedia.org/wiki/Lifelong_learning">lifelong
+learning</a></p>
+</section>
+
+<section>
+<h2>Assumptions</h2>
+<p>You have programmed in C or C++</p>
+<p>You may or may not be a confident programmer</p>
+<p>You want to review, consolidate, and extend your programming
+skills, and learn something about object orientation, and industry
+practices</p>
+</section>
+
+<section>
+<h2>Unit materials</h2>
+<p>The unit materials will contain:</p>
+<ul>
+<li>lecture notes</li>
+<li>assignments</li>
+<li>marks, feedback (links to SAFE)</li>
+<li>documentation and other support info</li>
+</ul>
+<p>Check frequently, and reload/refresh, for updates</p>
+</section>
+
+<section>
+<h2>Coursework</h2>
+<p>There are regular assignments, all individual, some of which will count
+towards your mark for the unit</p>
+<p>There is no exam; the final assignment is open ended, with
+everyone doing a different mini-project</p>
+<p>Early assignments will be at least partly auto-marked; your mark will
+depend on how many tests you pass</p>
+</section>
+
+<section>
+<h2>Support</h2>
+<p>Get support at the timetabled lab sessions</p>
+<p>Support each other</p>
+<p>See me in my office: things to know about me are</p>
+<ol>
+<li>I don't use email</li>
+<li>I don't have office hours</li>
+<li>I use <a
+href="https://www.google.com/calendar/embed?src=csijh@bristol.ac.uk&amp;ctz=Europe/London&amp;mode=week"
+>Google calendar</a>: drop in when I'm free</li>
+</ol>
+</section>
+
+<section>
+<h2>Books</h2>
+<p>We won't be following any one book very closely, but I recommend</p>
+<p><a href="http://en.wikibooks.org/wiki/Java_Programming">Java
+Programming</a>, at wikibooks, free, Java 7</p>
+<p><a href="http://www.mindview.net/Books/TIJ/">Thinking in
+Java</a>, 3rd edition is free, Java 4</p>
+<p>We will use features from all versions up to 8 (but where 8 is used, a 7
+alternative will be given)</p>
+</section>
+
+<section>
+<h2>Questions</h2>
+<p>What is Java?</p>
+<p>What is OO Programming (OOP)?</p>
+<p>What is OO Design (OOD)?</p>
+<p>What is OO development?</p>
+</section>
+
+<section>
+<h2>What is Java</h2>
+<p>You can think of Java as like C, but with:</p>
+<ul>
+<li>pointer notation removed</li>
+<li>other troublesome features removed or changed</li>
+<li>much greater platform independence</li>
+<li>classes and other object oriented features added</li>
+<li>libraries and other development features added</li>
+</ul>
+<p>Oracle provide the JDK (Java Development Kit), but you can use OpenJDK if
+you are an <a href="https://en.wikipedia.org/wiki/Open-source_software">open
+source</a> purist</p>
+<p>(Like <a href="http://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">Chrome/Chromium</a>,
+Firefox, Linux, Android, ...)</p>
+</section>
+
+<section>
+<h2>What type of language?</h2>
+<p>C is an procedural (or imperative) language: "do this and then do that", it
+uses <em>functions</em> and <em>data</em>, and functional decomposition
+is its intended design technique</p>
+<p>Java is an object oriented language, it uses classes and objects
+to <em>organise</em> functions and data, and object orientation is
+its intended design technique</p>
+<p>There are other
+<a href="http://en.wikipedia.org/wiki/Programming_paradigm">paradigms</a>:
+assembly languages, scripting languages, declarative languages, functional
+languages, logic languages, ...</p>
+</section>
+
+<section>
+<h2>Function decomposition</h2>
+<p>A main function is broken down into smaller functions, etc, forming a
+tree, with data interwoven everywhere</p>
+<img class="middle" src="monolith.png"/>
+<p>Although effective programs can be written this way, they tend to be
+monolithic and brittle</p>
+</section>
+
+<section>
+<h2>What is OO design?</h2>
+<p>A program is written as independent cooperating components,
+each looking after its own data:</p>
+<img class="middle" src="ood.png"/>
+<p>It turns out that this scales up better to larger projects, and works better
+for teams, <strong>if</strong> you do it properly</p>
+</section>
+
+<section>
+<h2>Importance of OO design</h2>
+<p>At first, writing well-designed programs takes more effort</p>
+<p>Later, it becomes <em>easier</em> to write well-designed programs than to
+write poorly designed ones</p>
+<p>And it is <em>much</em> easier to extend, update or re-use well-designed
+programs</p>
+<p>One of the main things that becomes easier is to ensure robustness</p>
+</section>
+
+<section>
+<h2>Perfect designs</h2>
+<p>Perfect designs <em>don't exist</em></p>
+<p>One agile development principle is KISS - Keep It Sweet and Simple, and
+don't over-engineer</p>
+<p>Stop when it <em>works</em> perfectly, don't keep making it prettier inside - perfectionists take note!</p>
+<p>A design is always a compromise or tradeoff between simplicity, clarity,
+maintenance, efficiency, generality, compatibility etc.</p>
+</section>
+
+<section>
+<h2>What is OO development?</h2>
+<p>An OO approach is at the core of today's agile development practices</p>
+<p>We will concentrate mostly on three key issues: what OO contributes to
+development, clean programming, and unit testing</p>
+<p>When you are doing a group project, it may be enlightening to tie up
+that experience with the issues in this unit</p>
+</section>
+
+<section>
+<h2>Medium level questions</h2>
+<p>What are classes and objects?</p>
+<p>What is abstraction?</p>
+<p>What is encapsulation?</p>
+<p>What is inheritance?</p>
+<p>What is polymorphism?</p>
+</section>
+
+<section>
+<h2>What are classes and objects?</h2>
+<p>Classes are <em>modules</em>, dividing the source into components,
+normally with one file per class</p>
+<p>Objects are <em>structures</em>, dividing a running program into components,
+each holding related data and functions</p>
+<p>&#160;</p>
+<p>Later, classes and objects will be more than this</p>
+</section>
+
+<section>
+<h2>What is abstraction?</h2>
+<p>Abstraction is concentrating on <em>what</em> an object does,
+not <em>how</em> it does it</p>
+<p>For the Google Maps program (and some people), a car is a box which gets
+you from A to B - it just has a position</p>
+<p>In a driving simulator, a car object might have <code>accelerate</code>,
+<code>brake</code> and <code>steer</code> functions</p>
+<p>In a self-drive program, a car object has lots of sensors as well as
+controls</p>
+</section>
+
+<section>
+<h2>What is encapsulation?</h2>
+<p>Encapsulation goes further: the internal details of <em>how</em> something
+is done cannot be seen, accessed or influenced from the outside</p>
+<p>One advantage of this is robustness: the user of an object can't
+accidentally interfere with its correct working (it can be misused, but not
+broken)</p>
+<p>Another is maintenance: an object can more easily be upgraded or replaced
+without changing any code which uses it (components can be developed
+independently)</p>
+</section>
+
+<section>
+<h2>What is inheritance?</h2>
+<p>Inheritance is one way of re-using components</p>
+<p>A <code>Vehicle</code> component may provide basic operations, shared
+between child classes <code>Car</code>, <code>Train</code>, <code>Plane</code>,
+...</p>
+<p>A child component inherits the features and code of its parent</p>
+<p><strong>Beware:</strong> don't over-use inheritance, because it can create a
+strong dependency between components</p>
+</section>
+
+<section>
+<h2>What is polymorphism?</h2>
+<p>Polymorphism is another way of re-using components</p>
+<p>It is where a component is general enough to be used for a wide variety of
+purposes</p>
+<p>It includes generics and overloading</p>
+<p><strong>Beware:</strong> although it is essential to know about
+generic types in library software,
+writing your own can be difficult</p>
+</section>
+
+<section>
+<h2>Lower level questions</h2>
+<p>What is Java?</p>
+<p>How is it installed?</p>
+<p>How are programs compiled?</p>
+<p>How are programs run?</p>
+</section>
+
+<section>
+<h2>Java history</h2>
+<p>Java emerged in the 1990<small>s</small> for web applets (now obsolete)
+compared with the 1970<small>s</small> for C</p>
+<p>It is now used extensively for giant servers, desktop applications, mobile
+devices, and embedded processors</p>
+<p>It has very little in common with the scripting language called JavaScript,
+which isn't part of this unit</p>
+<p>It has some things in common with C++ but is much cleaner (C++ is also not
+part of this unit)</p>
+</section>
+
+<section>
+<h2>Java effectiveness</h2>
+<p>Part of Java's success is the fact that it works the same on every platform,
+and that its extensive library of re-usable components is part of the
+standard</p>
+<p>Java is <em>almost</em> "write once, run anywhere" (but, e.g. Android's Java
+is not full Java, yet)</p>
+<p>Platform independence comes from the language, the library, and the
+interpretive bytecode</p>
+<p>Interpreting can be slow, but <a
+href="http://en.wikipedia.org/wiki/Just-in-time_compilation">Just-In-Time</a>
+compiling speeds it up after an initial pause, and <a
+href="http://en.wikipedia.org/wiki/Ahead-of-time_compilation"
+>Ahead-Of-Time</a> compiling is
+starting to eliminate the initial pause</p>
+</section>
+
+<section>
+<h2>Java safety</h2>
+<p>Pre-compiled machine code ('binary') programs are not safe; they might
+do <em>anything</em> to your computer</p>
+<p>This is even worse for web applets, where you don't get to choose whether
+the program runs</p>
+<p>Sandboxes were used to make Java safe for the Web (like JavaScript),
+sandboxes are used on mobiles, and sandboxes are increasingly being used on
+desktops</p>
+<p>Safety depends on JIT or AOT compilation <em>after</em> the source or
+bytecode arrives on a computer</p>
+</section>
+
+<section>
+<h2>Java convenience</h2>
+<p>There are no explicit pointers or pointer manipulation (though an
+understanding of pointers is needed)</p>
+<p>There is no explicit memory management (though an understanding is
+needed)</p>
+<p>All array accesses have out-of-bound checks</p>
+<p>A large set of C problems don't happen, and another large set cause useful
+error messages instantly rather than causing obscure errors later</p>
+</section>
+
+<section>
+<h2>Installing Java</h2>
+<p>Make sure you download the Java compiler (JDK), not just the Java runner
+(JRE) and choose Standard Edition (SE) not enterprise (web) edition (EE)</p>
+<p>Go to <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Oracle's download page</a> for Java 8</p>
+<p>In Downloads, accept the license, download the right version for your
+computer, follow the
+<a href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">installation
+instructions</a>, particularly include the public JRE and set the PATH
+environment variable (putting the new path in front of, or instead of, any
+existing Java)</p>
+</section>
+
+<section>
+<h2>Windows</h2>
+<p>On Windows, I don't recommend trying to install Java inside cygwin (or MSys2
+or MinGW) because of installation difficulties and command line differences</p>
+<p>It is better to install direct</p>
+</section>
+
+<section>
+<h2>Checking Java</h2>
+<p>To make sure Java is properly and fully installed, create a <em>fresh</em>
+terminal window or command prompt, not in the Java installation directory</p>
+<p>Type these commands:</p>
+<pre class="sh">javac -version
+java -version
+</pre>
+<p>They should both work, and mention "1.8..." (the internal numbering for Java
+8)</p>
+</section>
+
+<section>
+<h2>Using Java</h2>
+<p>I recommend that you first use Java in the simplest way, using your normal
+text editor and the <kbd>javac</kbd> and <kbd>java</kbd> commands</p>
+<p>Then, if you understand the basics and if you want to, try out
+an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a>,
+the best (probably) being the free community edition
+of <a href="https://www.jetbrains.com/idea/">IntelliJ</a>, or try
+<a class="jump" href="#tide">tIDE</a>, or use Eclipse in the lab</p>
+<p>If you use an IDE, make sure you know (a) how to customise it and (b) how to
+get your code out of it for submission</p>
+</section>
+
+<aside id="tide">
+<h2>tIDE</h2>
+<p>A smaller and simpler IDE that some people might like to try is
+<a href="http://tide.olympe.in/">tIDE</a></p>
+<p>I suggest that you don't try to use it via JNLP as the front page suggests,
+but go to the Usage page and download <code>tide.jar</code></p>
+<p>Then double click on it, or type <code>java -jar tide.jar</code>, or use the
+command line suggested on the Usage page which increases the memory available
+to the IDE</p>
+</aside>
+
+<section>
+<h2>Hello World</h2>
+<p>Here's the traditional minimal program to try out:</p>
+<pre class="java" data-file="Hello.java">class Hello {
+  public static void main(String[] args) {
+    System.out.println("Hello World!");
+  }
+}
+</pre>
+<p>
+<a class="jump gap" href="#class">class</a>
+<a class="jump gap" href="#hello">Hello</a>
+<a class="jump gap c" href="#blocks">blocks</a>
+<a class="jump gap" href="#public">public</a>
+<a class="jump gap" href="#static">static</a>
+<a class="jump gap c" href="#main">main</a>
+<a class="jump gap" href="#string">String</a>
+<a class="jump gap" href="#system">System</a>
+<a class="jump gap" href="#edit">edit</a>
+<a class="jump gap" href="#compile">compile</a>
+<a class="jump gap" href="#make">make</a>
+<a class="jump gap" href="#run">run</a>
+</p>
+</section>
+
+<aside id="class">
+<h2>Classes</h2>
+<p>Almost always, every file that makes up a program is a class, and every
+class is in its own file</p>
+<pre class="java">class Hello {
+  ...
+}
+</pre>
+<p>You probably won't have to worry about exceptions for a while</p>
+<p>A class begins with the keyword <code>class</code>, the class name, then a
+block containing the data and the code</p>
+</aside>
+
+<aside id="hello">
+<h2>Class names</h2>
+<p>It is conventional for a class name to start with a capital letter - if you
+don't do this, it can cause problems when programs are moved from one platform
+to another</p>
+<pre class="java" data-file="Hello.java">class Hello {
+  ...
+}
+</pre>
+<p>It is conventional for a class name to be the same as the basename of the
+file it is in, e.g. class <code>Hello</code> must be in a
+file <code>Hello.java</code> - if you don't do this, the compiler may be unable
+to link up the classes properly</p>
+</aside>
+
+<aside id="blocks">
+<h2>Blocks</h2>
+<p>The <span class="c"></span> symbol indicates something that is essentially
+the same as in the C language</p>
+<p>In particular, blocks are the same</p>
+<p>They are surrounded by curly brackets, and each item is terminated by a
+semicolon</p>
+<p>As in C, blocks used to declare data need a semicolon, whereas normal blocks
+at the end of statements don't</p>
+<pre class="java">int[] list = { 1, 2, 3 };
+if (n&lt;0) { n = -n; }
+</pre>
+</aside>
+
+<aside id="public">
+<h2>public</h2>
+<p>If something is declared <code>public</code>, it is visible outside the
+folder the program is in</p>
+<pre class="java">...
+  public ... main ...
+...
+</pre>
+<p>This is needed for <code>main</code>, which must be visible to the
+surrounding operating system to run the program</p>
+<p>But you won't need it for anything else until you start writing multi-folder
+programs</p>
+</aside>
+
+<aside id="static">
+<h2>static</h2>
+<p>If something is declared <code>static</code>, it is global rather than
+belonging to an object</p>
+<pre class="java">... static ... main ...
+</pre>
+<p>This is needed for <code>main</code> by convention, and you need to
+understand its use in library software (e.g. <code>System.out</code> is a
+static object)</p>
+<p>But you shouldn't use it for anything else, until you understand the
+implications, and the rare circumstances where it should be used</p>
+</aside>
+
+<aside id="main">
+<h2>main</h2>
+<p>As in C, the program starts in the function called <code>main</code></p>
+<pre class="java">... main ...
+</pre>
+<p>But when you run a Java program, you specify which class to use, that means
+there can be <code>main</code> functions in many classes, and that is useful
+for testing</p>
+<p>The name <code>main</code> is terrible: a function name should be a verb, or
+sometimes an adjective, so <code>run</code> is better - you don't 'main' a
+program, you run it!</p>
+</aside>
+
+<aside id="string">
+<h2>String</h2>
+<p>The type <code>String</code> in Java replaces <code>char *</code> in C</p>
+<p>You can tell by the capital letter that it is a class, full name
+is <code>java.lang.String</code> (classes in <code>java.lang</code> are
+available to programs without explicit import)</p>
+<p>You can read its source code (type 'source String.java' into Google)</p>
+<p>Of course, the compiler understands strings and cooperates with the string
+class, e.g. <code>"Hi"</code> has type <code>String</code></p>
+</aside>
+
+<aside id="system">
+<h2>System</h2>
+<p>The <code>System</code> class (<code>java.lang.System</code>)
+provides some standard facilities, a bit like <code>stdio.h</code> in C</p>
+<p>Many of its facilities are static, attached directly to the class,
+e.g. <code>System.out</code> for standard output</p>
+<p>On the other hand, <code>out</code> is an object, one of many possible
+output streams</p>
+</aside>
+
+<aside id="edit">
+<h2>Edit</h2>
+<p>Java can be verbose, but this is offset by (a) the fact that you often use
+the libraries instead of doing it yourself and (b) you can get your editor to
+help</p>
+<p>For example, if you use <a href="https://atom.io/">Atom</a> as your editor,
+if you type <code>main</code>, you will be offered a complete skeleton for the
+main method as a completion (press Enter to accept)</p>
+</aside>
+
+<aside id="compile">
+<h2>Compile</h2>
+<p>To compile the program, type:</p>
+<pre class="sh">javac Hello.java
+</pre>
+<p>You <em>must</em> include the extension <code>.java</code></p>
+<p>Compiling produces a file called <code>Hello.class</code> containing
+bytecode ready to run</p>
+</aside>
+
+<aside id="make">
+<h2>Make</h2>
+<p>Because (a) compiling commands can get complex and/or irritating and (b) the
+compiler only partially handles dependencies, I suggest using a makefile from
+the beginning</p>
+<p>You can start with this:</p>
+<pre class="Makefile" data-file="Makefile">%:
+	javac $@.java
+</pre>
+<p>Then you can adapt it later when you start building multi-class projects</p>
+</aside>
+
+<aside id="run">
+<h2>Run</h2>
+<p>To run the program, type:</p>
+<pre class="sh">java Hello
+</pre>
+<p>This time, you <em>must not</em> include an extension</p>
+</aside>
+
+<section>
+<h2>First assignment</h2>
+<p>The first assignment, this week, is to write a program to turn a mark
+like <code>70</code> into a grade like <code>Distinction</code></p>
+<p>We'll go through the skeleton you've been given for the
+assignment</p>
+</section>
+
+<section>
+<h2>Classes</h2>
+<p>In Java source programs, a file like <code>Grade.java</code> contains a
+class, and each class gets its own file (usually)</p>
+<pre class="java">class Grade {
+  ...
+}
+</pre>
+<p>A class begins with the keyword <code>class</code>, the class
+name <strong>which must match the file name</strong>, then a block containing
+the data and the code</p>
+</section>
+
+<section>
+<h2>main</h2>
+<p>Every program has a <code>main</code> function:</p>
+<pre class="java">public static void main(String[] args) {
+  ...
+}
+</pre>
+<p>Unlike C, classes which are supporting modules rather than programs can have
+their own <code>main</code>, often used to do testing.  Don't
+use <code>public</code> or <code>static</code> anywhere else! (yet)</p>
+</section>
+
+<section>
+<h2>Objects</h2>
+<pre class="java">...
+Grade program = new Grade();
+...program.test()...
+...program.grade(args[0])...
+</pre>
+<p>It is a good idea to get out of the static (C) world as fast as possible</p>
+<p>Normal functions
+like <code>grade</code>, <code>valid</code>, <code>test</code> only exist
+attached to objects</p>
+<p>Calling them from each other is normal, it is only in <code>main</code> that
+you need the <code>program.</code> prefix</p>
+</section>
+
+<section>
+<h2>Assertions</h2>
+<p>Assertions are switched off by default, and <code>-ea</code>
+switches them on, which is a good signal for testing generally</p>
+<pre class="java">assert(testing = true);
+</pre>
+<p>Checking whether assertions are on requires a dirty trick</p>
+<p>Note the <em>single</em> <code>=</code> for assignment, not <em>double</em>
+<code>==</code> for comparison</p>
+</section>
+
+</body>
+</html>

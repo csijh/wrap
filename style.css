@@ -1,0 +1,111 @@
+/* Style for M0103 slides. */
+
+h1.title { font-size: 2.5em; margin-top:0; }
+.signature { float: right; margin: 0 1em; }
+footer { margin: 0; }
+.box { float:left; color: black; background-color: #aaf; padding: 0.5em; }
+aside { background-color: #CCFFCC; overflow: hidden; }
+aside h2 { background-color:#AACCAA; }
+/*.c::after { content: "{C}"; color: #840; text-decoration: none; }*/
+.eqc::after { content: "{C}"; color: #840; text-decoration: none; }
+
+/* Make sure every page contains the program font, so that the borwser loads
+the font immediately, otherwise measurement and resizing don't work. */
+.navigation { font-family: SourceCode; font-size: 95%; }
+
+/* Use local Molengo and SourceCode fonts. */
+
+@font-face { font-family:Molengo; src:url('Molengo.ttf'); }
+@font-face { font-family:SourceCode; src:url('SourceCode.ttf'); }
+
+/* Go up to edges of window, use large white text. */
+
+html, body { margin: 0; padding: 0; }
+body { color: black;  font-family: 'Molengo', serif; font-size: 40px; }
+
+/* Blue background, icon top left corner, navigation top right.  Slides are
+given position:relative and icon and navigator are given position:absolute.
+Items cannot safely be pinned to the window with position:fixed, and images
+cannot be attached to the background, because those techniques spoil
+printing. */
+
+section { background-color: white; overflow: hidden; }
+section, aside { position: relative; width: 1024px; height: 768px; }
+.icon { position: absolute; top: 0; left: 0; z-index: 500; }
+.navigation { position: absolute; padding: 0.25em 0.5em; top:0; right: 0; }
+.navigation .prev { background: none; padding: 0; text-decoration: none; }
+.navigation .next { background: none; padding: 0; text-decoration: none; }
+
+/* Slides initially invisible, to avoid flicker. Page breaks for printing. */
+
+section, aside { display: none; }
+section { page-break-before: always; }
+@media print { #buttons { display: none; } }
+
+/* Headings: h1 is presentation heading, h2 is slide heading */
+
+h1 { background-color: white; padding: 1em 0; font-size: 3.0em; }
+h2 { background-color: #CCCCFF; padding: 0; margin: 0; font-size:1.6em; }
+h1, h2 { text-align: center; }
+
+/* Links, including ones which jump to other slides. */
+
+a:link { color: #448844; text-decoration: underline }
+a:visited { color: #448844; text-decoration: underline }
+a:hover { color: #008800; text-decoration: underline }
+a:active { color: #008800; text-decoration: underline }
+a.jump { padding-left: 40px; }
+a.jump { background: url('info.png') no-repeat 0% 80%; }
+.contents a.jump { padding-left: 0; padding-right: 0.5em; background: none; }
+.gap { padding-left: 40px; padding-right: 1.0em; }
+
+/* Some generally useful classes to add to elements. */
+
+.middle { text-align: center; }
+.indent { margin-left: 2em; }
+.halfindent { margin-left: 1em; }
+.shadow { text-shadow: black -4px 4px 2px; }
+.clear { clear: both; }
+
+/* Various tags. */
+
+pre, kbd, code, samp { font-family: 'SourceCode', monospace; }
+code { color: #448844; }
+p { margin: 0.6em 1em 0.6em 1em; }
+h3 { margin: 0.4em 1em 0.6em 0.66em; color:orange; text-align: center; }
+h4 { margin: 0.6em 1em 0.6em 0.9em; color:orange; }
+dfn { color: #884400; }
+em { font-style: italic; font-weight: bold; }
+strong { font-style: italic; color: #884400; }
+ul, ol { margin: 0.65em 1.5em 0.25em 3.0em; padding: 0; }
+img.float { float:left; margin: -0.5em 1em 0 0; }
+img.middle { display: block; margin: 0 auto; }
+table { margin:0 0 0 1em; }
+table td { padding:0 1em 0 1em; }
+table th { padding: 0 1em 0 1em; text-align: left; font-style: italic; }
+
+/* Example code in various languages, using the pre tag */
+pre {
+  margin: 1em 1em 0.2em 1em;
+  font-size: 80%;
+  font-weight: bold;
+  line-height: 110%;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border: 0.2em outset rgb(150,150,150);
+  color: #00428C;
+  background-color: white;
+}
+pre.hljs { overflow-x: visible; }
+pre.scroll { height: 20em; overflow: scroll; }
+
+/* ------------------------------------------------------------------------- */
+/* Adjustments for printing to PDF. */
+
+@media print
+{
+  .prev, .next { display: none; }
+  audio { display: none; }
+}
+
+/* Make the page 4x3 to match 1024x768 pixels, and extend to the edges. */
+@page { size: 27cm 20.25cm; margin: 0; padding: 0; border: 'none'; }
