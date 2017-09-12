@@ -1,28 +1,33 @@
-// Run a node.js web server for local development of a static web site.
-// Start with "node server.js" and put pages in a "public" sub-folder.
-// Visit the site at the address printed on the console.
+/* Free and open source: see licence.txt.
 
-// The server is configured to be platform independent.  URLs are made lower
-// case, so the server is case insensitive even on Linux, and paths containing
-// upper case letters are banned so that the file system is treated as case
-// sensitive even on Windows.
+Run a node.js web server for local development of a static web site.
+Start with "node server.js" and visit the address printed on the console.
+There should normally be an index.html file in the current folder.
 
-// Load the library modules, and define the global constants.
-// See http://en.wikipedia.org/wiki/List_of_HTTP_status_codes.
-// Start the server: change the port to the default 80, if there are no
-// privilege issues and port number 80 isn't already in use.
+Pages are served as XHTML, to give instant feedback for syntax errors. There is
+no content negotiation - an up-to-date browser is assumed.  The file types
+supported are listed at the end of the server.
 
+The server is configured to force the site to be platform independent.  URLs
+are made lower case, so the server is case insensitive on every platform, and
+file paths containing upper case letters are banned so that the file system is
+treated as case sensitive on every platform. */
+
+// Load the library modules, and define the global constants and variables.
 var http = require("http");
 var fs = require("fs");
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
+
+// Start the server: the port can be changed to the default 80, if there are no
+// privilege issues and port number 80 isn't already in use.
 start(8080);
 
 // Start the http service.  Accept only requests from localhost, for security.
 function start(port) {
     types = defineTypes();
-    banned = [];
-//    banUpperCase("./public/", "");
+    banned = ["server.js"];
+    banUpperCase("./", "");
     var service = http.createServer(handle);
     service.listen(port, "localhost");
     var address = "http://localhost";
@@ -96,27 +101,28 @@ function banUpperCase(root, folder) {
     }
 }
 
-// The most common standard file extensions are supported, and html is
-// delivered as xhtml ("application/xhtml+xml").  Some common non-standard file
-// extensions are explicitly excluded.  This table is defined using a function
-// rather than just a global variable, because otherwise the table would have
-// to appear before calling start().  NOTE: for a more complete list, install
-// the mime module and adapt the list it provides.
+// The most common standard file extensions are supported, and html is delivered
+// as xhtml ("application/xhtml+xml").  Some common non-standard file extensions
+// are explicitly excluded.  This table is defined using a function rather than
+// just a global variable definition, because otherwise the table would have to
+// appear before calling start().  NOTE: for a more complete list, install the
+// mime module and adapt the list it provides.
 function defineTypes() {
     var types = {
         html : "application/xhtml+xml",
         css  : "text/css",
         js   : "application/javascript",
         png  : "image/png",
-        gif  : "image/gif",    // for images copied unchanged
-        jpeg : "image/jpeg",   // for images copied unchanged
-        jpg  : "image/jpeg",   // for images copied unchanged
+        gif  : "image/gif",
+        jpeg : "image/jpeg",
+        jpg  : "image/jpeg",
         svg  : "image/svg+xml",
         json : "application/json",
         pdf  : "application/pdf",
         txt  : "text/plain",
         c    : "text/plain",
         h    : "text/plain",
+        java : "text/plain",
         ttf  : "application/x-font-ttf",
         woff : "application/font-woff",
         aac  : "audio/aac",

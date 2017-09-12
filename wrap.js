@@ -1,11 +1,12 @@
-/* Wrap, which stands for 'Web resources and presentations', is a viewer for
-web-based slide presentations.
+/* Free and open source: see licence.txt.
 
-A single web page contains a series of slides forming a single presentation.
+The Wrap viewer for web-based slide presentations.
+
+A single web page contains a series of slides forming a presentation.
 Each slide uses the 'section', 'aside', or 'template' tag.  Sections are the
 main slides.  An aside is a slide which is only shown if a link to it is
 followed, though it is included if the slides are printed.  A template contains
-div elements such as slide names and navigation links which are copied into
+div elements such as icons and navigation links which are copied into
 every slide which is based on that template.  Features are:
 
 - Slides are 1024x768 pixels, to fit old VGA projectors.

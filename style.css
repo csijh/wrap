@@ -45,7 +45,7 @@ section { page-break-before: always; }
 /* Headings: h1 is presentation heading, h2 is slide heading */
 
 h1 { background-color: white; padding: 1em 0; font-size: 3.0em; }
-h2 { background-color: #CCCCFF; padding: 0; margin: 0; font-size:1.6em; }
+h2 { background-color: #CCCCFF; padding: 0; margin: 0; font-size:2.0em; }
 h1, h2 { text-align: center; }
 
 /* Links, including ones which jump to other slides. */
