@@ -9,7 +9,6 @@ followed, though it is included if the slides are printed.  A template contains
 div elements such as icons and navigation links which are copied into
 every slide which is based on that template.  Features are:
 
-- Slides are 1024x768 pixels, to fit old VGA projectors.
 - Single-signon ticket parameters are removed from the URL.
 - The current slide is remembered in the browser and restored on returning.
 - Visiting url#42 overrides the remembered slide and loads slide 42.
@@ -23,17 +22,7 @@ every slide which is based on that template.  Features are:
 - The slides can be printed to a PDF file ('p' prepares for printing).
 - An animation can be added to a slide.
 - Prev goes to the end of the animation on the previous slide.
-TODO
 - Key presses are offered to the animation, and otherwise used for navigation.
-- Key presses and their timings can be recorded to accompany a screencast.
-- Live programming is supported, if the server supports it.
-- Create sketch animations, typing animations etc.
-
-- Make defs for PU/PD and arrow keys, but not for space/Enter/BS which might be
-  needed for editing on screen,  Offer key presses to animations first.
-  Animations can use PU = stop or skip-back/prev and
-  PD = start or skip/next
-  Home/End
 */
 
 'use strict';
@@ -41,24 +30,16 @@ TODO
 // Initialise the wrap viewer.
 wrap();
 function wrap() {
-    // Child window, for extended desktop situations.  The keypresses in the
-    // parent window are sent to the child, so the two windows stay in step.
-    // The parent is a previewer and controller for the child off screen.
-    var child = undefined;
-    wrap.doKey = doKey;
-
-    // Make slides 1024x768 for old VGA projectors.  Subtract 3 from the height
-    // if projecting from a Chromebook.
-    var screenWidth = 1024, screenHeight = 765;
-
     // Define the global variables used by the viewer and set it going on load.
-    var url, slides, slide, animation;
+    var url, slides, slide, animation, child;
     window.addEventListener("load", start);
+    wrap.doKey = doKey;
     return;
 
-    // Prepare everything.  Since processing program text takes time, delay it
-    // so that the page loads in the meantime.
+    // Prepare everything.  Before processing program text, delay until the
+    // fonts are loaded.
     function start() {
+        child = undefined;
         removeTicket();
         url = getURL();
         slides = getSlides();
@@ -171,8 +152,7 @@ function wrap() {
             var slide = slides[id];
             if (slide.type != 'section' && slide.type != 'aside') continue;
             slide.node.style.position = 'relative';
-            slide.node.style.width = screenWidth + "px";
-            slide.node.style.height = screenHeight + "px";
+            slide.node.style.display = "none";
             var template = slides['template'];
             var classes = slide.node.classList;
             for (var c=0; c<classes.length; c++) {
@@ -334,10 +314,13 @@ function wrap() {
         }
     }
 
-    // For each pre element, reduce the font size until the text fits.
-    // Note: even with a monospaced web-font, pixel measurements differ
-    // between browsers, because of sub-pixel rendering, so measurement
-    // has to be dynamic.
+    // For each pre element, reduce the font size until the text fits. NOTE:
+    // even with a monospaced web-font, pixel measurements differ between
+    // browsers, because of sub-pixel rendering, so measurement has to be
+    // dynamic. NOTE: Every page must contain some text in the program font,
+    // e.g. the page number.  Otherwise, there may be no visible text in the
+    // program font when the presentation is loaded, so the browser doesn't load
+    // the font by the time this function is called.
     function resizePrograms() {
         var pres = document.querySelectorAll('pre');
         for (var n=0; n<pres.length; n++) {
@@ -410,15 +393,19 @@ function wrap() {
         }
     }
 
-    // Deal with key presses in this window.
+    // Convert a letter to a case-insensitive key code
+    function letter(ch) {
+        return ch.toUpperCase().charCodeAt(0);
+    }
+
+    // Deal with key presses in this window.  If 'w' is pressed, create a child
+    // window to be displayed on an extended desktop.  Send key presses to the
+    // child, so that this window acts as a previewer/controller.
     function keyPress(event) {
         if (!event) event = window.event;
         var key = event.keyCode;
-        var wKey = 87;
-        if (key == wKey) {
-            var pre = document.querySelector("#test");
-            console.log("w", pre.style.fontSize, overflow(pre));
-//            child = window.open("index.html", "child");
+        if (key == letter('w')) {
+            child = window.open("index.html", "child");
             return;
         }
         doKey(key);
@@ -428,35 +415,27 @@ function wrap() {
     // Deal with keypress from this window or the parent window.
     function doKey(key) {
         var enterKey = 13, spaceBar = 32, backSpace = 8;
-        var cKey = 67, dKey = 68, nKey = 78, pKey = 80, rKey = 82, tKey = 84;
         var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
         var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
 
-        if (animation && animation.key) {
-            var ok = animation.key(key);
-            if (ok) return;
-        }
-        if (key == pageDown || key == rightArrow || key == downArrow ||
-            key == spaceBar || key == enterKey) {
-            if (slide.next) show(slide.next);
-        }
-        else if (key == pageUp || key == leftArrow || key == upArrow ||
-                 key == backSpace) {
-            if (slide.prev) show(slide.prev, true);
-        }
-        else if (key == pKey) preview();
-    }
+        // Allow a lot of synonyms for pageUp/Down.
+        if (key == rightArrow || key == downArrow ||
+            key == spaceBar || key == enterKey) key = pageDown;
+        if (key == leftArrow || key == upArrow ||
+            key == backSpace) key = pageUp;
 
-    // Offer text as a download
-    function download(filename, text) {
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' +
-            encodeURIComponent(text));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        // Offer the key to the animation, if any.
+        var used = false;
+        if (animation && animation.key) used = animation.key(key);
+        if (used) return;
+
+        if (key == pageDown) {
+            if (slide.next != undefined) show(slide.next);
+        }
+        else if (key == pageUp) {
+            if (slide.prev != undefined) show(slide.prev, true);
+        }
+        else if (key == letter('p')) preview();
     }
 
     // Prepare for printing by making all slides visible, and fast-forwarding

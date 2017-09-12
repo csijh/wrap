@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wrap</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+  body { font-size: 120%; }
+  pre, nav { margin-left:40px; }
+  nav a { display: block; }
+ </style>
+</head>
+<body>
+
+<h1>Wrap</h1>
+
+<p>The Wrap project provides a framework for creating and viewing presentations
+using web tools.</p>
+
+<nav>
+  <a href="#server">The web server</a>
+  <a href="#viewer">The viewer</a>
+  <a href="#skeleton">The skeleton</a>
+  <a href="#slides">Slides</a>
+</nav>
+
+<h2 id="server">The web server</h2>
+
+<p>A presentation consists of a few static files, published on any web site,
+using any web server. The custom web server can optionally be used for two
+purposes.</p>
+
+<p>First, it allows an author to develop a presentation on a local computer,
+before publishing somewhere else. This may be to test presentations before
+publishing with immediate feedback on any syntax errors, and/or to speed up
+development if the publishing process is slow.</p>
+
+<p>Second, it provides a way of making a presentation totally self-contained.
+The server can be run on a laptop, and a browser on the same laptop can be used
+to view the presentation.  The laptop can then be taken to a venue, with no
+dependency on WIFI or mobile networking.  Only a data projector or similar is
+needed.</p>
+
+<p>An alternative way of making a presentation self-contained is to run the
+browser and visit the presentation web page over the net on a laptop before
+leaving for a venue.  If care is taken to ensure that the laptop is kept running
+or in sleep mode, that the browser remains running, and that the presentation
+page is kept current without being refreshed, then there is again no dependency
+on networking at the venue.</p>
+
+<p>The server is written in JavaScript, and can be run using <a
+href="https://nodejs.org/en/">Node</a>, which may need to be installed first.
+Create a folder containing <code>server.js</code> and a web page
+<code>index.html</code>, run the server with the command <code>node
+server</code>, and then view the page by visiting
+<code>http://localhost:8080/</code> with a browser.</p>
+
+<p>The server delivers pages using XHTML to get immediate feedback on syntax
+errors from the browser, and has features to guard against problems which might
+arise from developing on one platform and publishing on another. The details are
+described in the comments in <code>server.js</code>.  The server is sufficiently
+simple that it can be customized further with only a little JavaScript
+knowledge.</p>
+
+<h2 id="viewer">The viewer</h2>
+
+<p>The viewer is the script <code>wrap.js</code>.  A simple presentation
+consists of a folder containing <code>wrap.js</code>, and a web page
+<code>index.html</code> with an inclusion like this:</p>
+
+<pre>&lt;script src='wrap.js'>&lt;/script>
+</pre>
+
+<p>The viewer has been tested on recent Chrome and Firefox browsers.  No attempt
+has been made to support old or unusual browsers, but the viewer keeps to the
+relevant standards, so that any up-to-date browser should work.  If a
+presentation is made available to an audience, either they can be told to use a
+suitable browser, or they can be given a PDF version.</p>
+
+<h2 id="skeleton">The skeleton</h2>
+
+<p>The simplest form of a one page presentation is:</p>
+
+<pre>&lt;!DOCTYPE html>
+&lt;html xmlns="http://www.w3.org/1999/xhtml">
+&lt;head>
+&lt;title>Title&lt;/title>
+&lt;script src='wrap.js'>&lt;/script>
+&lt;/head>
+&lt;body>
+
+&lt;section>
+&lt;h2>Slide&lt;/h2>
+&lt;/section>
+
+&lt;/body>
+&lt;/html>
+</pre>
+
+<p>This can can be used as a skeleton starting point for a new presentation by
+copying it into a file <code>index.html</code>.</p>
+
+<p>This is a normal HTML5 web page.  The attribute
+<code>xmlns="http://www.w3.org/1999/xhtml"</code> on the <code>html</code> tag
+is not strictly necessary.  However, if the provided custom server is used for
+development, it is needed so that the server can deliver the page as XHTML, a
+strict variant of HTML which ensures that any syntax error is reported
+immediately by the browser.</p>
+
+<p>Each slide in the presentation is written between <code>&lt;section></code>
+and <code>&lt;/section></code> tags.  If there are multiple slides, PageDown (or
+right arrow, down arrow, space, enter) takes you to the next one, and PageUp (or
+left arrow, up arrow, backspace) takes you to the previous one.  A clicker
+normally sends PageDown and PageUp signals, so that can be used too.</p>
+
+<h2 id="slides">Slides</h2>
+
+<p>A: normal, may be only one, authoring via editor with help or specialized
+editor brackets, or sufficiently good markdown translator or templating
+language.</p>
+
+</body>
+</html>
