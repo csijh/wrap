@@ -5,6 +5,7 @@ viewer and a custom web server:
 
 - [wrap.js](wrap.js)
 - [server.js](server.js)
+- [documentation](https://csijh.github.io/wrap/)
 
 There are perhaps three major advantages of web-based presentations.  One is
 that they are cross-platform. A second is that a wide range of different types
