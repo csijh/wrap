@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Minimal presentation</title>
+<script src='wrap.js'></script>
+<style>
+body { margin: 0; padding: 0; font-size: 40px; }
+h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
+p { margin: 0.6em 1em 0.6em 1em; }
+nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
+.back, .next { text-decoration: none; }
+</style>
+</head>
+<body>
+
+<template>
+<nav>
+<a class="jump back" href="">&lt; </a>
+<span class="here"></span>
+<a class="jump next" href=""> &gt;</a>
+</nav>
+</template>
+
+<section>
+<h2>Navigation example</h2>
+<p>This presentation illustrates how to add explicit navigation.</p>
+<p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
+</section>
+
+<section>
+<h2>Middle slide</h2>
+<p>This slide illustrates navigation links in both directions.</p>
+</section>
+
+<section>
+<h2>Last slide</h2>
+<p>The last slide has an invisible next link.</p>
+<p>Here's an example link back to the first slide:</p>
+<p><a class="jump" href="#1">first slide</a></p>
+</section>
+
+</body>
+</html>

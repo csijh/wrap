@@ -3,10 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Wrap</title>
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script>
+  addEventListener('load', highlight);
+  function highlight() {
+    var pres = document.querySelectorAll("pre");
+    for (var i =0; i &lt; pres.length; i++) hljs.highlightBlock(pres[i]);
+  }
+</script>
 <style>
   body { font-size: 120%; }
-  pre, nav { margin-left:40px; }
+  pre, nav, .indent { margin-left:40px; }
   nav a { display: block; }
  </style>
 </head>
@@ -15,13 +25,22 @@
 <h1>Wrap</h1>
 
 <p>The Wrap project provides a framework for creating and viewing presentations
-using web tools.</p>
+using web tools.  Topics are</p>
 
 <nav>
   <a href="#server">The web server</a>
   <a href="#viewer">The viewer</a>
   <a href="#skeleton">The skeleton</a>
-  <a href="#slides">Slides</a>
+  <a href="#author">Authoring</a>
+  <a href="#style">Style</a>
+  <a href="#templates">Templates</a>
+  <a href="#numbers">Slide numbers</a>
+  <a href="#nav">Navigation</a>
+  <a href="#asides">Asides</a>
+  <a href="#text">Text</a>
+  <a href="#resolution">Resolution</a>
+  <a href="#pre">Preformatted text</a>
+  <a href="#highlighting">Highlighting</a>
 </nav>
 
 <h2 id="server">The web server</h2>
@@ -68,20 +87,20 @@ knowledge.</p>
 consists of a folder containing <code>wrap.js</code>, and a web page
 <code>index.html</code> with an inclusion like this:</p>
 
-<pre>&lt;script src='wrap.js'>&lt;/script>
+<pre class="html">&lt;script src='wrap.js'>&lt;/script>
 </pre>
 
 <p>The viewer has been tested on recent Chrome and Firefox browsers.  No attempt
 has been made to support old or unusual browsers, but the viewer keeps to the
 relevant standards, so that any up-to-date browser should work.  If a
-presentation is made available to an audience, either they can be told to use a
+presentation is made available to other people, either they can be told to use a
 suitable browser, or they can be given a PDF version.</p>
 
 <h2 id="skeleton">The skeleton</h2>
 
 <p>The simplest form of a one page presentation is:</p>
 
-<pre>&lt;!DOCTYPE html>
+<pre class="html">&lt;!DOCTYPE html>
 &lt;html xmlns="http://www.w3.org/1999/xhtml">
 &lt;head>
 &lt;title>Title&lt;/title>
@@ -90,8 +109,7 @@ suitable browser, or they can be given a PDF version.</p>
 &lt;body>
 
 &lt;section>
-&lt;h2>Slide&lt;/h2>
-&lt;p>Paragraph&lt;/p>
+...
 &lt;/section>
 
 &lt;/body>
@@ -99,9 +117,13 @@ suitable browser, or they can be given a PDF version.</p>
 </pre>
 
 <p>This can can be used as a skeleton starting point for a new presentation by
-copying it into a file <code>index.html</code>.  If it is viewed, its one slide
-is displayed in the default web-page style, which does not yet look much like a
-presentation.</p>
+copying it into a file <code>index.html</code>.  Here's a simple three-slide
+example based on the skeleton:</p>
+
+<p class="indent"><a href="minimal.html">minimal example</a></p>
+
+<p>Its slides are displayed in the default web-page style.  They will look more
+like normal presentation slides when style is added.</p>
 
 <p>This is a normal HTML5 web page, with each slide in the presentation being
 written between <code>&lt;section></code> and <code>&lt;/section></code> tags.
@@ -111,7 +133,7 @@ custom server is used for development, it is needed so that the server can
 deliver the page as XHTML, a strict variant of HTML which ensures that any
 syntax error is reported immediately by the browser.</p>
 
-<h2 id="slides">Slides</h2>
+<h2 id="author">Authoring</h2>
 
 <p>Wrap supports the idea of organising a presentation as a series of slides, in
 the traditional style.  However, there is no desire to curb creativity by
@@ -122,8 +144,8 @@ a single slide with a complex custom interactive behaviour.</p>
 authored directly in HTML by writing a plain text file using an ordinary editor.
 The restrictive XHTML variation is recommended, in order to ensure correctness,
 which makes various subtle problems a lot less likely.  But XHTML is fussy, like
-a programming language so, as with programming, instant feedback on syntax
-errors is needed.  That's why the custom web server is provided.</p>
+a programming language, so instant feedback on syntax errors is needed.  That's
+why the custom web server is provided.</p>
 
 <p>However, any approach can be taken to the production of syntactically correct
 HTML.  Some text editors such as <a href="http://brackets.io/">Brackets</a> have
@@ -131,14 +153,390 @@ extensive support for web authoring.  Alternatively, a presentation can be
 authored in a markdown language or, to ensure that the whole of HTML is
 available, a templating language such as Pug can be used.</p>
 
-<p>authoring via editor with help or specialized
-editor brackets, or sufficiently good markdown translator or templating
-language.</p>
+<p>The examples of HTML in this document have no indenting, and no blank lines
+except between slides.  However, the most convenient layout for HTML is a matter
+of personal preference, probably depending on the editor or other authoring tool
+being used.</p>
 
-<p>  If there are multiple slides, PageDown (or
-right arrow, down arrow, space, enter) takes you to the next one, and PageUp (or
-left arrow, up arrow, backspace) takes you to the previous one.  A clicker
-normally sends PageDown and PageUp signals, so that can be used too.</p>
+<h2 id="style">Style</h2>
+
+<p>Here is an example of the simple use of style to produce slides with large
+text and a coloured banner across the top:</p>
+
+<p class="indent"><a href="styled.html">styled example</a></p>
+
+<p>Style is added using the CSS style language. Style rules can be added to
+individual elements for one-off effects:</p>
+
+<pre class="html">...&lt;span style="color:red">danger&lt;/span>...
+</pre>
+
+<p>or they can be put into a style element in the head if they are to be used in
+multiple places in the presentation:</p>
+
+<pre class="html">...
+&lt;style>
+h2 { font-size: 200; }
+&lt;/style>
+...
+</pre>
+
+<p>or they can be put in a separate style sheet, <code>style.css</code> say, if
+they apply to multiple presentations, and then a link can be added in the
+head:</p>
+
+<pre class="html">...
+&lt;link href="style.css" rel="stylesheet" />
+...
+</pre>
+
+<p>In XHTML examples in this documentation, some empty elements such as
+<code>script</code> have explicit close tags, whereas others such as
+<code>link</code> are self-closing.  This isn't essential - it only affects old
+browsers: see <a href="https://www.w3.org/TR/html-polyglot/">polyglot markup</a>
+for details.</p>
+
+<h2 id="templates">Templates</h2>
+
+<p>A template can be defined to add identical elements to each slide.  This
+example adds an image to every slide:</p>
+
+<p class="indent"><a href="icon.html">template example</a></p>
+
+<p>The template is:</p>
+
+<pre class="html">&lt;template>
+&lt;img class="icon" src="wrap.png" />
+&lt;/template>
+</pre>
+
+<p>The items in the template are copied and added to the end of each slide. They
+are each displayed as blocks (i.e. vertically). Style is used to affect how
+template items look in the slides.  For example, this rule places the image on
+top of everything else, in the top left corner.</p>
+
+<pre class="html">img.icon { position: absolute; top: 0; left: 0; }
+</pre>
+
+<p>Since the items in a template are copied, they shouldn't contain
+<code>id</code> arttributes, because these would not stay unique.  Instead,
+<code>class</code> attributes should be used.</p>
+
+<p>An anonymous template is a default which applies to all slides. If the title
+slide is different from all the rest, it may be possible to handle that just
+using different tags and style, e.g. <code>h1</code> instead of <code>h2</code>.
+However, multiple templates can be used in more complex situations.  To define
+multiple templates, give them different ids:</p>
+
+<pre class="html">&lt;template id="normal">
+...
+&lt;/template>
+
+&lt;template id="special">
+...
+&lt;/template>
+</pre>
+
+<p>Then to use a specific template for a slide rather then the default, add a
+class attribute:</p>
+
+<pre class="html">&lt;section class="normal">
+...
+&lt;/section>
+
+&lt;section class="special">
+...
+&lt;/section>
+</pre>
+
+<h2 id="numbers">Slide numbers</h2>
+
+<p>If a slide contains an element of class <code>here</code>, the current slide
+number is inserted as its text:</p>
+
+<pre class="html">&lt;p class="here">&lt;/p>
+</pre>
+
+<p>A slide number element can be inserted from a template.</p>
+
+<h2 id="nav">Navigation</h2>
+
+<p>PageDown (or right arrow or down arrow) takes you to the next slide, and
+PageUp (or left arrow or up arrow) takes you to the previous slide.  These
+should be familiar from PDF viewers and other presentation tools.  Note,
+however, that the space bar, the enter key and the backspace key are not used
+for navigation, in case they are needed by a demo that involves typing text.</p>
+
+<p>A clicker can be used to navigate, since it normally sends PageDown and
+PageUp signals.</p>
+
+<p>Explicit navigation links between slides can be added, for example:</p>
+
+<p class="indent"><a href="nav.html">navigation example</a></p>
+
+<p>An HTML link in a slide to another web page works as normal, but a link to
+another slide needs to be given the class <code>jump</code>, so that its
+behaviour can be adapted to do the right thing:</p>
+
+<pre class="html">&lt;section>
+... &lt;a class="jump" href="#info"
+&lt;/section>
+
+...
+
+&lt;section id="info">
+...
+&lt;/section>
+</pre>
+
+<p>It is possible to use slide numbers, but using an id like this makes the link
+independent of slide insertions, deletions or reorderings.</p>
+
+<p>If an element has class <code>back</code> or <code>next</code>, its
+<code>href</code> is filled in to form a link to the previous or next
+slide. The <code>jump</code> class is also needed:</p>
+
+<pre class="html">&lt;nav>
+&lt;a class="jump prev" href="">&lt; &lt;/a>
+&lt;span class="here">&lt;/span>
+&lt;a class="jump next" href=""> &gt;&lt;/a>
+&lt;/nav>
+</pre>
+
+<p>Here, a less-than sign and greater-than sign are used as links, but they have
+to be escaped as <code>&amp;lt;</code> and <code>&amp;gt;</code>.</p>
+
+<p>The back link on the first slide, and the next link on the last slide, are
+made invisible. Navigation links can be inserted from a template.</p>
+
+<p>By holding down the PageDown or PageUp key, autorepeat can be used to get
+quickly from one slide in a presentation to another.  If the URL in the browser
+is changed to add <code>#3</code> on the end, say, then that causes a direct
+jump to slide 3.  This feature can also be used to create a link from elsewhere
+to a presentation, starting at a specific slide.</p>
+
+<p>The current slide number in a presentation is remembered so that, on return
+to the same URL, the presentation is started at the remembered slide.  This uses
+local storage. (If you are worried about telling visitors about this and giving
+them the option to switch the feature off, as with cookies, the rules clearly
+say that you don't have to do that if the feature is just for the 'normal
+operation' of the site, and not to track users or push adverts at them, for
+example.)</p>
+
+<h2 id="asides">Asides</h2>
+
+<p>An aside is a slide that is not displayed in the main sequence, but can only
+be accessed by following an explicit link. Asides can be used for extra material
+that may or may not be displayed in an actual presentation according to
+circumstances. They can also be used for background information that appears in
+the printed or PDF form of a presentation, but not when presenting live.  Here's
+an example:</p>
+
+<p class="indent"><a href="asides.html">example of asides</a></p>
+
+<p>An aside is exactly the same as a normal slide, except that it uses the
+<code>aside</code> tag instead of the <code>section</code> tag.  An aside is
+numbered according to the most recent ordinary slide, e.g. asides following
+sldie <code>3</code> have 'numbers' <code>3a</code>, <code>3b</code>, ...
+Navigation with keys or with automatic navigation links bypasses the asides
+(unless the current slide is alrady an aside) but explicitly added
+<code>jump</code> links refer to them.</p>
+
+<h2 id="text">Text</h2>
+
+<p>In the early days of HTML, the idea was that a page should say <em>what</em>
+to display, and it was up to the browser <em>how</em> to display it.  This makes
+sense, and the idea is still current, because users have preferences such as how
+big the browser window is, and authors should respect that by not producing
+fixed-size pages, for example.</p>
+
+<p>On the other hand, the idea has been, and still is, a great frustration to
+web authors in many circumstances, because they naturally want their pages to
+look the same, exactly as intended, in every browser and on every platform.  As
+a result, there have been great advances in the standards, so that the exact
+pixel size and pixel position of almost every web feature can be controlled
+precisely.</p>
+
+<p>Of course, the author of a presentation may not be interested in
+cross-browser or cross-platform issues, as long as the presentation works on the
+one computer used to present with. However, if a presentation has a long
+life, being used many times, or if the slides themselves are to be made
+available to other people, then these issues become important.</p>
+
+<p>Perhaps the greatest exception to perfect pixel control is <em>text</em>.
+There isn't, and never has been, a single font that can be relied on to be
+installed on every major platform.</p>
+
+<p>However, a good way round this, to produce slides that look similar on
+different systems, is to use web fonts.  For example, suppose you decide to use
+the Tangerine font from Google Fonts.  In the head of the presentation, you
+would add:</p>
+
+<pre class="html">&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+&lt;style> .tang { font-family: 'Tangerine', serif; } &lt;/style>
+</pre>
+
+<p>The stylesheet from Google makes the font family <code>Tangerine</code>
+available from the Google font site, and the style rule applies it to all
+elements with class <code>tang</code> in the presentation, with a fallback in
+case the font isn't available.</p>
+
+<p>A disadvantage of this is that the presentation may not be self-contained any
+longer, needing network access to use the font.  An alternative is to download
+the desired font explicitly, say in TTF format as <code>tangerine.ttf</code>,
+and put it in the same folder as the presentation.  Then put this in the head of
+the presentation:</p>
+
+<pre class="html">&lt;style>
+@font-face { font-family:'Tangerine'; src:url('tangerine.ttf'); }
+.tang { font-family: 'Tangerine', serif; }
+&lt;/style>
+</pre>
+
+<p>Unfortunately, this isn't the end of the story. Even if you pick a web font,
+and even if you fix its font-size, and surprisingly even if the font is
+monospaced, the pixel measurement of the text differs between browsers, or
+between the same browser on different platforms, mostly because of different
+approaches taken to sub-pixel rendering.</p>
+
+<p>So, it is best to go with the flow, and accept the fact that it is the
+browser which will ultimately decide where the line breaks come in a paragraph,
+for example.</p>
+
+<h2 id="resolution">Resolution</h2>
+
+<p>A presentation author wants to prepare material to fit exactly in a slide,
+and doesn't want to arrive at a venue only to discover that the local browser or
+platform or data projector causes the material not to fit, with ugly scroll bars
+being added, for example.  Aside from the problems with text, there is also a
+potential problem with resolution.</p>
+
+<p>In some ways, the old days of VGA projectors made things a little simpler,
+because the displayed resolution was always 1024x768 pixels.  Now, with HDMI,
+the resulution of the projector or wall screen normally matches the resolution
+of the computer screen. But if the computer is not yours, it can be uncertain
+what the aspect ratio is going to be, let alone the resolution. Nothing beats a
+trial run at the intended venue to check whether everything is going to
+work.</p>
+
+<p>If you know what resolution you are aiming for, either because you know the
+projector is VGA, or because you are taking your own laptop and you know the
+projector is HDMI, it is possible to check in advance.  A good technique is to
+install a window resizer extension in the browser on your development computer.
+This can also be used to check the effect of a presentation on different screen
+resolutions, if there is uncertainty.</p>
+
+<p>As a practical example, good results were experienced in 2016 with an HP
+Chromebook costing only about 160 pounds. It is very easy to carry to venues. It
+only has HDMI output, but a converter cable can be used to handle VGA.  Most
+converter cables don't work, but one from UGreen, costing around 10 pounds, has
+been successful.  As always, there can be no guarantees that this remains a good
+option or that it will work for you.  The natural screen resolution is 1366x768.
+With the VGA converter, presentations can be displayed on an extended desktop at
+1024x768, though only 1024x765 is available because a thin strip is reserved at
+the top of the extended desktop. By checking in advance that presentations work
+both on 1366x768 and 1024x765 resolutions, there is no need to worry about
+whether the projector will be VGA or HDMI.</p>
+
+<p>The best approach seems to be to avoid having too much material on a slide,
+to avoid unnecessary absolute sizing or positioning, and to allow the browser to
+do what it likes.</p>
+
+<h2 id="pre">Preformatted text</h2>
+
+<p>Wrap has been used to good effect in the teaching of programming.  An
+extremely common requirement in that case is to be able to show a fragment of
+program text in a slide.  It is normal to use a <code>pre</code> (preformatted
+text) element for that:</p>
+
+<pre class="html">&lt;pre>#include &lt;stdio.h>
+int main() { printf("Hello World!"); }
+&lt;/pre>
+</pre>
+
+<p>(Note that, in XHTML, a newline immediately following <code>&lt;pre></code>
+is officially included in the preformatted text so, to avoid an unwanted blank
+line, it is best to omit the newline.)</p>
+
+<p>The question naturally arises about what happens when the lines become too
+long to fit across the slide.  It is not appropriate for the text to wrap,
+because program layout matters, especially in teaching.  A better bet is to
+adjust the font size, so that the text fits.  It is exceptionally time consuming
+and irritating to do that by hand, and in any case the width of the text is
+unpredictable, as explained before.</p>
+
+<p>So Wrap provides automatic font resizing.  For each <code>pre</code> element,
+Wrap dynamically checks whether the text overflows, and incrementally reduces
+the font size until it fits.  On the one hand, this is a crude technique, and
+there may be a pause at the start while the process is applied to the whole
+presentation. (The bulk of the pause is often due to the time it takes the
+browser to load a web font, and replace the initial fallback font with it.) On
+the other hand, the technique works no matter what browser or platform is used,
+no matter what style choices are made which affect widths, and no matter what
+the display resolution is.</p>
+
+<p>Sometimes, an author might want to reduce the font size of the text in a
+<code>pre</code> element, not because the text is too wide, because it is too
+long vertically.  Wrap also checks for this, if the <code>pre</code> element is
+given an explicit height, e.g.</p>
+
+<pre class="html">&lt;pre style="height: 200px;">...
+...
+&lt;/pre>
+</pre>
+
+<h2 id="highlighting">Highlighting</h2>
+
+<p>It is natural to want to add syntax highlighting to program text.  Wrap is
+designed to take advantage of <a
+href="https://highlightjs.org/">highlight.js</a>.  In the head of a
+presentation, add:</p>
+
+<pre class="html">&lt;link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+&lt;script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js">&lt;/script>
+</pre>
+
+<p>This loads a chosen colour scheme (xcode in this case) and the highlight
+script from a CDN.  The most up-to-date version should be used, rather than the
+one shown. Also, the highlight script does not support all the languages which
+<code>highlight.js</code> knows about, so a language-specific script may need to
+be added.</p>
+
+<p>If the presentation needs to be self-contained, these files can be
+downloaded, put in the presentation folder, and included into the presentation
+with, e.g.</p>
+<pre class="html">&lt;link rel="stylesheet" href="xcode.min.css"/>
+&lt;script src="highlight.min.js">&lt;/script>
+</pre>
+
+<p>If Wrap detects that <code>highlight.js</code> is present, then Wrap looks at
+each <code>pre</code> element in the presentation.  It uses the class to decide
+what language the text is in, and highlights accordingly, for example:</p>
+
+<pre class="html">&lt;pre class="cpp">#include &lt;stdio.h>
+int main() { printf("Hello World!"); }
+&lt;/pre>
+</pre>
+
+<p>(Note: <code>cpp</code> is used for <code>c</code>.)  If there are multiple
+classes, Wrap tries to guess which one represents the language.</p>
+
+<p>Often, when program text is shown in a <code>pre</code> element, it is an
+extract from a source file.  A link can be made to the original source file
+by adding a <code>data-file</code> attribute like this:</p>
+
+<pre class="html">&lt;pre data-file="hello.cpp">#include &lt;stdio.h>
+int main() { printf("Hello World!"); }
+&lt;/pre>
+</pre>
+
+<p>Wrap uses the filename, first to determine the language from the file
+extension, and then to create a link which overlays the top right corner of the
+<cpde>pre</code> element.  XHTML only allows elements to have the attributes
+specified in the standard, except that custom attributes can be added if their
+names start with the <code>data-</code> prefix.</p>
 
 </body>
 </html>

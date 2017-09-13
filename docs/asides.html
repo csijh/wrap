@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Minimal presentation</title>
+<script src='wrap.js'></script>
+<style>
+body { margin: 0; padding: 0; font-size: 40px; }
+h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
+p { margin: 0.6em 1em 0.6em 1em; }
+nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
+.back, .next { text-decoration: none; }
+aside h2 { background-color: #4fa; }
+</style>
+</head>
+<body>
+
+<template>
+<nav>
+<a class="jump back" href="">&lt; </a>
+<span class="here"></span>
+<a class="jump next" href=""> &gt;</a>
+</nav>
+</template>
+
+<section>
+<h2>Asides</h2>
+<p>This presentation illustrates asides.  It has two main slides, with two
+asides in between:</p>
+<p><a class="jump" href="#note">asides</a></p>
+<p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
+</section>
+
+<aside id="note">
+<h2>Note</h2>
+<p>This aside is skipped during normal navigation.  However, the PageDown key or
+next link takes you to a second aside.</p>
+</aside>
+
+<aside>
+<h2>Another Note</h2>
+<p>This aside illustrates that several asides in a row can form a subsequence of
+the main slide sequence.</p>
+</aside>
+
+<section>
+<h2>Last slide</h2>
+<p>The last slide has a navigation link back to the first slide, bypassing the
+asides.</p>
+</section>
+
+</body>
+</html>
