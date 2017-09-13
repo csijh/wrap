@@ -4,9 +4,9 @@
 <meta charset="UTF-8"/>
 <title>Wrap</title>
 <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+  href="https://cdn.jsdelivr.net/highlight.js/9.11.0/styles/xcode.min.css"/>
 <script
-  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+  src="https://cdn.jsdelivr.net/highlight.js/9.11.0/highlight.min.js"></script>
 <script>
   addEventListener('load', highlight);
   function highlight() {
@@ -41,6 +41,8 @@ using web tools.  Topics are</p>
   <a href="#resolution">Resolution</a>
   <a href="#pre">Preformatted text</a>
   <a href="#highlighting">Highlighting</a>
+  <a href="#controller">Controller</a>
+  <a href="#animations">Animations</a>
 </nav>
 
 <h2 id="server">The web server</h2>
@@ -89,6 +91,9 @@ consists of a folder containing <code>wrap.js</code>, and a web page
 
 <pre class="html">&lt;script src='wrap.js'>&lt;/script>
 </pre>
+
+<p>The page <code>index.html</code> is viewed in a browser, and the F11 key or
+similar is used to make the browser window or tab go into full-screen mode.</p>
 
 <p>The viewer has been tested on recent Chrome and Firefox browsers.  No attempt
 has been made to support old or unusual browsers, but the viewer keeps to the
@@ -150,8 +155,8 @@ why the custom web server is provided.</p>
 <p>However, any approach can be taken to the production of syntactically correct
 HTML.  Some text editors such as <a href="http://brackets.io/">Brackets</a> have
 extensive support for web authoring.  Alternatively, a presentation can be
-authored in a markdown language or, to ensure that the whole of HTML is
-available, a templating language such as Pug can be used.</p>
+authored using a markdown language or, to ensure that the whole of HTML is
+available, using a templating language such as Pug.</p>
 
 <p>The examples of HTML in this document have no indenting, and no blank lines
 except between slides.  However, the most convenient layout for HTML is a matter
@@ -211,7 +216,7 @@ example adds an image to every slide:</p>
 </pre>
 
 <p>The items in the template are copied and added to the end of each slide. They
-are each displayed as blocks (i.e. vertically). Style is used to affect how
+are displayed as blocks (i.e. vertically). Style is used to affect how
 template items look in the slides.  For example, this rule places the image on
 top of everything else, in the top left corner.</p>
 
@@ -279,7 +284,7 @@ another slide needs to be given the class <code>jump</code>, so that its
 behaviour can be adapted to do the right thing:</p>
 
 <pre class="html">&lt;section>
-... &lt;a class="jump" href="#info"
+... &lt;a class="jump" href="#info">see info&lt;/a> ...
 &lt;/section>
 
 ...
@@ -297,7 +302,7 @@ independent of slide insertions, deletions or reorderings.</p>
 slide. The <code>jump</code> class is also needed:</p>
 
 <pre class="html">&lt;nav>
-&lt;a class="jump prev" href="">&lt; &lt;/a>
+&lt;a class="jump back" href="">&lt; &lt;/a>
 &lt;span class="here">&lt;/span>
 &lt;a class="jump next" href=""> &gt;&lt;/a>
 &lt;/nav>
@@ -337,10 +342,10 @@ an example:</p>
 <p>An aside is exactly the same as a normal slide, except that it uses the
 <code>aside</code> tag instead of the <code>section</code> tag.  An aside is
 numbered according to the most recent ordinary slide, e.g. asides following
-sldie <code>3</code> have 'numbers' <code>3a</code>, <code>3b</code>, ...
+slide <code>3</code> have 'numbers' <code>3a</code>, <code>3b</code>, ...
 Navigation with keys or with automatic navigation links bypasses the asides
 (unless the current slide is alrady an aside) but explicitly added
-<code>jump</code> links refer to them.</p>
+<code>jump</code> links can refer to them.</p>
 
 <h2 id="text">Text</h2>
 
@@ -364,8 +369,8 @@ life, being used many times, or if the slides themselves are to be made
 available to other people, then these issues become important.</p>
 
 <p>Perhaps the greatest exception to perfect pixel control is <em>text</em>.
-There isn't, and never has been, a single font that can be relied on to be
-installed on every major platform.</p>
+First of all, there isn't, and never has been, a single font that can be relied
+on to be installed on every major platform.</p>
 
 <p>However, a good way round this, to produce slides that look similar on
 different systems, is to use web fonts.  For example, suppose you decide to use
@@ -413,7 +418,7 @@ potential problem with resolution.</p>
 
 <p>In some ways, the old days of VGA projectors made things a little simpler,
 because the displayed resolution was always 1024x768 pixels.  Now, with HDMI,
-the resulution of the projector or wall screen normally matches the resolution
+the resolution of the projector or wall screen normally matches the resolution
 of the computer screen. But if the computer is not yours, it can be uncertain
 what the aspect ratio is going to be, let alone the resolution. Nothing beats a
 trial run at the intended venue to check whether everything is going to
@@ -489,20 +494,23 @@ given an explicit height, e.g.</p>
 
 <p>It is natural to want to add syntax highlighting to program text.  Wrap is
 designed to take advantage of <a
-href="https://highlightjs.org/">highlight.js</a>.  In the head of a
-presentation, add:</p>
+href="https://highlightjs.org/">highlight.js</a>.  An example is:</p>
+
+<p class="indent"><a href="languages.html">example of highlighting</a></p>
+
+<p>In the head of a presentation, add:</p>
 
 <pre class="html">&lt;link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+  href="https://cdn.jsdelivr.net/highlight.js/9.11.0/styles/xcode.min.css"/>
 &lt;script
-  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js">&lt;/script>
+  src="https://cdn.jsdelivr.net/highlight.js/9.11.0/highlight.min.js">&lt;/script>
 </pre>
 
 <p>This loads a chosen colour scheme (xcode in this case) and the highlight
 script from a CDN.  The most up-to-date version should be used, rather than the
-one shown. Also, the highlight script does not support all the languages which
-<code>highlight.js</code> knows about, so a language-specific script may need to
-be added.</p>
+one shown, and there are several CDNs to choose from. Also, the highlight script
+does not support all the languages which <code>highlight.js</code> knows about,
+so a language-specific script may need to be added.</p>
 
 <p>If the presentation needs to be self-contained, these files can be
 downloaded, put in the presentation folder, and included into the presentation
@@ -513,30 +521,85 @@ with, e.g.</p>
 
 <p>If Wrap detects that <code>highlight.js</code> is present, then Wrap looks at
 each <code>pre</code> element in the presentation.  It uses the class to decide
-what language the text is in, and highlights accordingly, for example:</p>
+what language the text is in and, if it recognises a language name, it
+highlights the text. For example:</p>
 
-<pre class="html">&lt;pre class="cpp">#include &lt;stdio.h>
+<pre class="html">&lt;pre class="c">#include &lt;stdio.h>
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>(Note: <code>cpp</code> is used for <code>c</code>.)  If there are multiple
-classes, Wrap tries to guess which one represents the language.</p>
+<p>If there are multiple classes, and Wrap recognises any of them as a language
+name, then the text is highlighted.</p>
 
 <p>Often, when program text is shown in a <code>pre</code> element, it is an
 extract from a source file.  A link can be made to the original source file
 by adding a <code>data-file</code> attribute like this:</p>
 
-<pre class="html">&lt;pre data-file="hello.cpp">#include &lt;stdio.h>
+<pre class="html">&lt;pre data-file="hello.c">#include &lt;stdio.h>
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>Wrap uses the filename, first to determine the language from the file
-extension, and then to create a link which overlays the top right corner of the
-<cpde>pre</code> element.  XHTML only allows elements to have the attributes
+<p>In this case, Wrap uses the filename extension to determine the language. It
+then creates a link which overlays the top right corner of the
+<code>pre</code> element.  (XHTML only allows elements to have the attributes
 specified in the standard, except that custom attributes can be added if their
-names start with the <code>data-</code> prefix.  If</p>
+names start with the <code>data-</code> prefix.)</p>
+
+<p>There is a variation, using <code>data-name</code> in place of
+<code>data-file</code>, where a filename or other label is attached to the
+<code>pre</code> element, but without making it into a link.</p>
+
+<h2 id="controller">Controller</h2>
+
+<p>When presenting using an extended desktop, either because there is no choice
+(as in the Chromebook plus VGA situation) or because you want look at notes on
+the main screen that are not to be displayed to the audience, some way of
+controlling what's on the extended desktop from the main screen is needed.</p>
+
+<p>Wrap provides a feature where you can type ALT+w in a presentation.  This
+creates an identical child window, or tab.  All keypresses in the original
+window are duplicated and sent to the child window, so the two windows stay in
+step.  The child can be dragged over onto the extended desktop, and the original
+window acts as a controller.  The child can be made full screen with F11, while
+the original can be made small, allowing other windows to be viewed.</p>
+
+<h2 id="animations">Animations</h2>
+
+<p>Animations can be written using JavaScript to do anything that is desired,
+though it can be a bit of a black art.</p>
+
+<p>In a presentation, there are extra considerations.  An animation is loaded
+once for the whole presentation, but there has to be a way of specifying which
+slide or slides it applies to. Also, the animation needs to be started and
+stopped when moving onto or away from a relevant slide.  Also, it seems quite
+logical to set an animation to the end when moving backwards onto a slide,
+rather than forwards. Also, it is desirable to set an animation to the end when
+preparing a presentation for printing or producing a PDF.  Also Wrap's handling
+of key presses needs to be integrated with the animation's handling of key
+presses.</p>
+
+<p>As a result, some conventions are set up for animations, so that they can be
+managed in a suitable way by Wrap.  A simple example which reveals paragraphs
+in a slide one by one is illustrated by:</p>
+
+<p class="indent"><a href="animation.html">example of animation</a></p>
+
+<p>A script should define a single global variable.  The variable should hold an
+object with methods <code>start</code>, <code>stop</code>, <code>end</code>,
+<code>key</code>.  The <code>start</code> and <code>stop</code> methods start
+and stop the animation, while <code>end</code> sets the animation to its final
+state (perhaps by running it at maximum speed).  Wrap offers key events to
+the <code>key</code> method, which should return <code>true</code> to indicate
+that the event was handled, and <code>false</code> otherwise.</p>
+
+<p>To apply an animation to a slide, add a <code>data-animate</code>
+attribute:</p>
+
+<pre>&lt;section data-animate="reveal">
+...
+</pre>
 
 </body>
 </html>

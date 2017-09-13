@@ -19,7 +19,8 @@ every slide which is based on that template.  Features are:
 - Program text can be highlighted using the hljs library.
 - Program text can have a filename or a link to a file added automatically.
 - Links can be made to jump to other slides or asides.
-- The slides can be printed to a PDF file ('p' prepares for printing).
+- A child window, controlled by the current one, is created with ALT+w.
+- The slides can be printed to a PDF file (Alt+p prepares for printing).
 - An animation can be added to a slide.
 - Back goes to the end of the animation on the previous slide.
 - Key presses are offered to the animation, and otherwise used for navigation.
@@ -31,7 +32,7 @@ every slide which is based on that template.  Features are:
 wrap();
 function wrap() {
     // Define the global variables used by the viewer and set it going on load.
-    var url, slides, slide, animation, child;
+    var url, slides, slide, languages, animation, child;
     window.addEventListener("load", start);
     wrap.doKey = doKey;
     return;
@@ -50,6 +51,7 @@ function wrap() {
         addCanvasOverlays(slides);
         wireUpLinks(slides);
         getBookmark();
+        findLanguages();
         document.onkeydown = keyPress;
         document.fonts.ready.then(processPrograms);
     }
@@ -254,14 +256,25 @@ function wrap() {
         resizePrograms();
     }
 
+    // Find the languages and aliases that hljs, as currently included in the
+    // presentation, supports.
+    function findLanguages() {
+        languages = [];
+        if (typeof hljs == 'undefined') return;
+        var list = hljs.listLanguages();
+        for (var i=0; i<list.length; i++) {
+            languages.push(list[i]);
+            var aliases = hljs.getLanguage(list[i]).aliases;
+            if (aliases == undefined) continue;
+            for (var a=0; a<aliases.length; a++) languages.push(aliases[a]);
+        }
+    }
+
     // If hljs is loaded, find all program fragments and highlight them.  Also
     // add an optional link to a program file, or just a program filename.
     // Take the language from the filename, if necessary.
     function highlightPrograms() {
-        if (typeof hljs == undefined) return;
-        var languages = [
-            "html", "xml", "c", "cpp", "makefile", "haskell", "bash", "sh",
-            "javascript", "js", "sql", "java", "http", "css"];
+        if (typeof hljs == 'undefined') return;
         var pres = document.querySelectorAll('pre');
         for (var i=0; i<pres.length; i++) {
             var pre = pres[i];
@@ -401,42 +414,40 @@ function wrap() {
         return ch.toUpperCase().charCodeAt(0);
     }
 
-    // Deal with key presses in this window.  If 'w' is pressed, create a child
+    // Deal with key presses in this window.  If Alt+W is pressed, create a child
     // window to be displayed on an extended desktop.  Send key presses to the
     // child, so that this window acts as a previewer/controller.
     function keyPress(event) {
         if (!event) event = window.event;
         var key = event.keyCode;
-        if (key == letter('w')) {
+        if (key == letter('w') && event.altKey) {
             child = window.open("index.html", "child");
+            event.preventDefault();
             return;
         }
-        doKey(key);
+        doKey(event);
         if (child) child.wrap.doKey(key);
     }
 
     // Deal with keypress from this window or the parent window.
-    function doKey(key) {
+    function doKey(event) {
         var enterKey = 13, spaceBar = 32, backSpace = 8;
         var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
         var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
 
-        // Allow arrow key synonyms for pageUp/Down.
-        if (key == rightArrow || key == downArrow) key = pageDown;
-        if (key == leftArrow || key == upArrow) key = pageUp;
-
-        // Offer the key to the animation, if any.
+        // Offer the key eevnt to the animation, if any.
+        var key = event.keyCode;
         var used = false;
-        if (animation && animation.key) used = animation.key(key);
+        if (animation && animation.key) used = animation.key(event);
         if (used) return;
 
-        if (key == pageDown) {
+        if (key == pageDown || key == rightArrow || key == downArrow) {
             if (slide.next != undefined) show(slide.next);
         }
-        else if (key == pageUp) {
+        else if (key == pageUp || key == leftArrow || key == upArrow) {
             if (slide.back != undefined) show(slide.back, true);
         }
-        else if (key == letter('p')) preview();
+        else if (key == letter('p') && event.altKey) preview();
     }
 
     // Prepare for printing by making all slides visible, and fast-forwarding
