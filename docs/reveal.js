@@ -2,25 +2,24 @@
 "use strict";
 
 // The animation object, with the methods required by Wrap.
+// The 'reveal' prefix on functions prevents name clashes with other scripts.
 var reveal = {
-    start: revealStart, stop: revealStop, end: revealEnd, key: revealKey
+    init: revealInit, start: revealStart, stop: revealStop, end: revealEnd,
+    key: revealKey
 };
 
-// The 'reveal' prefix on functions prevents name clashes with other scripts.
 // Gather an array of the paragraphs to be revealed.
 function revealInit(slide) {
-    var list = [];
+    this.items = [];
     for (var i=0; i<slide.children.length; i++) {
         var node = slide.children[i];
         var tag = node.tagName.toLowerCase();
-        if (tag == "p") list.push(node);
+        if (tag == "p") this.items.push(node);
     }
-    return list;
 }
 
 // Start the animation by making the paragraphs invisible.
-function revealStart(slide) {
-    this.items = revealInit(slide);
+function revealStart() {
     this.index = 0;
     for (var i=0; i<this.items.length; i++) {
         var para = this.items[i];
@@ -29,12 +28,11 @@ function revealStart(slide) {
 }
 
 // Stop the animation. (There is nothing to do).
-function revealStop(slide) {
+function revealStop() {
 }
 
 // Go to the end of the animation by making the paragraphs visible.
-function revealEnd(slide) {
-    this.items = revealInit(slide);
+function revealEnd() {
     this.index = this.items.length;
     for (var i=0; i<this.items.length; i++) {
         var para = this.items[i];

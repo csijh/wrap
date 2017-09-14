@@ -367,8 +367,9 @@ function wrap() {
         setBookmark(slide.id);
         if (slide.animation) {
             animation = slide.animation;
-            if (back) animation.end(slide.node);
-            else animation.start(slide.node);
+            animation.init(slide.node);
+            if (back) animation.end();
+            else animation.start();
         }
     }
 
@@ -426,7 +427,8 @@ function wrap() {
             if (slide.type == 'section' || slide.type == 'aside') {
                 slide.node.style.cssText = style;
                 if (slide.animation) {
-                    slide.animation.end(slide.node);
+                    slide.animation.init(slide.node);
+                    slide.animation.end();
                 }
             }
         }

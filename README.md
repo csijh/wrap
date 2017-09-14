@@ -12,10 +12,11 @@ web server:
 There are perhaps three major advantages of web-based presentations.  One is
 that they are cross-platform. A second is that a wide range of different types
 of resource can be embedded in a presentation, with no need to change programs
-while presenting.  A third is that the approach is completely open ended, with
-virtually no limit to what can be achieved.  On the other hand, there are quite
-a lot of niggly details to sort out, and the aim of this framework is to handle
-some of those details.
+while presenting.  A third is that the approach is completely open ended, using
+free and open source software, with no proprietary lock-in, and virtually no
+limit to what can be achieved.  On the other hand, there are quite a lot of
+niggly details to sort out, and the aim of this framework and its documentation
+is to handle some of those details.
 
 The framework itself provides only a fairly small range of basic features.  The
 bulk of the power of web presentations comes from the capabilities of browsers

@@ -321,7 +321,7 @@ their special treatment in HTML.</p>
 <p>The back link on the first slide, and the next link on the last slide, are
 made invisible. Navigation links can be inserted from a template.</p>
 
-<p>By holding down the PageDown or PageUp key, autorepeat can be used to get
+<p>By holding down the PageDown or PageUp key, auto repeat can be used to get
 quickly from one slide in a presentation to another.  If the URL in the browser
 is changed to add <code>#3</code> on the end, say, then that causes a direct
 jump to slide 3.  This feature can also be used to create a link from elsewhere
@@ -439,9 +439,9 @@ This can be used to check the effect of a presentation on one or more specific
 screen resolutions.</p>
 
 <p>As a practical example, good results were experienced in 2016 with an HP
-Chromebook costing only about 160 pounds. It is very easy to carry to venues. It
+Chromebook costing only about &#163;160. It is very easy to carry to venues. It
 only has HDMI output, but a converter cable can be used to handle VGA.  Most
-converter cables don't work, but one from Ugreen, costing around 10 pounds, has
+converter cables don't work, but one from Ugreen, costing around &#163;10, has
 been successful.  As always, there can be no guarantees that this remains a good
 option or that it will work for you.  The natural screen resolution is 1366x768.
 With the VGA converter, presentations can be displayed on an extended desktop at
@@ -467,17 +467,18 @@ int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>When delivered as XHTML rather than HTML, a newline immediately following
-<code>&lt;pre></code> is officially included in the preformatted text and causes
-an unwanted blank line.  To remove this minor but annoying difference, Wrap
-removes initial newlines from <code>pre</code> elements.</p>
+<p>When a page is delivered as XHTML rather than HTML, as the provided custom
+server does, a newline immediately following <code>&lt;pre></code> is officially
+included in the preformatted text and causes an unwanted blank line.  To remove
+this minor but annoying variation, Wrap removes initial newlines from
+<code>pre</code> elements.</p>
 
 <p>The question naturally arises about what happens when the lines become too
 long to fit across the slide.  It is not appropriate for the text to wrap,
 because program layout matters, especially in teaching.  A better bet is to
 adjust the font size, so that the text fits.  It is exceptionally time consuming
 and irritating to do that by hand, and in any case the width of the text is
-unpredictable, as explained before.</p>
+unpredictable, as explained above.</p>
 
 <p>So Wrap provides automatic font resizing.  For each <code>pre</code> element,
 Wrap dynamically checks whether the text overflows, and incrementally reduces
@@ -501,7 +502,7 @@ given an explicit height, e.g.</p>
 font.  The browser may only initially load fonts which are visible, i.e. used on
 the slide that happens to be current on startup. If the current slide happens
 not to contain any text which uses the web font, the measurements used to resize
-the text may be incorrectly based on the fallback font.  An effective solution
+the text may be incorrectly based on the fallback font.  An effective workaround
 is to have a page number on every page which uses the same font as
 <code>pre</code> elements.</p>
 
@@ -589,7 +590,7 @@ the main screen that are not to be displayed to the audience, some way of
 controlling what's on the extended desktop from the main screen is needed.</p>
 
 <p>Wrap provides a feature where you can type ALT+w in a presentation.  This
-creates an identical child window, or tab.  All keypresses in the original
+creates an identical child window, or tab.  All key presses in the original
 window are duplicated and sent to the child window, so the two windows stay in
 step.  The child can be dragged over onto the extended desktop, and the original
 window acts as a controller.  The child can be made full screen with F11, while
@@ -618,13 +619,21 @@ in a slide one by one is illustrated by:</p>
 <p class="indent"><a href="animation.html">example of animation</a><br/>
 <a href="reveal.js">the reveal script</a></p>
 
-<p>A script should define a single global variable.  The variable should hold an
-object with methods <code>start</code>, <code>stop</code>, <code>end</code>,
-<code>key</code>.  The <code>start</code> and <code>stop</code> methods start
-and stop the animation, while <code>end</code> sets the animation to its final
-state (perhaps by running it at maximum speed).  Wrap offers key events to
-the <code>key</code> method, which should return <code>true</code> to indicate
-that the event was handled, and <code>false</code> otherwise.</p>
+<p>A script should define a global variable holding an animation object with
+methods <code>init</code>, <code>start</code>, <code>stop</code>,
+<code>end</code>, <code>key</code>.  The example script above is written using
+global method definitions for simplicity.  Many JavaScript programmers would
+avoid global method definitions using a module system, or anonymous functions,
+or inner functions, for example.</p>
+
+<p>The <code>init</code> method is passed as an argument the
+<code>section</code> element representing the current slide, to set up the
+animation for that slide.  The <code>start</code> and <code>stop</code> methods
+start and stop the animation, while <code>end</code> sets the animation to its
+final state (perhaps by running it at maximum speed).  Wrap passes a key press
+event as an argument to the <code>key</code> method, which returns
+<code>true</code> to indicate that the event was handled, and <code>false</code>
+otherwise.</p>
 
 <p>An animation is loaded in the head of a presentation:</p>
 
@@ -637,6 +646,10 @@ attribute:</p>
 <pre>&lt;section data-animate="reveal">
 </pre>
 
+<p>The name <code>reveal</code> is the name of a global variable holding an
+animation (not the name of a script file).  Several animations could be defined
+in a single script, if desired.</p>
+
 <p>The example animation above is an event-driven one, where changes only happen
 when the presenter presses a key.  The animation recognises the same keys as
 Wrap uses for navigation, so that the animation steps fit seamlessly in to the
@@ -644,8 +657,18 @@ presentation sequence, e.g. triggered by a clicker.  The presenter can go
 backwards through the animation as well as forwards, and the animation is set to
 the end if the presenter navigates backwards to the slide.</p>
 
-<p>Animations can also be time-driven, and can involve SVG or canvas or any
-other desired HTML5 features.</p>
+<p>Animations can also be time-driven.  An example is:</p>
+
+<p class="indent"><a href="timer.html">example of timed animation</a><br/>
+<a href="countdown.js">the countdown script</a></p>
+
+<p>The animation is a countdown from 10 to 0.  The navigation keys are
+recognised by the animation.  The PageUp key pauses a running animation, or goes
+back to the start if the animation is already paused, or skips to the previous
+slide (i.e. is ignored by the animation) if the animation is already at the
+start.  The PageDown key restarts a paused animation, or skips to the end if the
+animation is already running, or skips to the next slide if the animation is
+already at the end.</p>
 
 <h2 id="print">Printing and PDF</h2>
 
@@ -673,10 +696,10 @@ than printing to paper, change the printer target to <em>Save as PDF</em>.</p>
 <h2 id="notes">Miscellaneous notes</h2>
 
 <p><strong>Customising:</strong> The <code>wrap.js</code> script can be freely
-customised.  However, there is no guarantee that later versions of it will be
-backwards compatible with the version you customise, and there is no version
-numbering other than the repository commit date.  So, care is needed to merge
-customisations with updates.</p>
+customised.  However, there is no guarantee that later versions of
+<code>wrap.js</code> will be backwards compatible with the version you
+customise, and there is no version numbering other than the repository commit
+date.  So, care is needed to merge customisations with updates.</p>
 
 <p><strong>Tickets:</strong> If presentations are hosted within an intranet
 which uses a single signon system, URLs may have tickets attached.  These are
@@ -700,11 +723,12 @@ possibilities are mentioned here.</p>
 <p><strong>Static illustrations:</strong> If something static is all that is
 required, then any drawing or painting tool can be used, and an image exported
 for inclusion in a presentation.  For example, <a
-href="http://www.umlet.com/">UMLet</a> is a very useful and quick tool for
-simple diagrams consisting of boxes, arrows and labels (but beware the false
-download links on its web site).  <a
-href="https://inkscape.org/en/">InkScape</a> is a full-featured
-vector-based drawing tool, which allows export in SVG or image formats.  <a
+href="http://www.umlet.com/">UMLet</a>, or <a
+href="http://www.umlet.com/umletino/umletino.html">UMLetino</a> is a very useful
+and quick tool for simple diagrams consisting of boxes, arrows and labels (but
+beware the false download links on the UMLet web site).  <a
+href="https://inkscape.org/en/">InkScape</a> is a full-featured vector-based
+drawing tool, which allows export to SVG or image formats.  <a
 href="https://krita.org/en/">Krita</a> is a full-featured painting tool.</p>
 
 <p><strong>Animated illustrations:</strong> If you want to present a diagram
@@ -724,13 +748,13 @@ stylus, and see what software it has available for capturing and displaying
 sketches.  This seems too hardware and skill dependent to make specific robust
 recommendations.  An intermediate approach is to prepare a sketch in advance,
 capturing gestures and their timings, and animate it to produce a result which
-is "as live".  There seem to be no tools worth recommending for this, though
+is "as live".  There seem to be no simple, robust, open tools for this, though
 experience has been gained for some specific purposes with a custom canvas-based
 web page.</p>
 
 <p><strong>Prepared demos:</strong> For teaching programming, showing demos of
 editing, compiling and running programs is attractive.  And this can be done
-particularly smoothly if it is within a presention, rather than involving a
+particularly smoothly if it is within a presentation, rather than involving a
 clumsy and jarring switch of presentation environments. To show a program being
 edited, and then compiled and run in a text-based terminal, there are again both
 prepared and live approaches.  For a prepared approach, all the text involved
