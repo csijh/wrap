@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Asides example</title>
+<title>Animation example</title>
 <script src='wrap.js'></script>
+<script src='reveal.js'></script>
 <style>
 body { margin: 0; padding: 0; font-size: 40px; }
 h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
 p { margin: 0.6em 1em 0.6em 1em; }
 nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
 .back, .next { text-decoration: none; }
-aside h2 { background-color: #4fa; }
+@media print { .back, .next { display: none; } }
+@page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }
 </style>
 </head>
 <body>
@@ -23,29 +25,22 @@ aside h2 { background-color: #4fa; }
 </template>
 
 <section>
-<h2>Asides</h2>
-<p>This presentation illustrates asides.  It has two main slides, with two
-asides in between:</p>
-<p><a class="jump" href="#note">asides</a></p>
+<h2>Animation example</h2>
+<p>The next slide illustrates the reveal animation</p>
 <p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
 </section>
 
-<aside id="note">
-<h2>Note</h2>
-<p>This aside is skipped during normal navigation.  However, the PageDown key or
-next link takes you to a second aside.</p>
-</aside>
-
-<aside>
-<h2>Another Note</h2>
-<p>This aside illustrates that several asides in a row can form a subsequence of
-the main slide sequence.</p>
-</aside>
+<section data-animate="reveal">
+<h2>Reveal</h2>
+<p>This is the first paragraph to be revealed.</p>
+<p>This is the second paragraph.</p>
+<p>And the third.</p>
+</section>
 
 <section>
 <h2>Last slide</h2>
-<p>The last slide has a navigation link back to the first slide, bypassing the
-asides.</p>
+<p>This slide can be used to check that when you navigate back to the previous
+slide, the animation is at the end rather then the beginning.</p>
 </section>
 
 </body>

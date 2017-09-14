@@ -9,21 +9,19 @@ followed, though it is included if the slides are printed.  A template contains
 div elements such as icons and navigation links which are copied into
 every slide which is based on that template.  Features are:
 
-- Single-signon ticket parameters are removed from the URL.
+- Single-signon ticket parameters are removed from URLs.
 - The current slide is remembered in the browser and restored on returning.
 - Visiting url#42 overrides the remembered slide and loads slide 42.
 - Different slides can be based on different templates.
 - A slide number and navigation links can be added to a slide automatically.
 - Slides are numbered 1,2,3... and asides after slide 3 are named 3a,3b,3c...
-- Program text is automatically resized to fit available width.
+- Program text is automatically resized to fit available width and height.
 - Program text can be highlighted using the hljs library.
 - Program text can have a filename or a link to a file added automatically.
 - Links can be made to jump to other slides or asides.
 - A child window, controlled by the current one, is created with ALT+w.
 - The slides can be printed to a PDF file (Alt+p prepares for printing).
 - An animation can be added to a slide.
-- Back goes to the end of the animation on the previous slide.
-- Key presses are offered to the animation, and otherwise used for navigation.
 */
 
 'use strict';
@@ -37,8 +35,7 @@ function wrap() {
     wrap.doKey = doKey;
     return;
 
-    // Prepare everything.  Before processing program text, delay until the
-    // fonts are loaded.
+    // Prepare everything.  Process program text after fonts are loaded.
     function start() {
         child = undefined;
         removeTicket();
@@ -48,7 +45,6 @@ function wrap() {
         applyTemplates(slides);
         addNavigation(slides);
         getAnimations(slides);
-        addCanvasOverlays(slides);
         wireUpLinks(slides);
         getBookmark();
         findLanguages();
@@ -165,7 +161,6 @@ function wrap() {
                 var templateChildren = template.node.children;
                 for (var t=0; t<templateChildren.length; t++) {
                     var child = templateChildren[t];
-                    child.style.display = 'block';
                     slide.node.appendChild(child.cloneNode(true));
                 }
             }
@@ -205,26 +200,6 @@ function wrap() {
             if (slide.type != 'section' && slide.type != 'aside') continue;
             var ann = slide.node.dataset.animate;
             if (ann && window[ann]) slide.animation = window[ann];
-        }
-    }
-
-    // Create full-sreen canvas overlays for animations to draw on.  One is
-    // needed per animated slide, so that printing works properly.
-    function addCanvasOverlays(slides) {
-        for (var id=0; id<slides.length; id++) {
-            var slide = slides[id];
-            if (! slide.animation) continue;
-            var canvas = document.createElement("canvas");
-            canvas.width = "1024";
-            canvas.height = "768";
-            canvas.style.position = "absolute";
-            canvas.style.top = "0";
-            canvas.style.left = "0";
-            canvas.style.pointerEvents = "none";
-            var brush = canvas.getContext("2d");
-            brush.font = "32px SourceCode";
-            slide.node.appendChild(canvas);
-            slide.canvas = canvas;
         }
     }
 
@@ -404,8 +379,8 @@ function wrap() {
         setBookmark(slide.id);
         if (slide.animation) {
             animation = slide.animation;
-            if (back) animation.end(slide.node, slide.canvas);
-            else animation.start(slide.node, slide.canvas);
+            if (back) animation.end(slide.node);
+            else animation.start(slide.node);
         }
     }
 
@@ -435,7 +410,7 @@ function wrap() {
         var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
         var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
 
-        // Offer the key eevnt to the animation, if any.
+        // Offer the key event to the animation, if any.
         var key = event.keyCode;
         var used = false;
         if (animation && animation.key) used = animation.key(event);
@@ -461,7 +436,7 @@ function wrap() {
             if (slide.type == 'section' || slide.type == 'aside') {
                 slide.node.style.cssText = style;
                 if (slide.animation) {
-                    slide.animation.end(slide.node, slide.canvas);
+                    slide.animation.end(slide.node);
                 }
             }
         }

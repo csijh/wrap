@@ -43,6 +43,7 @@ using web tools.  Topics are</p>
   <a href="#highlighting">Highlighting</a>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
+  <a href="#print">Printing and PDF</a>
 </nav>
 
 <h2 id="server">The web server</h2>
@@ -206,7 +207,7 @@ for details.</p>
 <p>A template can be defined to add identical elements to each slide.  This
 example adds an image to every slide:</p>
 
-<p class="indent"><a href="icon.html">template example</a></p>
+<p class="indent"><a href="templates.html">template example</a></p>
 
 <p>The template is:</p>
 
@@ -215,22 +216,22 @@ example adds an image to every slide:</p>
 &lt;/template>
 </pre>
 
-<p>The items in the template are copied and added to the end of each slide. They
-are displayed as blocks (i.e. vertically). Style is used to affect how
-template items look in the slides.  For example, this rule places the image on
-top of everything else, in the top left corner.</p>
+<p>The items in the template are copied and added to the end of each slide.
+Style is used to affect how template items look in the slides, using classes.
+Ids can't be used because they wouldn't be unique after copying.  For example,
+this rule places the image on top of everything else, in the top left
+corner.</p>
 
 <pre class="html">img.icon { position: absolute; top: 0; left: 0; }
 </pre>
 
-<p>Since the items in a template are copied, they shouldn't contain
-<code>id</code> attributes, because these would not stay unique.  Instead,
-<code>class</code> attributes should be used.</p>
+<p>An anonymous template is a default which applies to all slides.  The example
+shows that if the title slide is different from all the rest, it can be handled
+by using different tags and style.  The title slide in the example uses
+<code>h1</code> instead of <code>h2</code> for the heading, with its own style,
+and it uses an id on the slide to 'switch off' the icon image.</p>
 
-<p>An anonymous template is a default which applies to all slides. If the title
-slide is different from all the rest, it may be possible to handle that just
-using different tags and style, e.g. <code>h1</code> instead of <code>h2</code>.
-However, multiple templates can be used in more complex situations.  To define
+<p>In more complex situations, multiple templates can be used.  To define
 multiple templates, give them different ids:</p>
 
 <pre class="html">&lt;template id="normal">
@@ -570,21 +571,23 @@ the original can be made small, allowing other windows to be viewed.</p>
 <p>Animations can be written using JavaScript to do anything that is desired,
 though it can be a bit of a black art.</p>
 
-<p>In a presentation, there are extra considerations.  An animation is loaded
-once for the whole presentation, but there has to be a way of specifying which
-slide or slides it applies to. Also, the animation needs to be started and
-stopped when moving onto or away from a relevant slide.  Also, it seems quite
-logical to set an animation to the end when moving backwards onto a slide,
-rather than forwards. Also, it is desirable to set an animation to the end when
-preparing a presentation for printing or producing a PDF.  Also Wrap's handling
-of key presses needs to be integrated with the animation's handling of key
-presses.</p>
+<p>In a presentation, there are extra considerations beyond the normal use of
+JavaScript.  There have to be ways to:</p>
+
+<ul>
+<li>specify which slides an animation applies to</li>
+<li>start and stop when moving onto or away from a relevant slide</li>
+<li>set an animation to the end when you navigate backwards to a slide</li>
+<li>go to the end when preparing a presentation for printing or PDF</li>
+<li>integrate the handling of key presses with navigation key presses</li>
+</ul>
 
 <p>As a result, some conventions are set up for animations, so that they can be
 managed in a suitable way by Wrap.  A simple example which reveals paragraphs
 in a slide one by one is illustrated by:</p>
 
-<p class="indent"><a href="animation.html">example of animation</a></p>
+<p class="indent"><a href="animation.html">example of animation</a><br/>
+<a href="reveal.js">the reveal script</a></p>
 
 <p>A script should define a single global variable.  The variable should hold an
 object with methods <code>start</code>, <code>stop</code>, <code>end</code>,
@@ -594,12 +597,49 @@ state (perhaps by running it at maximum speed).  Wrap offers key events to
 the <code>key</code> method, which should return <code>true</code> to indicate
 that the event was handled, and <code>false</code> otherwise.</p>
 
-<p>To apply an animation to a slide, add a <code>data-animate</code>
+<p>An animation is loaded in the head of a presentation:</p>
+
+<pre>&lt;script src='reveal.js'>&lt;/script>
+</pre>
+
+<p>An animation is applied to a slide by adding a <code>data-animate</code>
 attribute:</p>
 
 <pre>&lt;section data-animate="reveal">
-...
 </pre>
+
+<p>The example animation above is an event-driven one, where changes only happen
+when the presenter presses a key.  The animation recognises the same keys as
+Wrap uses for navigation, so that the animation steps fit seamlessly in to the
+presentation sequence, e.g. triggered by a clicker.  The presenter can go
+backwards through the animation as well as forwards, and the animation is set to
+the end if the presenter navigates backwards to the slide.</p>
+
+<p>Animations can also be time-driven, and can involve SVG or canvas or any
+other desired HTML5 features.</p>
+
+<h2 id="print">Printing and PDF</h2>
+
+<p>Printing and production of PDF have only been tested using the Chrome
+browser, with a target of A4 paper size.  Experimentation may be needed to get
+good results in other environments.</p>
+
+<p>The first step is to add style rules to make adjustments.  For example, to
+remove the navigation links and target portrait A4 printing with no gaps round
+the edge, try:</p>
+
+<pre>@media print { .back, .next { display: none; } }
+@page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }
+</pre>
+
+<p>Next, press Alt+p to prepare for printing.  This makes all the slides
+visible, and sets all the animations to the end.  If there are problems with
+this, refreshing the presentation and pressing Alt+p again may be
+necessary.</p>
+
+<p>Finally, use the print option in the browser.  If the style adjustments are
+correct, no print options should need to be changed.  To produce a PDF rather
+than printing to paper, change the printer target to <em>Save as PDF</em>.</p>
 
 </body>
 </html>
