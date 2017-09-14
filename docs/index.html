@@ -670,6 +670,16 @@ start.  The PageDown key restarts a paused animation, or skips to the end if the
 animation is already running, or skips to the next slide if the animation is
 already at the end.</p>
 
+<p>A different programming style is used to set up the animation object, one of
+many.  It has the advantages that the method names need no distinguishing
+prefix, local variables <code>counter</code>, <code>time</code>,
+<code>timer</code> are available to the methods without using <code>this</code>,
+these variables and the utility functions which are not exported are private,
+and no special treatment is needed for the <code>tick</code> function, even
+though it is called by the <code>setInterval</code> mechanism without any
+arguments and without <code>this</code> being set to anything useful.  (The
+style also has disadvantages, such as not working well with inheritance.)</p>
+
 <h2 id="print">Printing and PDF</h2>
 
 <p>Printing and production of PDF have only been tested using the Chrome
@@ -750,7 +760,7 @@ recommendations.  An intermediate approach is to prepare a sketch in advance,
 capturing gestures and their timings, and animate it to produce a result which
 is "as live".  There seem to be no simple, robust, open tools for this, though
 experience has been gained for some specific purposes with a custom canvas-based
-web page.</p>
+web page for recording sketches.</p>
 
 <p><strong>Prepared demos:</strong> For teaching programming, showing demos of
 editing, compiling and running programs is attractive.  And this can be done
@@ -768,9 +778,9 @@ the tools are driven from the presentation and the output from the tools is
 displayed in the presentation, a server-based approach is needed.  A custom
 server needs to be set up, and the presentation needs to communicate with it,
 e.g. using web sockets.  Some experience has been gained with doing this, but it
-seems too platform and skill dependent to recommend.</p>
+seems very platform and skill dependent.</p>
 
-<p><strong>Interaction:</strong>  If the presentation can be hosted somewhere
+<p><strong>Interaction:</strong> If the presentation can be hosted somewhere
 where it has a publically accessible URL, then audience participation becomes
 possible.  For example, a voting page can be set up, audience members can visit
 it on their mobiles or laptops, and the results gathered and displayed within
