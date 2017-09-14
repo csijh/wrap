@@ -30,6 +30,7 @@ every slide which is based on that template.  Features are:
 wrap();
 function wrap() {
     // Define the global variables used by the viewer and set it going on load.
+    // Make doKey a public method, in case this is a child window.
     var url, slides, slide, languages, animation, child;
     window.addEventListener("load", start);
     wrap.doKey = doKey;
@@ -214,7 +215,7 @@ function wrap() {
         }
     }
 
-    // Follow a jump link.  Note browser extends "#name" to "url#name".
+    // Follow a jump link.  Note: the browser extends "#name" to "url#name".
     function jump(e) {
         var id = e.target.href;
         id = id.substring(id.indexOf('#') + 1);
@@ -224,11 +225,75 @@ function wrap() {
         return false;
     }
 
-    // Highlight and resize program text in pre elements.  Do the highlighting
+    // Adjust program text in pre elements.  Do the highlighting
     // first, in case it affects the text size.
     function processPrograms() {
-        highlightPrograms();
-        resizePrograms();
+        var pres = document.querySelectorAll('pre');
+        for (var i=0; i<pres.length; i++) {
+            var pre = pres[i];
+            if (typeof hljs != 'undefined') highlightProgram(pre);
+            resizeProgram(pre);
+            labelProgram(pre);
+        }
+    }
+
+    // Remove an initial newline from a pre, and highlight.
+    function highlightProgram(pre) {
+        var lang = getLanguage(pre);
+        if (lang == undefined) return;
+        var text = pre.textContent;
+        if (text.startsWith("\n")) text = text.substring(1);
+        else if (text.startsWith("\r\n")) text = text.substring(2);
+        text = hljs.highlight(lang, text, true).value;
+        pre.innerHTML = text;
+        pre.classList.add("hljs");
+    }
+
+    // For each pre element, reduce the font size until the text fits.
+    // Even with a monospaced web-font, pixel measurements differ between
+    // browsers, because of sub-pixel rendering, so measurement is dynamic.
+    // Every page must contain some text in the program font, e.g. the page
+    // number, otherwise there may be no visible text in the program font when
+    // the presentation is loaded, so the browser doesn't load the font by the
+    // time this function is called.
+    function resizeProgram(pre) {
+        var style = getComputedStyle(pre);
+        var size = parseInt(style.fontSize);
+        while (overflow(pre) && size > 10) {
+            size--;
+            pre.style.fontSize = size + "px";
+        }
+    }
+
+    //  Add a filename to a pre as a top right overlay, possibly as a link.
+    function labelProgram(pre) {
+        var file = pre.dataset.file;
+        var name = pre.dataset.name;
+        if (! file && ! name) return;
+        var label;
+        if (file) {
+            label = document.createElement('a');
+            label.href = file;
+        }
+        else if (name) {
+            label = document.createElement('span');
+        }
+        label.appendChild(document.createTextNode(file || name));
+        label.style.float = "right";
+        label.style.margin = "0";
+        label.style.color = "green";
+        label.style.backgroundColor = "#bee";
+        pre.insertBefore(label, pre.firstChild);
+    }
+
+    // Find the language of a node, or undefined if there isn't one or if the
+    // language found isn't recognised by hljs.
+    function getLanguage(node) {
+        var lang = node.dataset.lang;
+        if (languages.indexOf(lang) >= 0) return lang;
+        lang = document.body.dataset.lang;
+        if (languages.indexOf(lang) >= 0) return lang;
+        return undefined;
     }
 
     // Find the languages and aliases that hljs, as currently included in the
@@ -245,83 +310,6 @@ function wrap() {
         }
     }
 
-    // If hljs is loaded, find all program fragments and highlight them.  Also
-    // add an optional link to a program file, or just a program filename.
-    // Take the language from the filename, if necessary.
-    function highlightPrograms() {
-        if (typeof hljs == 'undefined') return;
-        var pres = document.querySelectorAll('pre');
-        for (var i=0; i<pres.length; i++) {
-            var pre = pres[i];
-            var classes = pre.classList;
-            var file = pre.dataset.file;
-            var name = pre.dataset.name;
-            if (file) {
-                var lang = file.substr(file.lastIndexOf('.')+1);
-                if (languages.indexOf(lang) >= 0 && ! classes.contains(lang)) {
-                    pre.className += " " + lang;
-                }
-            }
-            if (name) {
-                var lang;
-                if (name.indexOf('.') >= 0)
-                    lang = name.substr(name.lastIndexOf('.')+1);
-                else if (name.indexOf(' ') >= 0)
-                    lang = name.substr(name.lastIndexOf(' ')+1);
-                else lang = name;
-                if (languages.indexOf(lang) >= 0 && ! classes.contains(lang)) {
-                    pre.className += " " + lang;
-                }
-            }
-            var isCode = false;
-            for (var n=0; n<classes.length; n++) {
-                if (languages.indexOf(classes[n]) >= 0) isCode = true;
-            }
-            if (! isCode) continue;
-            hljs.highlightBlock(pre);
-            if (file) {
-                var link = document.createElement('a');
-                link.href = file;
-                link.style.float = "right";
-                link.style.margin = "0";
-                link.style.color = "green";
-                link.style.backgroundColor = "#bee";
-                link.appendChild(document.createTextNode(file));
-                pre.insertBefore(link, pre.firstChild);
-            }
-            if (name) {
-                var span = document.createElement('span');
-                span.style.float = "right";
-                span.style.margin = "0";
-                if (name.indexOf("bad") >= 0) span.style.color = "red";
-                else span.style.color = "green";
-                span.style.backgroundColor = "#bee";
-                span.appendChild(document.createTextNode(name));
-                pre.insertBefore(span, pre.firstChild);
-            }
-        }
-    }
-
-    // For each pre element, reduce the font size until the text fits. NOTE:
-    // even with a monospaced web-font, pixel measurements differ between
-    // browsers, because of sub-pixel rendering, so measurement has to be
-    // dynamic. NOTE: Every page must contain some text in the program font,
-    // e.g. the page number.  Otherwise, there may be no visible text in the
-    // program font when the presentation is loaded, so the browser doesn't load
-    // the font by the time this function is called.
-    function resizePrograms() {
-        var pres = document.querySelectorAll('pre');
-        for (var n=0; n<pres.length; n++) {
-            var pre = pres[n];
-            var style = getComputedStyle(pre);
-            var size = parseInt(style.fontSize);
-            while (overflow(pre) && size > 10) {
-                size--;
-                pre.style.fontSize = size + "px";
-            }
-        }
-    }
-
     // Check whether the text in a (pre) element overflows its container. The
     // element has to be cloned and displayed off-screen to be measured, because
     // the original has display=none. It is assumed that the parent element is a
@@ -331,8 +319,8 @@ function wrap() {
         var parent = element.parentNode;
         var index = Array.prototype.indexOf.call(parent.children, element);
         var parent2 = parent.cloneNode(true);
-        parent2.style.position = 'absolute';
-        parent2.style.top = '-1000px';
+        parent2.style.position = 'relative';
+        parent2.style.top = '2000px';
         parent2.style.display = "block";
         document.body.appendChild(parent2);
         var element2 = parent2.children[index];
@@ -395,11 +383,13 @@ function wrap() {
     function keyPress(event) {
         if (!event) event = window.event;
         var key = event.keyCode;
+
         if (key == letter('w') && event.altKey) {
             child = window.open("index.html", "child");
             event.preventDefault();
             return;
         }
+
         doKey(event);
         if (child) child.wrap.doKey(key);
     }

@@ -44,6 +44,7 @@ using web tools.  Topics are</p>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
   <a href="#print">Printing and PDF</a>
+  <a href="#notes">Miscellaneous notes</a>
 </nav>
 
 <h2 id="server">The web server</h2>
@@ -94,13 +95,13 @@ consists of a folder containing <code>wrap.js</code>, and a web page
 </pre>
 
 <p>The page <code>index.html</code> is viewed in a browser, and the F11 key or
-similar is used to make the browser window or tab go into full-screen mode.</p>
+similar is used to make the browser go into full-screen mode.</p>
 
-<p>The viewer has been tested on recent Chrome and Firefox browsers.  No attempt
-has been made to support old or unusual browsers, but the viewer keeps to the
-relevant standards, so that any up-to-date browser should work.  If a
-presentation is made available to other people, either they can be told to use a
-suitable browser, or they can be given a PDF version.</p>
+<p>The viewer has been tested on recent Chrome and Firefox browsers.   The
+relevant standards are followed, so that any up-to-date browser should work. No
+attempt has been made to support old or unusual browsers. If a presentation is
+made available to other people, either they can be told to use a suitable
+browser, or they can be given a PDF version.</p>
 
 <h2 id="skeleton">The skeleton</h2>
 
@@ -131,9 +132,10 @@ example based on the skeleton:</p>
 <p>Its slides are displayed in the default web-page style.  They will look more
 like normal presentation slides when style is added.</p>
 
-<p>This is a normal HTML5 web page, with each slide in the presentation being
-written between <code>&lt;section></code> and <code>&lt;/section></code> tags.
-The attribute <code>xmlns="http://www.w3.org/1999/xhtml"</code> on the
+<p>A presentation is a normal HTML5 web page, with each slide in the
+presentation being written between <code>&lt;section></code> and
+<code>&lt;/section></code> tags. The viewer makes one of these visible at a
+time. The attribute <code>xmlns="http://www.w3.org/1999/xhtml"</code> on the
 <code>html</code> tag is not strictly necessary.  However, if the provided
 custom server is used for development, it is needed so that the server can
 deliver the page as XHTML, a strict variant of HTML which ensures that any
@@ -229,7 +231,10 @@ corner.</p>
 shows that if the title slide is different from all the rest, it can be handled
 by using different tags and style.  The title slide in the example uses
 <code>h1</code> instead of <code>h2</code> for the heading, with its own style,
-and it uses an id on the slide to 'switch off' the icon image.</p>
+and it uses an id on the title slide to 'switch off' the icon image.</p>
+
+<pre class="html">#title img { display: none; }
+</pre>
 
 <p>In more complex situations, multiple templates can be used.  To define
 multiple templates, give them different ids:</p>
@@ -303,14 +308,15 @@ independent of slide insertions, deletions or reorderings.</p>
 slide. The <code>jump</code> class is also needed:</p>
 
 <pre class="html">&lt;nav>
-&lt;a class="jump back" href="">&lt; &lt;/a>
+&lt;a class="jump back" href="">&amp;lt;&lt;/a>
 &lt;span class="here">&lt;/span>
-&lt;a class="jump next" href=""> &gt;&lt;/a>
+&lt;a class="jump next" href="">&amp;gt;&lt;/a>
 &lt;/nav>
 </pre>
 
 <p>Here, a less-than sign and greater-than sign are used as links, but they have
-to be escaped as <code>&amp;lt;</code> and <code>&amp;gt;</code>.</p>
+to be escaped as <code>&amp;lt;</code> and <code>&amp;gt;</code> to switch off
+their special treatment in HTML.</p>
 
 <p>The back link on the first slide, and the next link on the last slide, are
 made invisible. Navigation links can be inserted from a template.</p>
@@ -326,7 +332,7 @@ to the same URL, the presentation is started at the remembered slide.  This uses
 local storage. (If you are worried about telling visitors about this and giving
 them the option to switch the feature off, as with cookies, the rules clearly
 say that you don't have to do that if the feature is just for the 'normal
-operation' of the site, and not to track users or push adverts at them, for
+operation' of the site, rather than to track users or push adverts at them, for
 example.)</p>
 
 <h2 id="asides">Asides</h2>
@@ -342,8 +348,8 @@ an example:</p>
 
 <p>An aside is exactly the same as a normal slide, except that it uses the
 <code>aside</code> tag instead of the <code>section</code> tag.  An aside is
-numbered according to the most recent ordinary slide, e.g. asides following
-slide <code>3</code> have 'numbers' <code>3a</code>, <code>3b</code>, ...
+named according to the most recent ordinary slide, e.g. asides following
+slide <code>3</code> have names <code>3a</code>, <code>3b</code>, ...
 Navigation with keys or with automatic navigation links bypasses the asides
 (unless the current slide is already an aside) but explicitly added
 <code>jump</code> links can refer to them.</p>
@@ -385,10 +391,10 @@ would add:</p>
 <p>The stylesheet from Google makes the font family <code>Tangerine</code>
 available from the Google font site, and the style rule applies it to all
 elements with class <code>tang</code> in the presentation, with a fallback in
-case the font isn't available.</p>
+case the font isn't available or takes a long time to load.</p>
 
 <p>A disadvantage of this is that the presentation may not be self-contained any
-longer, needing network access to use the font.  An alternative is to download
+longer, needing network access to load the font.  An alternative is to download
 the desired font explicitly, say in TTF format as <code>tangerine.ttf</code>,
 and put it in the same folder as the presentation.  Then put this in the head of
 the presentation:</p>
@@ -429,13 +435,13 @@ work.</p>
 projector is VGA, or because you are taking your own laptop and you know the
 projector is HDMI, it is possible to check in advance.  A good technique is to
 install a window resizer extension in the browser on your development computer.
-This can also be used to check the effect of a presentation on different screen
-resolutions, if there is uncertainty.</p>
+This can be used to check the effect of a presentation on one or more specific
+screen resolutions.</p>
 
 <p>As a practical example, good results were experienced in 2016 with an HP
 Chromebook costing only about 160 pounds. It is very easy to carry to venues. It
 only has HDMI output, but a converter cable can be used to handle VGA.  Most
-converter cables don't work, but one from UGreen, costing around 10 pounds, has
+converter cables don't work, but one from Ugreen, costing around 10 pounds, has
 been successful.  As always, there can be no guarantees that this remains a good
 option or that it will work for you.  The natural screen resolution is 1366x768.
 With the VGA converter, presentations can be displayed on an extended desktop at
@@ -455,14 +461,16 @@ extremely common requirement in that case is to be able to show a fragment of
 program text in a slide.  It is normal to use a <code>pre</code> (preformatted
 text) element for that:</p>
 
-<pre class="html">&lt;pre>#include &lt;stdio.h>
+<pre class="html">&lt;pre>
+#include &lt;stdio.h>
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>(Note that, in XHTML, a newline immediately following <code>&lt;pre></code>
-is officially included in the preformatted text so, to avoid an unwanted blank
-line, it is best to omit the newline.)</p>
+<p>When delivered as XHTML rather than HTML, a newline immediately following
+<code>&lt;pre></code> is officially included in the preformatted text and causes
+an unwanted blank line.  To remove this minor but annoying difference, Wrap
+removes initial newlines from <code>pre</code> elements.</p>
 
 <p>The question naturally arises about what happens when the lines become too
 long to fit across the slide.  It is not appropriate for the text to wrap,
@@ -474,12 +482,10 @@ unpredictable, as explained before.</p>
 <p>So Wrap provides automatic font resizing.  For each <code>pre</code> element,
 Wrap dynamically checks whether the text overflows, and incrementally reduces
 the font size until it fits.  On the one hand, this is a crude technique, and
-there may be a pause at the start while the process is applied to the whole
-presentation. (The bulk of the pause is often due to the time it takes the
-browser to load a web font, and replace the initial fallback font with it.) On
-the other hand, the technique works no matter what browser or platform is used,
-no matter what style choices are made which affect widths, and no matter what
-the display resolution is.</p>
+there may be a pause at the start while waiting for fonts to load and then
+applying the process to the whole presentation. On the other hand, the technique
+works no matter what browser or platform is used, no matter what style choices
+are made which affect widths, and no matter what the display resolution is.</p>
 
 <p>Sometimes, an author might want to reduce the font size of the text in a
 <code>pre</code> element, not because the text is too wide, because it is too
@@ -490,6 +496,14 @@ given an explicit height, e.g.</p>
 ...
 &lt;/pre>
 </pre>
+
+<p>There can be a problem if the font used in <code>pre</code> elements is a web
+font.  The browser may only initially load fonts which are visible, i.e. used on
+the slide that happens to be current on startup. If the current slide happens
+not to contain any text which uses the web font, the measurements used to resize
+the text may be incorrectly based on the fallback font.  An effective solution
+is to have a page number on every page which uses the same font as
+<code>pre</code> elements.</p>
 
 <h2 id="highlighting">Highlighting</h2>
 
@@ -509,9 +523,9 @@ href="https://highlightjs.org/">highlight.js</a>.  An example is:</p>
 
 <p>This loads a chosen colour scheme (xcode in this case) and the highlight
 script from a CDN.  The most up-to-date version should be used, rather than the
-one shown, and there are several CDNs to choose from. Also, the highlight script
-does not support all the languages which <code>highlight.js</code> knows about,
-so a language-specific script may need to be added.</p>
+one shown, and there are several CDN sites to choose from. Also, the highlight
+script does not support all the languages which <code>highlight.js</code> knows
+about, so a language-specific script may need to be added.</p>
 
 <p>If the presentation needs to be self-contained, these files can be
 downloaded, put in the presentation folder, and included into the presentation
@@ -521,32 +535,47 @@ with, e.g.</p>
 </pre>
 
 <p>If Wrap detects that <code>highlight.js</code> is present, then Wrap looks at
-each <code>pre</code> element in the presentation.  It uses the class to decide
-what language the text is in and, if it recognises a language name, it
-highlights the text. For example:</p>
+each <code>pre</code> element in the presentation.  It uses a
+<code>data-lang</code> attribute on the <code>pre</code> element to decide what
+language the text is in. For example:</p>
 
-<pre class="html">&lt;pre class="c">#include &lt;stdio.h>
+<pre class="html">&lt;pre data-lang="c">
+#include &lt;stdio.h>
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>If there are multiple classes, and Wrap recognises any of them as a language
-name, then the text is highlighted.</p>
+<p>In strict HTML, custom attributes, i.e. ones other than those specified for
+the element in the standard, must have names which start with the
+<code>data-</code> prefix.</p>
+
+<p>Often, all or most of the program fragments in a presentation have the same
+language. If a <code>data-lang</code> attribute is added to the body element,
+that is treated by Wrap as a default for all the <code>pre</code> elements in
+the presentation.  A particular <code>pre</code> element can have a
+<code>data-lang="..."</code> attribute to override the default, or
+<code>data-lang=""</code> to prevent highlighting.</p>
+
+<p>By default, the <code>highlight.js</code> package highlights <code>pre</code>
+elements with inner <code>code</code> tags, and uses heuristic language
+recognition and/or class attributes to determine the language.  Wrap overrides
+these defaults.  It highlights any <code>pre</code> element which has an
+explicit or default language recognised by <code>highlight.js</code>, and
+determines the language using <code>data-lang</code> instead of
+<code>class</code>, to avoid confusion with classes used for style purposes.</p>
 
 <p>Often, when program text is shown in a <code>pre</code> element, it is an
 extract from a source file.  A link can be made to the original source file
 by adding a <code>data-file</code> attribute like this:</p>
 
-<pre class="html">&lt;pre data-file="hello.c">#include &lt;stdio.h>
+<pre class="html">&lt;pre data-file="hello.c">
+#include &lt;stdio.h>
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
 
-<p>In this case, Wrap uses the filename extension to determine the language. It
-then creates a link which overlays the top right corner of the
-<code>pre</code> element.  (XHTML only allows elements to have the attributes
-specified in the standard, except that custom attributes can be added if their
-names start with the <code>data-</code> prefix.)</p>
+<p>Wrap creates a link which is overlaid in the top right corner of the
+<code>pre</code> element.</p>
 
 <p>There is a variation, using <code>data-name</code> in place of
 <code>data-file</code>, where a filename or other label is attached to the
@@ -640,6 +669,89 @@ necessary.</p>
 <p>Finally, use the print option in the browser.  If the style adjustments are
 correct, no print options should need to be changed.  To produce a PDF rather
 than printing to paper, change the printer target to <em>Save as PDF</em>.</p>
+
+<h2 id="notes">Miscellaneous notes</h2>
+
+<p><strong>Customising:</strong> The <code>wrap.js</code> script can be freely
+customised.  However, there is no guarantee that later versions of it will be
+backwards compatible with the version you customise, and there is no version
+numbering other than the repository commit date.  So, care is needed to merge
+customisations with updates.</p>
+
+<p><strong>Tickets:</strong> If presentations are hosted within an intranet
+which uses a single signon system, URLs may have tickets attached.  These are
+annoying, particularly in browser history lists, because they are frequently out
+of date.  Wrap has a demo feature which removes any ticket parameter attached to
+the presentation URL, and this can be adapted to other similar situations.</p>
+
+<p><strong>Mathematics:</strong> Browsers are required by HTML5 to support
+MathML as an embedded technology.  However, authoring MathML text is fiddly,
+especially if it is not familiar to the author.  <a
+href="https://www.mathjax.org/">MathJax</a> provides an alternative, allowing
+LaTeX or AsciiMath to be used instead.</p>
+
+<p><strong>Illustrations:</strong> Several approaches to diagrams, sketches and
+other illustrations have been tried, with varying degrees of success. The
+problem is that the requirements, preferences and skills of authors differ
+widely. There doesn't at present seem to be an approach which is sufficiently
+general and robust to include in Wrap as an official feature.  Some
+possibilities are mentioned here.</p>
+
+<p><strong>Static illustrations:</strong> If something static is all that is
+required, then any drawing or painting tool can be used, and an image exported
+for inclusion in a presentation.  For example, <a
+href="http://www.umlet.com/">UMLet</a> is a very useful and quick tool for
+simple diagrams consisting of boxes, arrows and labels (but beware the false
+download links on its web site).  <a
+href="https://inkscape.org/en/">InkScape</a> is a full-featured
+vector-based drawing tool, which allows export in SVG or image formats.  <a
+href="https://krita.org/en/">Krita</a> is a full-featured painting tool.</p>
+
+<p><strong>Animated illustrations:</strong> If you want to present a diagram
+which changes in discrete stages, you can of course produce a series of images
+from a drawing tool, and animate them by showing them one at a time.  For more
+sophistication, an SVG diagram can be animated directly using JavaScript.  But
+authoring SVG directly is not really practical, so a tool like InkScape would
+need to be used to create the SVG.  Alternatively, for programmers, a canvas can
+be overlaid over a slide, and a JavaScript animation written which draws onto
+the canvas.</p>
+
+<p><strong>Hand-drawn illustrations:</strong> Sometimes, a hand-drawn sketch
+gives just the right impression of informality.  If it only needs to be static,
+it can be prepared in advance as an image.  To sketch live while presenting, the
+best approach seems to be to use your favourite mobile device with an accurate
+stylus, and see what software it has available for capturing and displaying
+sketches.  This seems too hardware and skill dependent to make specific robust
+recommendations.  An intermediate approach is to prepare a sketch in advance,
+capturing gestures and their timings, and animate it to produce a result which
+is "as live".  There seem to be no tools worth recommending for this, though
+experience has been gained for some specific purposes with a custom canvas-based
+web page.</p>
+
+<p><strong>Prepared demos:</strong> For teaching programming, showing demos of
+editing, compiling and running programs is attractive.  And this can be done
+particularly smoothly if it is within a presention, rather than involving a
+clumsy and jarring switch of presentation environments. To show a program being
+edited, and then compiled and run in a text-based terminal, there are again both
+prepared and live approaches.  For a prepared approach, all the text involved
+can easily be captured, and then its appearance on the screen animated to
+simulate the user typing or the tools producing output.  The animation can be
+timed, or it can be controlled in segments (a character, word or line at a time)
+by key presses.</p>
+
+<p><strong>Live demos:</strong> For a live demo of using text-based tools, where
+the tools are driven from the presentation and the output from the tools is
+displayed in the presentation, a server-based approach is needed.  A custom
+server needs to be set up, and the presentation needs to communicate with it,
+e.g. using web sockets.  Some experience has been gained with doing this, but it
+seems too platform and skill dependent to recommend.</p>
+
+<p><strong>Interaction:</strong>  If the presentation can be hosted somewhere
+where it has a publically accessible URL, then audience participation becomes
+possible.  For example, a voting page can be set up, audience members can visit
+it on their mobiles or laptops, and the results gathered and displayed within
+the presentation.  Again, this seems to be too environment specific to give much
+definite advice.</p>
 
 </body>
 </html>
