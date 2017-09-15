@@ -49,7 +49,7 @@ function wrap() {
         wireUpLinks(slides);
         getBookmark();
         findLanguages();
-        document.onkeydown = keyPress;
+        document.onkeydown = keyDown;
         document.fonts.ready.then(processPrograms);
     }
 
@@ -373,47 +373,42 @@ function wrap() {
         }
     }
 
-    // Convert a letter to a case-insensitive key code
-    function letter(ch) {
-        return ch.toUpperCase().charCodeAt(0);
+    // Catch a key event. Ignore events which have already been processed.
+    // Ignore most alt or meta combinations, which are likely to be browser
+    // shortcuts, other than Alt+w and Alt+p. Ignore raw modifier key events.
+    // Handle the key, and duplicate it on the child window, if any.
+    function keyDown(event) {
+        var key = event.key, shift = event.shiftKey, ctrl = event.ctrlKey;
+        if (event.defaultPrevented) return;
+        if (event.metaKey) return;
+        if (event.altKey && key == 'w') createChild();
+        if (event.altKey && key == 'p') preview();
+        if (event.altKey) return;
+        if (key == 'Shift' || key == 'Control') return;
+        event.preventDefault();
+        event.stopPropagation();
+        doKey(key, shift, ctrl);
+        if (child) child.wrap.doKey(key, shift, ctrl);
     }
 
-    // Deal with key presses in this window.  If Alt+W is pressed, create a child
-    // window to be displayed on an extended desktop.  Send key presses to the
-    // child, so that this window acts as a previewer/controller.
-    function keyPress(event) {
-        if (!event) event = window.event;
-        var key = event.keyCode;
-
-        if (key == letter('w') && event.altKey) {
-            child = window.open("index.html", "child");
-            event.preventDefault();
-            return;
-        }
-
-        doKey(event);
-        if (child) child.wrap.doKey(key);
-    }
-
-    // Deal with keypress from this window or the parent window.
-    function doKey(event) {
-        var enterKey = 13, spaceBar = 32, backSpace = 8;
-        var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
-        var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
+    // Deal with key press from this window or the parent window.  Offer the
+    // key to the animation, if any, otherwise navigate.
+    function doKey(key, shift, ctrl) {
+//        var enterKey = 13, spaceBar = 32, backSpace = 8;
+//        var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
+//        var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
 
         // Offer the key event to the animation, if any.
-        var key = event.keyCode;
         var used = false;
-        if (animation && animation.key) used = animation.key(event);
+        if (animation && animation.key) used = animation.key(key, shift, ctrl);
         if (used) return;
 
-        if (key == pageDown || key == rightArrow || key == downArrow) {
+        if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
             if (slide.next != undefined) show(slide.next);
         }
-        else if (key == pageUp || key == leftArrow || key == upArrow) {
+        else if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
             if (slide.back != undefined) show(slide.back, true);
         }
-        else if (key == letter('p') && event.altKey) preview();
     }
 
     // Prepare for printing by making all slides visible, and fast-forwarding

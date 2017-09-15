@@ -41,18 +41,14 @@ function revealEnd() {
 }
 
 // Respond to the same key presses as Wrap uses for navigation.
-function revealKey(event) {
-    var pageUp = 33, pageDown = 34;
-    var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
-    var key = event.keyCode;
-
-    if (key == pageDown || key == rightArrow || key == downArrow) {
+function revealKey(key, shift, ctrl) {
+    if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
         if (this.index >= this.items.length) return false;
         this.items[this.index].style.visibility = "visible";
         this.index++;
         return true;
     }
-    if (key == pageUp || key == leftArrow || key == upArrow) {
+    if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
         if (this.index == 0) return false;
         this.index--;
         this.items[this.index].style.visibility = "hidden";

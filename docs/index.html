@@ -622,18 +622,17 @@ in a slide one by one is illustrated by:</p>
 <p>A script should define a global variable holding an animation object with
 methods <code>init</code>, <code>start</code>, <code>stop</code>,
 <code>end</code>, <code>key</code>.  The example script above is written using
-global method definitions for simplicity.  Many JavaScript programmers would
-avoid global method definitions using a module system, or anonymous functions,
-or inner functions, for example.</p>
+global method definitions for simplicity, which means care has to be taken to
+avoid name clashes with functions in other scripts.</p>
 
 <p>The <code>init</code> method is passed as an argument the
 <code>section</code> element representing the current slide, to set up the
 animation for that slide.  The <code>start</code> and <code>stop</code> methods
 start and stop the animation, while <code>end</code> sets the animation to its
-final state (perhaps by running it at maximum speed).  Wrap passes a key press
-event as an argument to the <code>key</code> method, which returns
-<code>true</code> to indicate that the event was handled, and <code>false</code>
-otherwise.</p>
+final state (perhaps by running it at maximum speed).  Wrap passes a key and
+shift and control flags as arguments to the <code>key</code> method, which
+returns <code>true</code> to indicate that the event was handled, and
+<code>false</code> otherwise.</p>
 
 <p>An animation is loaded in the head of a presentation:</p>
 
@@ -670,15 +669,37 @@ start.  The PageDown key restarts a paused animation, or skips to the end if the
 animation is already running, or skips to the next slide if the animation is
 already at the end.</p>
 
-<p>A different programming style is used to set up the animation object, one of
-many.  It has the advantages that the method names need no distinguishing
-prefix, local variables <code>counter</code>, <code>time</code>,
-<code>timer</code> are available to the methods without using <code>this</code>,
-these variables and the utility functions which are not exported are private,
-and no special treatment is needed for the <code>tick</code> function, even
-though it is called by the <code>setInterval</code> mechanism without any
-arguments and without <code>this</code> being set to anything useful.  (The
-style also has disadvantages, such as not working well with inheritance.)</p>
+<p>A different programming style, one of many, is used to set up the animation
+object. The methods are inner functions of a 'power constructor' function.  This
+style has the advantages that the method names need no distinguishing prefix,
+local variables <code>counter</code>, <code>time</code>, <code>timer</code> are
+available to the methods without using <code>this</code>, these variables and
+the utility functions which are not exported are private, and no special
+treatment is needed for the <code>tick</code> function, even though it is called
+by the <code>setInterval</code> mechanism without any arguments and without
+<code>this</code> being set to anything useful.  (The style also has
+disadvantages, such as not working well with inheritance, but it seems
+reasonably clean and clear in this situation.)</p>
+
+<p>For programmers, HTML's <code>canvas</code> feature provides a lot of
+scope.  Here's an example:</p>
+
+<p class="indent"><a href="canvas.html">example of canvas animations</a><br/>
+<a href="canvas.js">the canvas script</a></p>
+
+<p>The example contains two animations, and illustrates that multiple animations
+can be defined in the same script.  The first animation draws a diagram, using
+key presses to go through several stages (forwards or backwards).  The canvas is
+an overlay over the slide.  This is useful if you want to draw on top of other
+things on the slide, but is only likely to work if you know the screen
+resolution in advance: the example assumes 1024x768.</p>
+
+<p>The second animation is a bouncing ball, illustrating that an image can be
+drawn on a canvas, that the image can contain transparency, and that
+<code>requestAnimationFrame</code> can be used in place of
+<code>setInterval</code> for smooth animation at maximum speed.  The canvas is
+smaller, embedded in the slide, and centred, so that it is relatively
+independent of resolution.</p>
 
 <h2 id="print">Printing and PDF</h2>
 
@@ -735,20 +756,20 @@ required, then any drawing or painting tool can be used, and an image exported
 for inclusion in a presentation.  For example, <a
 href="http://www.umlet.com/">UMLet</a>, or <a
 href="http://www.umlet.com/umletino/umletino.html">UMLetino</a> is a very useful
-and quick tool for simple diagrams consisting of boxes, arrows and labels (but
-beware the false download links on the UMLet web site).  <a
+and quick tool for simple diagrams consisting of boxes, ovals, arrows and labels
+(but beware the false download links on the UMLet web site).  <a
 href="https://inkscape.org/en/">InkScape</a> is a full-featured vector-based
-drawing tool, which allows export to SVG or image formats.  <a
-href="https://krita.org/en/">Krita</a> is a full-featured painting tool.</p>
+drawing tool.  <a href="https://krita.org/en/">Krita</a> is a full-featured
+pixel-based painting tool.</p>
 
 <p><strong>Animated illustrations:</strong> If you want to present a diagram
 which changes in discrete stages, you can of course produce a series of images
-from a drawing tool, and animate them by showing them one at a time.  For more
-sophistication, an SVG diagram can be animated directly using JavaScript.  But
-authoring SVG directly is not really practical, so a tool like InkScape would
-need to be used to create the SVG.  Alternatively, for programmers, a canvas can
-be overlaid over a slide, and a JavaScript animation written which draws onto
-the canvas.</p>
+from a drawing tool, and animate them by showing them one at a time.
+Alternatively, as shown in the animation section, a custom JavaScript animation
+can be written which draws onto a canvas. For more sophistication, an SVG
+diagram can be animated directly using JavaScript.  But authoring SVG directly
+is not really practical, so a tool like InkScape would need to be used to create
+the initial SVG.</p>
 
 <p><strong>Hand-drawn illustrations:</strong> Sometimes, a hand-drawn sketch
 gives just the right impression of informality.  If it only needs to be static,
@@ -776,9 +797,9 @@ by key presses.</p>
 <p><strong>Live demos:</strong> For a live demo of using text-based tools, where
 the tools are driven from the presentation and the output from the tools is
 displayed in the presentation, a server-based approach is needed.  A custom
-server needs to be set up, and the presentation needs to communicate with it,
-e.g. using web sockets.  Some experience has been gained with doing this, but it
-seems very platform and skill dependent.</p>
+server can to be set up, which the presentation communicates with, e.g. using
+web sockets.  Some experience has been gained with doing this, but it seems very
+platform and skill dependent.</p>
 
 <p><strong>Interaction:</strong> If the presentation can be hosted somewhere
 where it has a publically accessible URL, then audience participation becomes

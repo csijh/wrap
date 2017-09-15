@@ -3,14 +3,15 @@
 <head>
 <title>Canvas animation example</title>
 <script src='wrap.js'></script>
-<script src='draw.js'></script>
+<script src='canvas.js'></script>
 <style>
 body { margin: 0; padding: 0; font-size: 40px; }
 h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
 p { margin: 0.6em 1em 0.6em 1em; }
 nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
 .back, .next { text-decoration: none; }
-canvas { position: absolute; top:0; right: 0; pointer-events: none; }
+canvas.overlay { position: absolute; top:0; right: 0; pointer-events: none; }
+canvas.embed { display: block; margin: auto; border: 2px solid black; }
 @media print { .back, .next { display: none; } }
 @page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }
 </style>
@@ -26,14 +27,20 @@ canvas { position: absolute; top:0; right: 0; pointer-events: none; }
 </template>
 
 <section>
-<h2>Canvas animation example</h2>
-<p>The next slide illustrates the draw animation</p>
-<p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
+<h2>Canvas animation examples</h2>
+<p>The next slides illustrate the draw and bounce animations</p>
+<p>Use PageDown/PageUp or the arrow keys to navigate.</p>
 </section>
 
 <section data-animate="draw">
 <h2>Draw</h2>
-<canvas width="1024" height="768"></canvas>
+<canvas class="overlay" width="1024" height="768"></canvas>
+</section>
+
+<section data-animate="bounce">
+<h2>Bounce</h2>
+<p></p>
+<canvas class="embed" width="800" height="600"></canvas>
 </section>
 
 <section>

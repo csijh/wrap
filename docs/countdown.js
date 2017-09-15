@@ -34,18 +34,14 @@ function newCountdown() {
     // starts a paused animation, or skips to the end or goes to the next page.
     // PageUp pauses the animation, or sets the counter back to 10, or goes to
     // the previous page.
-    function key(event) {
-        var pageUp = 33, pageDown = 34;
-        var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
-        var key = event.keyCode;
-
-        if (key == pageDown || key == rightArrow || key == downArrow) {
+    function key(key, shift, ctrl) {
+        if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
             if (! timer && time == 0) return false;
             if (! timer) startTimer();
             else end();
             return true;
         }
-        if (key == pageUp || key == leftArrow || key == upArrow) {
+        if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
             if (! timer && time == 10) return false;
             if (timer) stopTimer();
             else setTime(10);
@@ -74,5 +70,4 @@ function newCountdown() {
         setTime(time - 1);
         if (time == 0) stopTimer();
     }
-
 }
