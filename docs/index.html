@@ -36,21 +36,21 @@ using web tools.  Topics are</p>
   <a href="#templates">Templates</a>
   <a href="#numbers">Slide numbers</a>
   <a href="#nav">Navigation</a>
-  <a href="#asides">Asides</a>
+  <a href="#asides">Adding asides</a>
   <a href="#text">Text</a>
   <a href="#resolution">Resolution</a>
   <a href="#pre">Preformatted text</a>
   <a href="#highlighting">Highlighting</a>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
-  <a href="#print">Printing and PDF</a>
+  <a href="#print">Printing and PDFs</a>
   <a href="#notes">Miscellaneous notes</a>
 </nav>
 
 <h2 id="server">The web server</h2>
 
-<p>A presentation consists of a few static files, published on any web site,
-using any web server. The custom web server can optionally be used for two
+<p>A Wrap presentation consists of a few static files, published on any web
+site, using any web server. The custom web server can optionally be used for two
 purposes.</p>
 
 <p>First, it allows an author to develop a presentation on a local computer,
@@ -163,8 +163,8 @@ available, using a template language such as Pug.</p>
 
 <p>The examples of HTML in this document have no indenting, and no blank lines
 except between slides.  However, the most convenient layout for HTML is a matter
-of personal preference, probably depending on the editor or other authoring tool
-being used.</p>
+of personal preference, perhaps depending on the features of the editor or other
+authoring tool being used.</p>
 
 <h2 id="style">Style</h2>
 
@@ -335,7 +335,7 @@ say that you don't have to do that if the feature is just for the 'normal
 operation' of the site, rather than to track users or push adverts at them, for
 example.)</p>
 
-<h2 id="asides">Asides</h2>
+<h2 id="asides">Adding asides</h2>
 
 <p>An aside is a slide that is not displayed in the main sequence, but can only
 be accessed by following an explicit link. Asides can be used for extra material
@@ -701,9 +701,9 @@ drawn on a canvas, that the image can contain transparency, and that
 smaller, embedded in the slide, and centred, so that it is relatively
 independent of resolution.</p>
 
-<h2 id="print">Printing and PDF</h2>
+<h2 id="print">Printing and PDFs</h2>
 
-<p>Printing and production of PDF have only been tested using the Chrome
+<p>Printing and production of PDFs have only been tested using the Chrome
 browser, with a target of A4 paper size.  Experimentation may be needed to get
 good results in other environments.</p>
 
@@ -786,7 +786,7 @@ web page for recording sketches.</p>
 <p><strong>Recordings:</strong> There are various approaches to making a
 recording of a presentation. Perhaps the simplest is to record the audio of the
 presentation using a cheap USB microphone, then later use a tool like <a
-href="http://www.audacityteam.org/">Audacity</a> to tidy it up, and<a
+href="http://www.audacityteam.org/">Audacity</a> to tidy it up, and <a
 href="https://obsproject.com/">OBS Studio</a> or similar to make a recording
 while running through the slides in time with the audio.  (Note: it may be
 necessary to switch off Chrome's graphics acceleration option to get OBS and
@@ -806,7 +806,7 @@ by key presses.</p>
 <p><strong>Live demos:</strong> For a live demo of using text-based tools, where
 the tools are driven from the presentation and the output from the tools is
 displayed in the presentation, a server-based approach is needed.  A custom
-server can to be set up, which the presentation communicates with, e.g. using
+server can be set up, which the presentation communicates with, e.g. using
 web sockets.  Some experience has been gained with doing this, but it seems very
 platform and skill dependent.</p>
 

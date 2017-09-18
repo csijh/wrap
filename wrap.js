@@ -415,12 +415,14 @@ function wrap() {
     // all animations to the end.
     function preview() {
         if (animation) { animation.stop(); animation = null; }
-        var style = "position: relative; display: block; width: 1024px;" +
-            "height: 768px; minHeight: 0;";
         for (var i=0; i<slides.length; i++) {
             var slide = slides[i];
             if (slide.type == 'section' || slide.type == 'aside') {
-                slide.node.style.cssText = style;
+                slide.node.style.position = 'relative';
+                slide.node.style.display = 'block';
+                slide.node.style.width = '1024px';
+                slide.node.style.height = '768px';
+                slide.node.style.minHeight = '0';
                 if (slide.animation) {
                     slide.animation.init(slide.node);
                     slide.animation.end();
