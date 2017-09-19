@@ -26,3 +26,7 @@ For self-closing elements, <br></br> becomes <br/> on saving, reverse on loading
 Implementation: gap buffer (or doubly linked list) of tags, each with a position
 in the text and a pointer to its pair.  Positions are negative from the end for
 tags which are after the current edit position.
+
+Edit in a popup window by pressing Alt-e, with the original page as a preview.
+Store the text in localstorage while edting, with a red dot somewhere.
+Save with Ctrl-s or Alt-s via download dialog.
