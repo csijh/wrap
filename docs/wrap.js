@@ -49,6 +49,7 @@ function wrap() {
         wireUpLinks(slides);
         getBookmark();
         findLanguages();
+        loadFonts();
         document.onkeydown = keyDown;
         document.fonts.ready.then(processPrograms);
     }
@@ -225,6 +226,18 @@ function wrap() {
         return false;
     }
 
+    // Explicitly start loading all the fonts.  Otherwise, fonts which happen
+    // not to appear on the initially displayed slide are not loaded by the
+    // time resizePrograms is called, leading to incorrect measurements.
+    function loadFonts() {
+        var list = document.fonts.values();
+        var item = list.next();
+        while (! item.done) {
+            item.value.load();
+            item = list.next();
+        }
+    }
+
     // Adjust program text in pre elements.  Do the highlighting
     // first, in case it affects the text size.
     function processPrograms() {
@@ -394,11 +407,6 @@ function wrap() {
     // Deal with key press from this window or the parent window.  Offer the
     // key to the animation, if any, otherwise navigate.
     function doKey(key, shift, ctrl) {
-//        var enterKey = 13, spaceBar = 32, backSpace = 8;
-//        var pageUp = 33, pageDown = 34, homeKey = 36, endKey = 35;
-//        var leftArrow = 37, upArrow = 38, rightArrow = 39, downArrow = 40;
-
-        // Offer the key event to the animation, if any.
         var used = false;
         if (animation && animation.key) used = animation.key(key, shift, ctrl);
         if (used) return;

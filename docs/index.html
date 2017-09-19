@@ -498,13 +498,11 @@ given an explicit height, e.g.</p>
 &lt;/pre>
 </pre>
 
-<p>There can be a problem if the font used in <code>pre</code> elements is a web
-font.  The browser may only initially load fonts which are visible, i.e. used on
-the slide that happens to be current on startup. If the current slide happens
-not to contain any text which uses the web font, the measurements used to resize
-the text may be incorrectly based on the fallback font.  An effective workaround
-is to have a page number on every page which uses the same font as
-<code>pre</code> elements.</p>
+<p>There is a potential problem with web fonts. If the initially visible slide
+does not contain the font used in <code>pre</code> elements, the browser may not
+load it. The measurements used to resize the text would then be incorrectly
+based on the fallback font.  To avoid this, Wrap explicitly loads all the web
+web fonts mentioned in style <code>@font-face</code> rules before resizing.</p>
 
 <h2 id="highlighting">Highlighting</h2>
 
