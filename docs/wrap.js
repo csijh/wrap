@@ -404,6 +404,11 @@ function wrap() {
         if (child) child.wrap.doKey(key, shift, ctrl);
     }
 
+    // Create a child window, driven from this one.
+    function createChild() {
+        child = window.open(url, "child");
+    }
+
     // Deal with key press from this window or the parent window.  Offer the
     // key to the animation, if any, otherwise navigate.
     function doKey(key, shift, ctrl) {
