@@ -27,14 +27,13 @@ every slide which is based on that template.  Features are:
 'use strict';
 
 // Initialise the wrap viewer.
-wrap();
-function wrap() {
+var wrap = newWrap();
+function newWrap() {
     // Define the global variables used by the viewer and set it going on load.
     // Make doKey a public method, in case this is a child window.
     var url, slides, slide, languages, animation, child;
     window.addEventListener("load", start);
-    wrap.doKey = doKey;
-    return;
+    return { doKey: doKey };
 
     // Prepare everything.  Process program text after fonts are loaded.
     function start() {
