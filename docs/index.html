@@ -61,7 +61,7 @@ development if the publishing process is slow.</p>
 <p>Second, it provides a way of making a presentation totally self-contained.
 The server can be run on a laptop, and a browser on the same laptop can be used
 to view the presentation.  The laptop can then be taken to a venue, with no
-dependency on WIFI or mobile networking.  Only a data projector or similar is
+dependency on internet access.  Only a data projector or similar is
 needed.</p>
 
 <p>An alternative way of making a presentation self-contained is to run the
@@ -69,7 +69,7 @@ browser and visit the presentation web page over the net on a laptop before
 leaving for a venue.  If care is taken to ensure that the laptop is kept running
 or in sleep mode, that the browser remains running, and that the presentation
 page is kept current without being refreshed, then there is again no dependency
-on networking at the venue.</p>
+on internet access at the venue.</p>
 
 <p>The server is written in JavaScript, and can be run using <a
 href="https://nodejs.org/en/">Node</a>, which may need to be installed first.
@@ -101,7 +101,7 @@ similar is used to make the browser go into full-screen mode.</p>
 relevant standards are followed, so that any up-to-date browser should work. No
 attempt has been made to support old or unusual browsers. If a presentation is
 made available to other people, either they can be told to use a suitable
-browser, or they can be given a PDF version.</p>
+browser, or they can be given a PDF version of the presentation.</p>
 
 <h2 id="skeleton">The skeleton</h2>
 
@@ -502,7 +502,7 @@ given an explicit height, e.g.</p>
 does not contain the font used in <code>pre</code> elements, the browser may not
 load it. The measurements used to resize the text would then be incorrectly
 based on the fallback font.  To avoid this, Wrap explicitly loads all the web
-web fonts mentioned in style <code>@font-face</code> rules before resizing.</p>
+fonts mentioned in style <code>@font-face</code> rules before resizing.</p>
 
 <h2 id="highlighting">Highlighting</h2>
 
