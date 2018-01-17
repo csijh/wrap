@@ -303,6 +303,7 @@ function newWrap() {
     function getLanguage(node) {
         var lang = node.dataset.lang;
         if (languages.indexOf(lang) >= 0) return lang;
+        if (lang != undefined) return;
         lang = document.body.dataset.lang;
         if (languages.indexOf(lang) >= 0) return lang;
         return undefined;
