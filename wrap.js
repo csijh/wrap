@@ -50,7 +50,7 @@ function newWrap() {
         findLanguages();
         loadFonts();
         document.onkeydown = keyDown;
-        document.fonts.ready.then(processPrograms);
+        document.fonts.ready.then(processPres);
     }
 
     // Get rid of a Single-Sign-On ticket on the URL, if any
@@ -227,7 +227,7 @@ function newWrap() {
 
     // Explicitly start loading all the fonts.  Otherwise, fonts which happen
     // not to appear on the initially displayed slide are not loaded by the
-    // time resizePrograms is called, leading to incorrect measurements.
+    // time resizePres is called, leading to incorrect measurements.
     function loadFonts() {
         var list = document.fonts.values();
         var item = list.next();
@@ -237,38 +237,47 @@ function newWrap() {
         }
     }
 
-    // Adjust program text in pre elements.  Do the highlighting
-    // first, in case it affects the text size.
-    function processPrograms() {
+    // Adjust pre elements.  Do highlighting before resizing, in case it affects
+    // the text size.
+    function processPres() {
         var pres = document.querySelectorAll('pre');
         for (var i=0; i<pres.length; i++) {
             var pre = pres[i];
-            if (typeof hljs != 'undefined') highlightProgram(pre);
-            resizeProgram(pre);
-            labelProgram(pre);
+            normalizePre(pre);
+            if (typeof hljs != 'undefined') highlightPre(pre);
+            resizePre(pre);
+            labelPre(pre);
         }
     }
 
-    // Remove an initial newline from a pre, and highlight.
-    function highlightProgram(pre) {
-        var lang = getLanguage(pre);
-        if (lang == undefined) return;
-        var text = pre.textContent;
+    // Remove an initial newline from a pre
+    function normalizePre(pre) {
+        var textNode = pre.firstChild;
+        if (textNode == undefined) return;
+        if (textNode.nodeType != Node.TEXT_NODE) return;
+        var text = textNode.textContent;
         if (text.startsWith("\n")) text = text.substring(1);
         else if (text.startsWith("\r\n")) text = text.substring(2);
-        text = hljs.highlight(lang, text, true).value;
-        pre.innerHTML = text;
-        pre.classList.add("hljs");
+        else return;
+        textNode.textContent = text;
     }
 
-    // For each pre element, reduce the font size until the text fits.
+    // Do syntax highlighting on a pre.
+    function highlightPre(pre) {
+        var lang = getLanguage(pre);
+        if (lang == undefined) return;
+        pre.classList.add(lang);
+        hljs.highlightBlock(pre);
+    }
+
+    // Reduce the font size of a pre element, until the text fits.
     // Even with a monospaced web-font, pixel measurements differ between
     // browsers, because of sub-pixel rendering, so measurement is dynamic.
     // Every page must contain some text in the program font, e.g. the page
     // number, otherwise there may be no visible text in the program font when
     // the presentation is loaded, so the browser doesn't load the font by the
     // time this function is called.
-    function resizeProgram(pre) {
+    function resizePre(pre) {
         var style = getComputedStyle(pre);
         var size = parseInt(style.fontSize);
         while (overflow(pre) && size > 10) {
@@ -278,7 +287,7 @@ function newWrap() {
     }
 
     //  Add a filename to a pre as a top right overlay, possibly as a link.
-    function labelProgram(pre) {
+    function labelPre(pre) {
         var file = pre.dataset.file;
         var name = pre.dataset.name;
         if (! file && ! name) return;
