@@ -387,16 +387,19 @@ function newWrap() {
     }
 
     // Catch a key event. Ignore events which have already been processed.
-    // Ignore most alt or meta combinations, which are likely to be browser
-    // shortcuts, other than Alt+w and Alt+p. Ignore raw modifier key events.
-    // Handle the key, and duplicate it on the child window, if any.
+    // Ignore function keys, and most alt or meta combinations, which are likely
+    // to be browser shortcuts, other than Alt+w and Alt+p. Ignore raw modifier
+    // key events. Handle the key, and duplicate it on the child window, if any.
     function keyDown(event) {
         var key = event.key, shift = event.shiftKey, ctrl = event.ctrlKey;
         if (event.defaultPrevented) return;
+        if (key.length > 1 && key[0] == 'F') return;
         if (event.metaKey) return;
-        if (event.altKey && key == 'w') createChild();
-        if (event.altKey && key == 'p') preview();
-        if (event.altKey) return;
+        if (event.altKey) {
+            if (key == 'w') createChild();
+            else if (key == 'p') preview();
+            else return;
+        }
         if (key == 'Shift' || key == 'Control') return;
         event.preventDefault();
         event.stopPropagation();
