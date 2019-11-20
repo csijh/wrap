@@ -7,36 +7,69 @@
 body { margin: 0; padding: 0; font-size: 40px; }
 h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
 p { margin: 0.6em 1em 0.6em 1em; }
+pre { margin: 0.6em 1em 0.6em 2em; }
 nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
 .here { font-family: monospace; }
-.back, .next { text-decoration: none; }
+.back, .next, .up, .down { text-decoration: none; }
 </style>
 </head>
 <body>
 
 <template>
 <nav>
+<a class="jump up" href="">&lt;</a>
 <a class="jump back" href="">&lt;</a>
 <span class="here"></span>
 <a class="jump next" href="">&gt;</a>
+<a class="jump down" href="">&gt;</a>
 </nav>
 </template>
 
-<section>
+<section id="start" data-down="end">
 <h2>Navigation example</h2>
 <p>This presentation illustrates how to add explicit navigation.</p>
-<p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
+<p>Use PageDown/PageUp or the arrow keys or the arrow symbols to move between
+slides.</p>
+<p>This presentation adds back/next arrow symbols next to the page number to
+move between slides</p>
+<p>It also adds up/down arrow symbols next to those, to move between
+segments.</p>
 </section>
 
 <section>
-<h2>Middle slide</h2>
-<p>This slide illustrates navigation links in both directions.</p>
+<h2>Template</h2>
+<p>The template for this presentation contains:</p>
+<pre>
+&lt;a class="jump up" href="">&amp;lt;&lt;/a>&#160;&#160;&#160;&#160;&#160;
+&lt;a class="jump back" href="">&amp;lt;&lt;/a>
+&lt;span class="here">&lt;/span>
+&lt;a class="jump next" href="">&amp;gt;&lt;/a>
+&lt;a class="jump down" href="">&amp;gt;&lt;/a>
+</pre>
+<p>One or both pairs of links can be added. The style contains:</p>
+<pre>
+.back, .next, .up, .down { text-decoration: none; }
+</pre>
 </section>
 
 <section>
+<h2>Segments</h2>
+<p>Segments are marked by slides which start like this:</p>
+<pre>
+&lt;section data-up="s3" id="s4" data-down="s5">
+</pre>
+<p>If a section tag contains a <code>data-up</code> attribute, the "previous
+section" links on subsequent slides take you back to this slide (or by default
+the first slide)</p>
+<p>If a section tag contains a <code>data-down</code> attribute, the "next
+section" links on this slide and subsequent slides take you forward to the slide
+mentioned</p>
+</section>
+
+<section id="end">
 <h2>Last slide</h2>
-<p>The last slide has an invisible next link.</p>
-<p>Here's an example link back to the first slide:</p>
+<p>The last slide has invisible next/down links.</p>
+<p>Here's an example explicit link back to the first slide:</p>
 <p><a class="jump" href="#1">first slide</a></p>
 </section>
 

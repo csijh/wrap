@@ -12,6 +12,7 @@ every slide which is based on that template.  Features are:
 - Single-signon ticket parameters are removed from URLs.
 - The current slide is remembered in the browser and restored on returning.
 - Visiting url#42 overrides the remembered slide and loads slide 42.
+- Clicking on the page number produces e.g. url#42 that can be bookmarked.
 - Different slides can be based on different templates.
 - A slide number and navigation links can be added to a slide automatically.
 - Slides are numbered 1,2,3... and asides after slide 3 are named 3a,3b,3c...
@@ -31,8 +32,9 @@ var wrap = newWrap();
 function newWrap() {
     // Define the global variables used by the viewer and set it going on load.
     // Make doKey a public method, in case this is a child window.
-    var url, slides, slide, languages, animation, child;
+    var url, slides, slide, languages, animation, child, swipeX, swipeY;
     window.addEventListener("load", start);
+    window.addEventListener("resize", resize);
     return { doKey: doKey };
 
     // Prepare everything.  Process program text after fonts are loaded.
@@ -169,24 +171,46 @@ function newWrap() {
     }
 
     // Add navigation to each slide.  Replace the contents of .here with the
-    // name, and make .back and .next links point to previous and next slides.
+    // slide name and attach the makeBookmark function. Make .back and .next
+    // links point to previous and next slides. Make .up and .down links point
+    // to the previous and next section.
     function addNavigation(slides) {
+        var up = slides[0].name, down = slides[0].name;
         for (var id=0; id<slides.length; id++) {
             var slide = slides[id];
             if (slide.type != 'section' && slide.type != 'aside') continue;
+            var thisUp = slide.node.dataset.up;
+            var thisDown = slide.node.dataset.down;
+            if (thisDown) down = thisDown;
+            slide.node.ontouchstart = grab;
+            slide.node.ontouchend = drag;
             var links = slide.node.getElementsByTagName('a');
             for (var i=0; i<links.length; i++) {
                 var link = links[i];
                 if (! link.classList) continue;
+                if (link.classList.contains('up')) {
+                    if (! slide.back) link.style.visibility = 'hidden';
+                    else if (thisUp) link.href = '#' + thisUp;
+                    else link.href = '#' + up;
+                }
                 if (link.classList.contains('back')) {
                     if (! slide.back) link.style.visibility = 'hidden';
                     else link.href = '#' + slide.back;
+                }
+                else if (link.classList.contains('here')) {
+                    link.href = '#' + slide.id;
+                    link.onclick = makeBookmark;
                 }
                 else if (link.classList.contains('next')) {
                     if (! slide.next) link.style.visibility = 'hidden';
                     else link.href = '#' + slide.next;
                 }
+                if (link.classList.contains('down')) {
+                    if (! slide.next) link.style.visibility = 'hidden';
+                    else link.href = '#' + down;
+                }
             }
+            if (thisUp) up = slide.name;
             var here = slide.node.querySelector(".here");
             if (! here) continue;
             while (here.firstChild) here.removeChild(here.firstChild);
@@ -227,7 +251,7 @@ function newWrap() {
 
     // Explicitly start loading all the fonts.  Otherwise, fonts which happen
     // not to appear on the initially displayed slide are not loaded by the
-    // time resizePrograms is called, leading to incorrect measurements.
+    // time resizeProgram is called, leading to incorrect measurements.
     function loadFonts() {
         var list = document.fonts.values();
         var item = list.next();
@@ -237,31 +261,44 @@ function newWrap() {
         }
     }
 
-    // Adjust program text in pre elements.  Do the highlighting
-    // first, in case it affects the text size.
+    // Adjust program text in pre elements.  Do highlighting before resizing, in
+    // case it affects the text size.
     function processPrograms() {
         var pres = document.querySelectorAll('pre');
         for (var i=0; i<pres.length; i++) {
             var pre = pres[i];
-            if (typeof hljs != 'undefined') highlightProgram(pre);
+            highlightProgram(pre);
             resizeProgram(pre);
             labelProgram(pre);
         }
     }
 
-    // Remove an initial newline from a pre, and highlight.
+    // On a window resize, re-process the programs.
+    function resize() {
+        var pres = document.querySelectorAll('pre');
+        for (var i=0; i<pres.length; i++) {
+            var pre = pres[i];
+            highlightProgram(pre);
+            resizeProgram(pre);
+        }
+    }
+
+    // Remove an initial newline from a pre, to avoid a gap, and highlight.
     function highlightProgram(pre) {
-        var lang = getLanguage(pre);
-        if (lang == undefined) return;
         var text = pre.textContent;
         if (text.startsWith("\n")) text = text.substring(1);
         else if (text.startsWith("\r\n")) text = text.substring(2);
+        var lang = getLanguage(pre);
+        if (typeof hljs == 'undefined' || lang == undefined) {
+            pre.innerText = text;
+            return;
+        }
         text = hljs.highlight(lang, text, true).value;
         pre.innerHTML = text;
         pre.classList.add("hljs");
     }
 
-    // For each pre element, reduce the font size until the text fits.
+    // Reduce the font size of a pre element, until the text fits.
     // Even with a monospaced web-font, pixel measurements differ between
     // browsers, because of sub-pixel rendering, so measurement is dynamic.
     // Every page must contain some text in the program font, e.g. the page
@@ -279,13 +316,15 @@ function newWrap() {
 
     //  Add a filename to a pre as a top right overlay, possibly as a link.
     function labelProgram(pre) {
+        var path = document.body.dataset.path;
         var file = pre.dataset.file;
         var name = pre.dataset.name;
         if (! file && ! name) return;
         var label;
         if (file) {
             label = document.createElement('a');
-            label.href = file;
+            if (path) label.href = path + file;
+            else label.href = file;
         }
         else if (name) {
             label = document.createElement('span');
@@ -303,6 +342,7 @@ function newWrap() {
     function getLanguage(node) {
         var lang = node.dataset.lang;
         if (languages.indexOf(lang) >= 0) return lang;
+        if (lang != undefined) return undefined;
         lang = document.body.dataset.lang;
         if (languages.indexOf(lang) >= 0) return lang;
         return undefined;
@@ -348,6 +388,14 @@ function newWrap() {
         localStorage.setItem(url+"#slide", slide.id);
     }
 
+    // Change the url to refer to the current slide, for bookmarking.
+    function makeBookmark(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var mark = url + "#" + slide.id;
+        if (history && history.replaceState) history.pushState({},'',mark);
+    }
+
     // Get the remembered slide or aside.  Allow #id on the url to override it.
     function getBookmark() {
         var here = location.href;
@@ -386,16 +434,20 @@ function newWrap() {
     }
 
     // Catch a key event. Ignore events which have already been processed.
-    // Ignore most alt or meta combinations, which are likely to be browser
-    // shortcuts, other than Alt+w and Alt+p. Ignore raw modifier key events.
-    // Handle the key, and duplicate it on the child window, if any.
+    // Ignore function keys, and most alt or meta combinations, which are likely
+    // to be browser shortcuts, other than Alt+w and Alt+p. Ignore Ctrl+c to
+    // allow copying. Ignore raw modifier key events. Handle the key, and
+    // duplicate it on the child window, if any.
     function keyDown(event) {
         var key = event.key, shift = event.shiftKey, ctrl = event.ctrlKey;
         if (event.defaultPrevented) return;
-        if (event.metaKey) return;
-        if (event.altKey && key == 'w') createChild();
-        if (event.altKey && key == 'p') preview();
-        if (event.altKey) return;
+        if (key.length > 1 && key[0] == 'F') return;
+        if (ctrl && key == 'c') return;
+        if (event.altKey || event.metaKey) {
+            if (key == 'w') createChild();
+            else if (key == 'p') preview();
+            else return;
+        }
         if (key == 'Shift' || key == 'Control') return;
         event.preventDefault();
         event.stopPropagation();
@@ -420,6 +472,25 @@ function newWrap() {
         }
         else if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
             if (slide.back != undefined) show(slide.back, true);
+        }
+    }
+
+    // Deal with the start of a drag/swipe gesture with mouse or touch.
+    function grab(e) {
+        if (e.changedTouches) e = e.changedTouches[0];
+        swipeX = e.clientX;
+        swipeY = e.clientY;
+    }
+
+    // Deal with the end of a drag/swipe gesture with mouse or touch. A swipe
+    // has to be more horizontal than vertical and at least 10 pixels.
+    function drag(e) {
+        if (e.changedTouches) e = e.changedTouches[0];
+        if (Math.abs(e.clientX - swipeX) <= Math.abs(e.clientY - swipeY)) return;
+        if (e.clientX > swipeX + 10) {
+            if (slide.back != undefined) show(slide.back);
+        } else if (e.clientX < swipeX - 10) {
+            if (slide.next != undefined) show(slide.next);
         }
     }
 

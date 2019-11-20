@@ -38,9 +38,9 @@ using web tools.  Topics are</p>
   <a href="#nav">Navigation</a>
   <a href="#asides">Adding asides</a>
   <a href="#text">Text</a>
-  <a href="#resolution">Resolution</a>
   <a href="#pre">Preformatted text</a>
   <a href="#highlighting">Highlighting</a>
+  <a href="#resolution">Resolution</a>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
   <a href="#print">Printing and PDFs</a>
@@ -272,21 +272,21 @@ number is inserted as its text:</p>
 
 <h2 id="nav">Navigation</h2>
 
-<p>PageDown (or right arrow or down arrow) takes you to the next slide, and
-PageUp (or left arrow or up arrow) takes you to the previous slide.  These
-should be familiar from PDF viewers and other presentation tools.  Note,
-however, that the space bar, the enter key and the backspace key are not used
-for navigation, in case they are needed by a demo that involves typing text.</p>
+<p>PageDown (or right arrow or down arrow or swipe left) takes you to the next
+slide, and PageUp (or left arrow or up arrow or swipe right) takes you to the
+previous slide.  These should be familiar from PDF viewers and other
+presentation tools.  Note, however, that the space bar, the enter key and the
+backspace key are not used for navigation, in case they are needed by a demo
+that involves typing text.</p>
 
 <p>A clicker can be used to navigate, since it normally sends PageDown and
-PageUp signals.</p>
-
-<p>Explicit navigation links between slides can be added, for example:</p>
+PageUp signals. Explicit navigation links between slides can be added, either on
+every slide via a template, or individually using anchor tags, for example:</p>
 
 <p class="indent"><a href="nav.html">navigation example</a></p>
 
-<p>An HTML link in a slide to another web page works as normal, but a link to
-another slide needs to be given the class <code>jump</code>, so that its
+<p>An individual HTML link in a slide to another web page works as normal, but a
+link to another slide needs to be given the class <code>jump</code>, so that its
 behaviour can be adapted to do the right thing:</p>
 
 <pre class="html">&lt;section>
@@ -314,18 +314,33 @@ slide. The <code>jump</code> class is also needed:</p>
 &lt;/nav>
 </pre>
 
-<p>Here, a less-than sign and greater-than sign are used as links, but they have
-to be escaped as <code>&amp;lt;</code> and <code>&amp;gt;</code> to switch off
-their special treatment in HTML.</p>
+<p>If desired, further links can be added which move to the previous or next
+segment of a presentation:</p>
 
-<p>The back link on the first slide, and the next link on the last slide, are
-made invisible. Navigation links can be inserted from a template.</p>
+<pre class="html">&lt;nav>
+&lt;a class="jump up" href="">&amp;lt;&lt;/a>
+&lt;a class="jump back" href="">&amp;lt;&lt;/a>
+&lt;span class="here">&lt;/span>
+&lt;a class="jump next" href="">&amp;gt;&lt;/a>
+&lt;a class="jump down" href="">&amp;lt;&lt;/a>
+&lt;/nav>
+</pre>
+
+<p>Navigation links like this can be inserted from a template, to add them
+uniformly to each slide. Segment boundaries are marked by slides with
+<code>data-up</code> or <code>data-down</code> attributes linking them in
+sequence. A less-than sign and greater-than sign are used as links, but they
+have to be escaped as <code>&amp;lt;</code> and <code>&amp;gt;</code> to switch
+off their special treatment in HTML. Backward links on the first slide, and
+forward links on the last slide, are made invisible.</p>
 
 <p>By holding down the PageDown or PageUp key, auto repeat can be used to get
 quickly from one slide in a presentation to another.  If the URL in the browser
 is changed to add <code>#3</code> on the end, say, then that causes a direct
 jump to slide 3.  This feature can also be used to create a link from elsewhere
-to a presentation, starting at a specific slide.</p>
+to a presentation, starting at a specific slide.  Clicking on the page number
+adds the slide number to the URL to make it easy to copy or bookmark, and the
+browser's back button removes it again.</p>
 
 <p>The current slide number in a presentation is remembered so that, on return
 to the same URL, the presentation is started at the remembered slide.  This uses
@@ -415,45 +430,6 @@ approaches taken to sub-pixel rendering.</p>
 browser which will ultimately decide where the line breaks come in a paragraph,
 for example.</p>
 
-<h2 id="resolution">Resolution</h2>
-
-<p>A presentation author wants to prepare material to fit exactly in a slide,
-and doesn't want to arrive at a venue only to discover that the local browser or
-platform or data projector causes the material not to fit, with ugly scroll bars
-being added, for example.  Aside from the problems with text, there is also a
-potential problem with resolution.</p>
-
-<p>In some ways, the old days of VGA projectors made things a little simpler,
-because the displayed resolution was always 1024x768 pixels.  Now, with HDMI,
-the resolution of the projector or wall screen normally matches the resolution
-of the computer screen. But if the computer is not yours, it can be uncertain
-what the aspect ratio is going to be, let alone the resolution. Nothing beats a
-trial run at the intended venue to check whether everything is going to
-work.</p>
-
-<p>If you know what resolution you are aiming for, either because you know the
-projector is VGA, or because you are taking your own laptop and you know the
-projector is HDMI, it is possible to check in advance.  A good technique is to
-install a window resizer extension in the browser on your development computer.
-This can be used to check the effect of a presentation on one or more specific
-screen resolutions.</p>
-
-<p>As a practical example, good results were experienced in 2016 with an HP
-Chromebook costing only about &#163;160. It is very easy to carry to venues. It
-only has HDMI output, but a converter cable can be used to handle VGA.  Most
-converter cables don't work, but one from Ugreen, costing around &#163;10, has
-been successful.  As always, there can be no guarantees that this remains a good
-option or that it will work for you.  The natural screen resolution is 1366x768.
-With the VGA converter, presentations can be displayed on an extended desktop at
-1024x768, though only 1024x765 is available because a thin strip is reserved at
-the top of the extended desktop. By checking in advance that presentations work
-both on 1366x768 and 1024x765 resolutions, there is no need to worry about
-whether the projector will be VGA or HDMI.</p>
-
-<p>The best approach seems to be to avoid having too much material on a slide,
-to avoid unnecessary absolute sizing or positioning, and to allow the browser to
-do what it likes.</p>
-
 <h2 id="pre">Preformatted text</h2>
 
 <p>Wrap has been used to good effect in the teaching of programming.  An
@@ -489,9 +465,9 @@ works no matter what browser or platform is used, no matter what style choices
 are made which affect widths, and no matter what the display resolution is.</p>
 
 <p>Sometimes, an author might want to reduce the font size of the text in a
-<code>pre</code> element, not because the text is too wide, because it is too
-long vertically.  Wrap also checks for this, if the <code>pre</code> element is
-given an explicit height, e.g.</p>
+<code>pre</code> element, not because the text is too wide, but because it is
+too long vertically.  Wrap also checks for this, if the <code>pre</code> element
+is given an explicit height, e.g.</p>
 
 <pre class="html">&lt;pre style="height: 200px;">...
 ...
@@ -579,6 +555,45 @@ int main() { printf("Hello World!"); }
 <p>There is a variation, using <code>data-name</code> in place of
 <code>data-file</code>, where a filename or other label is attached to the
 <code>pre</code> element, but without making it into a link.</p>
+
+<h2 id="resolution">Resolution</h2>
+
+<p>A presentation author wants to prepare material to fit exactly in a slide,
+and doesn't want to arrive at a venue only to discover that the local browser or
+platform or data projector causes the material not to fit, with ugly scroll bars
+being added, for example.  Aside from the problems with text, there is also a
+potential problem with resolution.</p>
+
+<p>In some ways, the old days of VGA projectors made things a little simpler,
+because the displayed resolution was always 1024x768 pixels.  Now, with HDMI,
+the resolution of the projector or wall screen normally matches the resolution
+of the computer screen. But if the computer is not yours, it can be uncertain
+what the aspect ratio is going to be, let alone the resolution. Nothing beats a
+trial run at the intended venue to check whether everything is going to
+work.</p>
+
+<p>If you know what resolution you are aiming for, either because you know the
+projector is VGA, or because you are taking your own laptop and you know the
+projector is HDMI, it is possible to check in advance.  A good technique is to
+install a window resizer extension in the browser on your development computer.
+This can be used to check the effect of a presentation on one or more specific
+screen resolutions.</p>
+
+<p>As a practical example, good results were experienced in 2016 with an HP
+Chromebook costing only about &#163;160. It is very easy to carry to venues. It
+only has HDMI output, but a converter cable can be used to handle VGA.  Most
+converter cables don't work, but one from Ugreen, costing around &#163;10, has
+been successful.  As always, there can be no guarantees that this remains a good
+option or that it will work for you.  The natural screen resolution is 1366x768.
+With the VGA converter, presentations can be displayed on an extended desktop at
+1024x768, though only 1024x765 is available because a thin strip is reserved at
+the top of the extended desktop. By checking in advance that presentations work
+both on 1366x768 and 1024x765 resolutions, there is no need to worry about
+whether the projector will be VGA or HDMI.</p>
+
+<p>The best approach seems to be to avoid having too much material on a slide,
+to avoid unnecessary absolute sizing or positioning, and to allow the browser to
+do what it likes.</p>
 
 <h2 id="controller">Controller</h2>
 
@@ -709,12 +724,12 @@ good results in other environments.</p>
 remove the navigation links and target portrait A4 printing with no gaps round
 the edge, try:</p>
 
-<pre>@media print { .back, .next { display: none; } }
+<pre>@media print { .back, .next, .up, .down { display: none; } }
 @page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }
 </pre>
 
 <p>Next, press Alt+p to prepare for printing.  This makes all the slides
-visible, and sets all the animations to the end.  If there are problems with
+visible, and runs all the animations to the end.  If there are problems with
 this, refreshing the presentation and pressing Alt+p again may be
 necessary.</p>
 
@@ -758,7 +773,8 @@ and quick tool for simple diagrams consisting of boxes, ovals, arrows and labels
 (but beware the false download links on the UMLet web site).  <a
 href="https://inkscape.org/en/">InkScape</a> is a full-featured vector-based
 drawing tool.  <a href="https://krita.org/en/">Krita</a> is a full-featured
-pixel-based painting tool.</p>
+pixel-based painting tool.  <a href="https://www.gimp.org/">Gimp</a> is a
+full-featured image editing tool.</p>
 
 <p><strong>Animated illustrations:</strong> If you want to present a diagram
 which changes in discrete stages, you can of course produce a series of images
