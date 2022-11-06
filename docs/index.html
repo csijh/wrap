@@ -127,7 +127,8 @@ browser, or they can be given a PDF version of the presentation.</p>
 copying it into a file <code>index.html</code>.  Here's a simple three-slide
 example based on the skeleton:</p>
 
-<p class="indent"><a href="minimal.html">minimal example</a></p>
+<p class="indent"><a href="minimal.html">view minimal example</a>
+(or <a href="minimal.html" download="minimal.html">download</a>)</p>
 
 <p>Its slides are displayed in the default web-page style.  They will look more
 like normal presentation slides when style is added.</p>
@@ -171,7 +172,8 @@ authoring tool being used.</p>
 <p>Here is an example of the simple use of style to produce slides with large
 text and a coloured banner across the top:</p>
 
-<p class="indent"><a href="styled.html">styled example</a></p>
+<p class="indent"><a href="styled.html">view styled example</a>
+(or <a href="styled.html" download="styled.html">download</a>)</p>
 
 <p>Style is added using the CSS style language. Style rules can be added to
 individual elements for one-off effects:</p>
@@ -209,7 +211,8 @@ for details.</p>
 <p>A template can be defined to add identical elements to each slide.  This
 example adds an image to every slide:</p>
 
-<p class="indent"><a href="templates.html">template example</a></p>
+<p class="indent"><a href="templates.html">view template example</a>
+(or <a href="templates.html" download="templates.html">download</a>)</p>
 
 <p>The template is:</p>
 
@@ -283,7 +286,8 @@ that involves typing text.</p>
 PageUp signals. Explicit navigation links between slides can be added, either on
 every slide via a template, or individually using anchor tags, for example:</p>
 
-<p class="indent"><a href="nav.html">navigation example</a></p>
+<p class="indent"><a href="nav.html">view navigation example</a>
+(or <a href="nav.html" download="nav.html">download</a>)</p>
 
 <p>An individual HTML link in a slide to another web page works as normal, but a
 link to another slide needs to be given the class <code>jump</code>, so that its
@@ -359,7 +363,8 @@ circumstances. They can also be used for background information that appears in
 the printed or PDF form of a presentation, but not when presenting live.  Here's
 an example:</p>
 
-<p class="indent"><a href="asides.html">example of asides</a></p>
+<p class="indent"><a href="asides.html">view example of asides</a>
+(or <a href="asides.html" download="asides.html">download</a>)</p>
 
 <p>An aside is exactly the same as a normal slide, except that it uses the
 <code>aside</code> tag instead of the <code>section</code> tag.  An aside is
@@ -486,7 +491,8 @@ fonts mentioned in style <code>@font-face</code> rules before resizing.</p>
 designed to take advantage of <a
 href="https://highlightjs.org/">highlight.js</a>.  An example is:</p>
 
-<p class="indent"><a href="languages.html">example of highlighting</a></p>
+<p class="indent"><a href="languages.html">view example of highlighting</a>
+(or <a href="languages.html" download="languags.html">download</a>)</p>
 
 <p>In the head of a presentation, add:</p>
 
@@ -615,7 +621,7 @@ the original can be made small, allowing other windows to be viewed.</p>
 though it can be a bit of a black art.</p>
 
 <p>In a presentation, there are extra considerations beyond the normal use of
-JavaScript.  There have to be ways to:</p>
+JavaScript. There have to be ways to:</p>
 
 <ul>
 <li>specify which slides an animation applies to</li>
@@ -629,8 +635,10 @@ JavaScript.  There have to be ways to:</p>
 managed in a suitable way by Wrap.  A simple example which reveals paragraphs
 in a slide one by one is illustrated by:</p>
 
-<p class="indent"><a href="animation.html">example of animation</a><br/>
-<a href="reveal.js">the reveal script</a></p>
+<p class="indent"><a href="animation.html">view example of animation</a>
+(or <a href="animation.html" download="animation.html">download</a>)<br/>
+<a href="reveal.js">view the reveal script</a>
+(or <a href="reveal.js" download="reveal.js">download</a>)</p>
 
 <p>A script should define a global variable holding an animation object with
 methods <code>init</code>, <code>start</code>, <code>stop</code>,
@@ -638,14 +646,20 @@ methods <code>init</code>, <code>start</code>, <code>stop</code>,
 global method definitions for simplicity, which means care has to be taken to
 avoid name clashes with functions in other scripts.</p>
 
-<p>The <code>init</code> method is passed as an argument the
-<code>section</code> element representing the current slide, to set up the
-animation for that slide.  The <code>start</code> and <code>stop</code> methods
-start and stop the animation, while <code>end</code> sets the animation to its
-final state (perhaps by running it at maximum speed).  Wrap passes a key and
-shift and control flags as arguments to the <code>key</code> method, which
-returns <code>true</code> to indicate that the event was handled, and
-<code>false</code> otherwise.</p>
+<p>The <code>init</code> method is called whenever a slide is shown, to set up
+the animation for that slide, allowing the same animation to be used for
+multiple slides. The method is passed as an argument the <code>section</code>
+element representing the current slide. The <code>start</code> method is called
+when a slide is reached forwards, i.e. from a preceding slide, and
+<code>end</code> is called when it is reached backwards. The <code>start</code>
+method sets the animation to the start, and also sets it going, if desired,
+while the <code>end</code> method is used to set the animation to its end point
+(perhaps by running it through at maximum speed). The <code>stop</code> method
+is called when moving away from a slide, so that the animation isn't running
+when the slide isn't being displayed. Wrap passes a key and shift and control
+flags as arguments to the <code>key</code> method, which returns
+<code>true</code> to indicate that the event was handled, and <code>false</code>
+otherwise.</p>
 
 <p>An animation is loaded in the head of a presentation:</p>
 
@@ -658,8 +672,8 @@ attribute:</p>
 <pre>&lt;section data-animate="reveal">
 </pre>
 
-<p>The name <code>reveal</code> is the name of a global variable holding an
-animation (not the name of a script file).  Several animations could be defined
+<p>The name <code>reveal</code> here is the name of a global variable holding an
+animation (not the name of a script file) so several animations can be defined
 in a single script, if desired.</p>
 
 <p>The example animation above is an event-driven one, where changes only happen
@@ -671,8 +685,10 @@ the end if the presenter navigates backwards to the slide.</p>
 
 <p>Animations can also be time-driven.  An example is:</p>
 
-<p class="indent"><a href="timer.html">example of timed animation</a><br/>
-<a href="countdown.js">the countdown script</a></p>
+<p class="indent"><a href="timer.html">view example of timed animation</a>
+(or <a href="timer.html" download="timer.html">download</a>)<br/>
+<a href="countdown.js">view the countdown script</a>
+(or <a href="countdown.js" download="countdown.js">download</a>)</p>
 
 <p>The animation is a countdown from 10 to 0.  The navigation keys are
 recognised by the animation.  The PageUp key pauses a running animation, or goes
@@ -697,8 +713,10 @@ reasonably clean and clear in this situation.)</p>
 <p>For programmers, HTML's <code>canvas</code> feature provides a lot of
 scope.  Here's an example:</p>
 
-<p class="indent"><a href="canvas.html">example of canvas animations</a><br/>
-<a href="canvas.js">the canvas script</a></p>
+<p class="indent"><a href="canvas.html">view example of canvas animations</a>
+(or <a href="canvas.html" download="canvas.html">download</a>)<br/>
+<a href="canvas.js">view the canvas script</a>
+(or <a href="canvas.js" download="canvas.js">download</a>)</p>
 
 <p>The example contains two animations, and illustrates that multiple animations
 can be defined in the same script.  The first animation draws a diagram, using
