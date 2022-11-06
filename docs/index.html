@@ -11,7 +11,7 @@
   addEventListener('load', highlight);
   function highlight() {
     var pres = document.querySelectorAll("pre");
-    for (var i =0; i &lt; pres.length; i++) hljs.highlightBlock(pres[i]);
+    for (var i = 0; pres.length > i; i++) hljs.highlightBlock(pres[i]);
   }
 </script>
 <style>
