@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Media example</title>
+<script src='wrap.js'></script>
+<script src='play.js'></script>
+<style>
+body { margin: 0; padding: 0; font-size: 40px; }
+h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
+p { margin: 0.6em 1em 0.6em 1em; }
+video, audio { display: block; margin: auto; margin-top: 50px; }
+</style>
+</head>
+<body>
+
+<section>
+<h2>Media examples</h2>
+<p>This presentation illustrates using keys to control video or audio clips.</p>
+<p>Use PageDown/PageUp or the arrow keys to move between slides.</p>
+</section>
+
+<section data-animate="play">
+<h2>Video clip</h2>
+<video width="640" height="480" controls="true">
+  <source src="video.mp4" type="video/mp4"/>
+  Your browser does not support the video tag, or doesn't support mp4.
+</video>
+</section>
+
+<section data-animate="play">
+<h2>Audio clip</h2>
+<audio controls="true">
+  <source src="audio.mp3" type="audio/mp3"/>
+  Your browser does not support the audio tag, or doesn't support mp3.
+</audio>
+</section>
+
+<section>
+<h2>Last slide</h2>
+<p>This slide can be used to check what happens when you navigate back to the
+previous slide.</p>
+</section>
+
+</body>
+</html>

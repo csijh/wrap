@@ -43,6 +43,7 @@ using web tools.  Topics are</p>
   <a href="#resolution">Resolution</a>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
+  <a href="#media">Video and audio</a>
   <a href="#print">Printing and PDFs</a>
   <a href="#notes">Miscellaneous notes</a>
 </nav>
@@ -731,6 +732,34 @@ drawn on a canvas, that the image can contain transparency, and that
 <code>setInterval</code> for smooth animation at maximum speed.  The canvas is
 smaller, embedded in the slide, and centred, so that it is relatively
 independent of resolution.</p>
+
+<h2 id="media">Video and audio</h2>
+
+<p>An animation can be defined to allow video or audio clips to be controlled
+using keys:</p>
+
+<p class="indent"><a href="media.html">view video and audio example</a>
+(or <a href="media.html" download="media.html">download</a>)<br/>
+<a href="play.js">view the play script</a>
+(or <a href="play.js" download="play.js">download</a>)</p>
+
+<p><b>Warning:</b> the clips in this example may not play immediately. That's
+because browsers prevent audio, or unmuted video, from playing unless the user
+interacts with the controls. A way to get around this in Chrome at the time of
+writing, for example, is to go to <b>settings</b>, then <b>privacy and
+security</b>, then <b>site settings</b>, then <b>additional content
+settings</b>, then <b>sound</b>, and then add the domain which hosts the
+presentation as one allowed to play sounds (even if it is just
+<code>http://localhost:8080</code>.)</p>
+
+<p>A single <code>play</code> animation is provided which covers both video and
+audio. It is assumed that a clip is not to be played as soon as its slide is
+displayed, but only under the control of the usual keys. PageDown starts a clip
+running, PageUp pauses it, and so on. The script has a custom <code>ended</code>
+flag rather than using <code>media.ended</code> because it isn't easy to
+reliably set a clip into its ended state other than by letting it end. And
+setting <code>media.currentTime</code> to change the position in the clip isn't
+used, because it is also difficult to make that reliable.</p>
 
 <h2 id="print">Printing and PDFs</h2>
 
