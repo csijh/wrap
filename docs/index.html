@@ -43,7 +43,7 @@ using web tools.  Topics are</p>
   <a href="#resolution">Resolution</a>
   <a href="#controller">Controller</a>
   <a href="#animations">Animations</a>
-  <a href="#media">Video and audio</a>
+  <a href="#media">Video, audio, images</a>
   <a href="#print">Printing and PDFs</a>
   <a href="#notes">Miscellaneous notes</a>
 </nav>
@@ -733,7 +733,7 @@ drawn on a canvas, that the image can contain transparency, and that
 smaller, embedded in the slide, and centred, so that it is relatively
 independent of resolution.</p>
 
-<h2 id="media">Video and audio</h2>
+<h2 id="media">Video, audio, images</h2>
 
 <p>An animation can be defined to allow video or audio clips to be controlled
 using keys:</p>
@@ -760,6 +760,11 @@ flag rather than using <code>media.ended</code> because it isn't easy to
 reliably set a clip into its ended state other than by letting it end. And
 setting <code>media.currentTime</code> to change the position in the clip isn't
 used, because it is also difficult to make that reliable.</p>
+
+<p>Note the style settings <code>video, audio, img { display: block; }</code>.
+These are needed if the media item is to fill the whole screen. Otherwise, they
+may be treated as in-line items, and a few irritating pixels of "leading" may be
+added which cause scroll bars to be added.</p>
 
 <h2 id="print">Printing and PDFs</h2>
 
