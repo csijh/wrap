@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Style example</title>
+<script src='wrap.js'></script>
+<style>
+body { margin: 0; padding: 0; font-size: 40px; }
+h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
+p { margin: 0.6em 1em 0.6em 1em; }
+img { display: block; }
+.overlay {
+    display:none; position:absolute; bottom:0; margin-bottom:0;
+    background-color:#fff;
+}
+</style>
+</head>
+<body>
+
+<section>
+<h2>Overlays</h2>
+<p>This presentation illustrates overlays. Each slide after this one is a
+full-size (1024x768) image, with speaker notes as overlays. Use Alt+W to create
+a separate window for presentation, which won't show the overlays, and type
+Alt+O in the original window which then acts as a controller with speaker
+notes.</p>
+</section>
+
+
+<section>
+<img src="core.png" width="1024" height="768" />
+<p class="overlay">Climate change is the result of global warming causes by our
+modern high-energy lifestyle in developed countries</p>
+</section>
+
+<section>
+<img src="co2.png" width="1024" height="768" />
+<p class="overlay">It is all about carbon, which is a shorthand for carbon
+dioxide and other stuff in the air.</p>
+</section>
+
+</body>
+</html>

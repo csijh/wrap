@@ -41,7 +41,7 @@ using web tools.  Topics are</p>
   <a href="#pre">Preformatted text</a>
   <a href="#highlighting">Highlighting</a>
   <a href="#resolution">Resolution</a>
-  <a href="#controller">Controller</a>
+  <a href="#controller">Controller and speaker notes</a>
   <a href="#animations">Animations</a>
   <a href="#media">Video, audio, images</a>
   <a href="#print">Printing and PDFs</a>
@@ -361,7 +361,7 @@ example.)</p>
 be accessed by following an explicit link. Asides can be used for extra material
 that may or may not be displayed in an actual presentation according to
 circumstances. They can also be used for background information that appears in
-the printed or PDF form of a presentation, but not when presenting live.  Here's
+the printed or PDF form of a presentation, but not when presenting live. Here's
 an example:</p>
 
 <p class="indent"><a href="asides.html">view example of asides</a>
@@ -602,7 +602,7 @@ whether the projector will be VGA or HDMI.</p>
 to avoid unnecessary absolute sizing or positioning, and to allow the browser to
 do what it likes.</p>
 
-<h2 id="controller">Controller</h2>
+<h2 id="controller">Controller and speaker notes</h2>
 
 <p>When presenting using an extended desktop, either because there is no choice
 (as in the Chromebook plus VGA situation) or because you want to look at notes
@@ -610,11 +610,23 @@ on the main screen that are not to be displayed to the audience, some way of
 controlling what's on the extended desktop from the main screen is needed.</p>
 
 <p>Wrap provides a feature where you can type ALT+w in a presentation.  This
-creates an identical child window, or tab.  All key presses in the original
-window are duplicated and sent to the child window, so the two windows stay in
-step.  The child can be dragged over onto the extended desktop, and the original
-window acts as a controller.  The child can be made full screen with F11, while
-the original can be made small, allowing other windows to be viewed.</p>
+creates an identical child window, or tab. If it is a tab, it can be dragged
+away to form a separate window.</p>
+
+<p>All key presses except ALT combinations in the original window are duplicated
+and sent to the child window, so the two windows stay in step.  The child can be
+dragged over onto the extended desktop, and the original window acts as a
+controller.  The child can be made full screen with F11, while the original can
+be made small, allowing other windows to be viewed.</p>
+
+<p>Typing ALT+O toggles overlays on or off. An overlay is an HTML element with
+class <code>overlay</code>. It is given a style <code>display:none</code> and
+then ALT+O switches between that and <code>display:block</code>. Here is an
+example where each slide is a full-sized image, and the overlays consist of
+subtitle speaker notes.</p>
+
+<p class="indent"><a href="overlays.html">view example of overlays</a>
+(or <a href="overlays.html" download="overlays.html">download</a>)</p>
 
 <h2 id="animations">Animations</h2>
 
@@ -712,7 +724,7 @@ disadvantages, such as not working well with inheritance, but it seems
 reasonably clean and clear in this situation.)</p>
 
 <p>For programmers, HTML's <code>canvas</code> feature provides a lot of
-scope.  Here's an example:</p>
+scope. Here's an example:</p>
 
 <p class="indent"><a href="canvas.html">view example of canvas animations</a>
 (or <a href="canvas.html" download="canvas.html">download</a>)<br/>

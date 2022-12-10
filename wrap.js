@@ -21,6 +21,7 @@ every slide which is based on that template.  Features are:
 - Program text can have a filename or a link to a file added automatically.
 - Links can be made to jump to other slides or asides.
 - A child window, controlled by the current one, is created with ALT+w.
+- Overlays on the parent window are toggled with ALT+o.
 - The slides can be printed to a PDF file (Alt+p prepares for printing).
 - An animation can be added to a slide.
 */
@@ -278,6 +279,7 @@ function newWrap() {
         var pres = document.querySelectorAll('pre');
         for (var i=0; i<pres.length; i++) {
             var pre = pres[i];
+            highlightProgram(pre);
             resizeProgram(pre);
         }
     }
@@ -287,9 +289,11 @@ function newWrap() {
         var text = pre.textContent;
         if (text.startsWith("\n")) text = text.substring(1);
         else if (text.startsWith("\r\n")) text = text.substring(2);
-        if (typeof hljs != 'undefined') return;
         var lang = getLanguage(pre);
-        if (lang == undefined) return;
+        if (typeof hljs == 'undefined' || lang == undefined) {
+            pre.innerText = text;
+            return;
+        }
         text = hljs.highlight(lang, text, true).value;
         pre.innerHTML = text;
         pre.classList.add("hljs");
@@ -432,9 +436,9 @@ function newWrap() {
 
     // Catch a key event. Ignore events which have already been processed.
     // Ignore function keys, and most alt or meta combinations, which are likely
-    // to be browser shortcuts, other than Alt+w and Alt+p. Ignore Ctrl+c to
-    // allow copying. Ignore raw modifier key events. Handle the key, and
-    // duplicate it on the child window, if any.
+    // to be browser shortcuts, other than Alt+w, Alt+p and Alt+o. Ignore Ctrl+c
+    // to allow copying. Ignore raw modifier key events. Handle the key, and
+    // duplicate it on the child window, if any, unless it is an Alt key.
     function keyDown(event) {
         var key = event.key, shift = event.shiftKey, ctrl = event.ctrlKey;
         if (event.defaultPrevented) return;
@@ -443,12 +447,14 @@ function newWrap() {
         if (event.altKey || event.metaKey) {
             if (key == 'w') createChild();
             else if (key == 'p') preview();
+            else if (key == 'o') overlay();
             else return;
         }
         if (key == 'Shift' || key == 'Control') return;
         event.preventDefault();
         event.stopPropagation();
         doKey(key, shift, ctrl);
+        if (event.altKey || event.metaKey) return;
         if (child) child.wrap.doKey(key, shift, ctrl);
     }
 
@@ -508,6 +514,16 @@ function newWrap() {
                     slide.animation.end();
                 }
             }
+        }
+    }
+
+    // Toggle elements with class overlay between display:none and display:block
+    function overlay() {
+        var overlays = document.querySelectorAll('.overlay');
+        for (var element of overlays) {
+            var display = getComputedStyle(element).display;
+            if (display == "none") element.style.display = "block";
+            else element.style.display = "none";
         }
     }
 
