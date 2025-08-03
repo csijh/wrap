@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<html lang="en-GB">
 <head>
 <meta charset="UTF-8"/>
 <title>Wrap</title>
@@ -31,7 +31,6 @@ using web tools.  Topics are</p>
   <a href="#server">The web server</a>
   <a href="#viewer">The viewer</a>
   <a href="#skeleton">The skeleton</a>
-  <a href="#author">Authoring</a>
   <a href="#style">Style</a>
   <a href="#templates">Templates</a>
   <a href="#numbers">Slide numbers</a>
@@ -51,46 +50,48 @@ using web tools.  Topics are</p>
 <h2 id="server">The web server</h2>
 
 <p>A Wrap presentation consists of a few static files, published on any web
-site, using any web server. The custom web server can optionally be used for two
-purposes.</p>
+site, using any web server. An optional custom web server is provided:</p>
 
-<p>First, it allows an author to develop a presentation on a local computer,
-before publishing somewhere else. This may be to test presentations before
-publishing with immediate feedback on any syntax errors, and/or to speed up
-development if the publishing process is slow.</p>
+<p class="indent"><a href="server.mjs">server.mjs</a></p>
+
+<p>This can be used for two purposes. First, it allows an author to develop a
+presentation on a local computer, before publishing somewhere else. This may
+be to test presentations before publishing, or to speed up development if the
+publishing process is slow.</p>
 
 <p>Second, it provides a way of making a presentation totally self-contained.
-The server can be run on a laptop, and a browser on the same laptop can be used
-to view the presentation.  The laptop can then be taken to a venue, with no
-dependency on internet access.  Only a data projector or similar is
-needed.</p>
-
-<p>An alternative way of making a presentation self-contained is to run the
-browser and visit the presentation web page over the net on a laptop before
-leaving for a venue.  If care is taken to ensure that the laptop is kept running
-or in sleep mode, that the browser remains running, and that the presentation
-page is kept current without being refreshed, then there is again no dependency
-on internet access at the venue.</p>
+The server and a browser can be run on the same laptop, and the laptop can be
+taken to a venue, with no dependency on internet access.  Only a data
+projector or similar is needed.</p>
 
 <p>The server is written in JavaScript, and can be run using <a
 href="https://nodejs.org/en/">Node</a>, which may need to be installed first.
-Create a folder containing <code>server.js</code> and a web page
+Create a folder containing <code>server.mjs</code> and a web page
 <code>index.html</code>, run the server with the command <code>node
 server</code>, and then view the page by visiting
 <code>http://localhost:8080/</code> with a browser.</p>
 
-<p>The server delivers pages using XHTML to get immediate feedback on syntax
-errors from the browser, and has features to guard against problems which might
-arise from developing on one platform and publishing on another. The details are
-described in the comments in <code>server.js</code>.  The server is sufficiently
-simple that it can be customized further with only a little JavaScript
-knowledge.</p>
+<p>Authors need to find a way to make sure web pages are valid, using an
+HTML-aware editor, or a framework, or a markdown language, or a template
+language, or a validity checker, for example. (A previous version of the
+server delivered pages as XHTML, for immediate feedback on errors. XHTML is
+now effectively obsolete, with browsers no longer updating it to match
+advances in web standards.)</p>
+
+<p>If the server is run on Linux or macOS, URLs are case sensitive, whereas if
+it is run on Windows, URLs are case insensistive. That's because (as with
+almost all servers) URLS are treated as file paths and handed over to the
+platform's file system. So problems can arise if web pages are developed on
+one kind of platform and published on the other.</p>
 
 <h2 id="viewer">The viewer</h2>
 
-<p>The viewer is the script <code>wrap.js</code>.  A simple presentation
-consists of a folder containing <code>wrap.js</code>, and a web page
-<code>index.html</code> with an inclusion like this:</p>
+<p>The viewer is the script:</p>
+
+<p class="indent"><a href="wrap.js">wrap.js</a></p>
+
+<p>A simple presentation consists of a folder containing <code>wrap.js</code>,
+and a web page <code>index.html</code> with an inclusion like this:</p>
 
 <pre class="html">&lt;script src='wrap.js'>&lt;/script>
 </pre>
@@ -109,8 +110,9 @@ browser, or they can be given a PDF version of the presentation.</p>
 <p>The simplest form of a one page presentation is:</p>
 
 <pre class="html">&lt;!DOCTYPE html>
-&lt;html xmlns="http://www.w3.org/1999/xhtml">
+&lt;html>
 &lt;head>
+&lt;meta charset="utf-8">
 &lt;title>Title&lt;/title>
 &lt;script src='wrap.js'>&lt;/script>
 &lt;/head>
@@ -125,43 +127,22 @@ browser, or they can be given a PDF version of the presentation.</p>
 </pre>
 
 <p>This can be used as a skeleton starting point for a new presentation by
-copying it into a file <code>index.html</code>.  Here's a simple three-slide
+copying it into a file <code>index.html</code>. Here's a simple three-slide
 example based on the skeleton:</p>
 
 <p class="indent"><a href="minimal.html">view minimal example</a>
 (or <a href="minimal.html" download="minimal.html">download</a>)</p>
 
-<p>Its slides are displayed in the default web-page style.  They will look more
-like normal presentation slides when style is added.</p>
-
-<p>A presentation is a normal HTML5 web page, with each slide in the
-presentation being written between <code>&lt;section></code> and
-<code>&lt;/section></code> tags. The viewer makes one of these visible at a
-time. The attribute <code>xmlns="http://www.w3.org/1999/xhtml"</code> on the
-<code>html</code> tag is not strictly necessary.  However, if the provided
-custom server is used for development, it is needed so that the server can
-deliver the page as XHTML, a strict variant of HTML which ensures that any
-syntax error is reported immediately by the browser.</p>
-
-<h2 id="author">Authoring</h2>
+<p>Its slides are displayed in the default web-page style.  They will look
+more like normal presentation slides when style is added. A presentation is a
+normal HTML5 web page, with each slide in the presentation being written
+between <code>&lt;section></code> and <code>&lt;/section></code> tags. The
+viewer makes one of these visible at a time.</p>
 
 <p>Wrap supports the idea of organising a presentation as a series of slides, in
 the traditional style.  However, there is no desire to curb creativity by
 forcing the author into a mold.  An unconventional presentation could consist of
 a single slide with a complex custom interactive behaviour.</p>
-
-<p>It is assumed in this documentation that a presentation is going to be
-authored directly in HTML by writing a plain text file using an ordinary editor.
-The restrictive XHTML variation is recommended, in order to ensure correctness,
-which makes various subtle problems a lot less likely.  But XHTML is fussy, like
-a programming language, so instant feedback on syntax errors is needed.  That's
-why the custom web server is provided.</p>
-
-<p>However, any approach can be taken to the production of syntactically correct
-HTML.  Some text editors such as <a href="http://brackets.io/">Brackets</a> have
-extensive support for web authoring.  Alternatively, a presentation can be
-authored using a markdown language or, to ensure that the whole of HTML is
-available, using a template language such as Pug.</p>
 
 <p>The examples of HTML in this document have no indenting, and no blank lines
 except between slides.  However, the most convenient layout for HTML is a matter
@@ -201,12 +182,6 @@ head:</p>
 ...
 </pre>
 
-<p>In XHTML examples in this documentation, some empty elements such as
-<code>script</code> have explicit close tags, whereas others such as
-<code>link</code> are self-closing.  This isn't essential - it only affects old
-browsers: see <a href="https://www.w3.org/TR/html-polyglot/">polyglot markup</a>
-for details.</p>
-
 <h2 id="templates">Templates</h2>
 
 <p>A template can be defined to add identical elements to each slide.  This
@@ -231,11 +206,12 @@ corner.</p>
 <pre class="html">img.icon { position: absolute; top: 0; left: 0; }
 </pre>
 
-<p>An anonymous template is a default which applies to all slides.  The example
-shows that if the title slide is different from all the rest, it can be handled
-by using different tags and style.  The title slide in the example uses
-<code>h1</code> instead of <code>h2</code> for the heading, with its own style,
-and it uses an id on the title slide to 'switch off' the icon image.</p>
+<p>An anonymous template is a default which applies to all slides.  The
+example shows that if the title slide is different from all the rest, it can
+be handled by using different tags and style.  The title slide in the example
+uses <code>h1</code> instead of <code>h2</code> for the heading, with its own
+style, and there is an id on the title slide so that a style rule can be used
+to 'switch off' the icon image.</p>
 
 <pre class="html">#title img { display: none; }
 </pre>
@@ -444,16 +420,10 @@ program text in a slide.  It is normal to use a <code>pre</code> (preformatted
 text) element for that:</p>
 
 <pre class="html">&lt;pre>
-#include &lt;stdio.h>
+#include &amp;lt;stdio.h&amp;gt;
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
-
-<p>When a page is delivered as XHTML rather than HTML, as the provided custom
-server does, a newline immediately following <code>&lt;pre></code> is officially
-included in the preformatted text and causes an unwanted blank line.  To remove
-this minor but annoying variation, Wrap removes initial newlines from
-<code>pre</code> elements.</p>
 
 <p>The question naturally arises about what happens when the lines become too
 long to fit across the slide.  It is not appropriate for the text to wrap,
@@ -495,18 +465,18 @@ href="https://highlightjs.org/">highlight.js</a>.  An example is:</p>
 <p class="indent"><a href="languages.html">view example of highlighting</a>
 (or <a href="languages.html" download="languags.html">download</a>)</p>
 
-<p>In the head of a presentation, add:</p>
+<p>In the head of a presentation, add (for example):</p>
 
 <pre class="html">&lt;link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/highlight.js/9.11.0/styles/xcode.min.css"/>
+  href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/xcode.min.css"/>
 &lt;script
-  src="https://cdn.jsdelivr.net/highlight.js/9.11.0/highlight.min.js">&lt;/script>
+  src="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js">&lt;/script>
 </pre>
 
 <p>This loads a chosen colour scheme (xcode in this case) and the highlight
 script from a CDN.  The most up-to-date version should be used, rather than the
 one shown, and there are several CDN sites to choose from. Also, the highlight
-script does not support all the languages which <code>highlight.js</code> knows
+script may not support all the languages which <code>highlight.js</code> knows
 about, so a language-specific script may need to be added.</p>
 
 <p>If the presentation needs to be self-contained, these files can be
@@ -522,7 +492,7 @@ each <code>pre</code> element in the presentation.  It uses a
 language the text is in. For example:</p>
 
 <pre class="html">&lt;pre data-lang="c">
-#include &lt;stdio.h>
+#include &amp;lt;stdio.h&amp;gt;
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
@@ -551,7 +521,7 @@ extract from a source file.  A link can be made to the original source file
 by adding a <code>data-file</code> attribute like this:</p>
 
 <pre class="html">&lt;pre data-file="hello.c">
-#include &lt;stdio.h>
+#include &amp;lt;stdio.h&amp;gt;
 int main() { printf("Hello World!"); }
 &lt;/pre>
 </pre>
@@ -604,10 +574,10 @@ do what it likes.</p>
 
 <h2 id="controller">Controller and speaker notes</h2>
 
-<p>When presenting using an extended desktop, either because there is no choice
-(as in the Chromebook plus VGA situation) or because you want to look at notes
-on the main screen that are not to be displayed to the audience, some way of
-controlling what's on the extended desktop from the main screen is needed.</p>
+<p>When presenting using an extended desktop, either because there is no
+choice or because you want to look at notes on the main screen that are not to
+be displayed to the audience, some way of controlling what's on the extended
+desktop from the main screen is needed.</p>
 
 <p>Wrap provides a feature where you can type ALT+w in a presentation.  This
 creates an identical child window, or tab. If it is a tab, it can be dragged
@@ -650,18 +620,20 @@ in a slide one by one is illustrated by:</p>
 
 <p class="indent"><a href="animation.html">view example of animation</a>
 (or <a href="animation.html" download="animation.html">download</a>)<br/>
-<a href="reveal.js">view the reveal script</a>
-(or <a href="reveal.js" download="reveal.js">download</a>)</p>
+<a href="reveal.mjs">view the reveal script</a>
+(or <a href="reveal.mjs" download="reveal.mjs">download</a>)</p>
 
 <p>A script should define a global variable holding an animation object with
 methods <code>init</code>, <code>start</code>, <code>stop</code>,
-<code>end</code>, <code>key</code>.  The example script above is written using
-global method definitions for simplicity, which means care has to be taken to
-avoid name clashes with functions in other scripts.</p>
+<code>end</code>, <code>key</code>.  The example script above is written as a
+module and include in the page with <code>&lt;script type='module'...</code>
+to avoid name clashes with functions in other scripts. But a non-module script
+could be used, with some other way of hiding the methods from other
+scripts.</p>
 
 <p>The <code>init</code> method is called whenever a slide is shown, to set up
 the animation for that slide, allowing the same animation to be used for
-multiple slides. The method is passed as an argument the <code>section</code>
+multiple slides. The method is passed, as an argument, the <code>section</code>
 element representing the current slide. The <code>start</code> method is called
 when a slide is reached forwards, i.e. from a preceding slide, and
 <code>end</code> is called when it is reached backwards. The <code>start</code>
@@ -674,9 +646,9 @@ flags as arguments to the <code>key</code> method, which returns
 <code>true</code> to indicate that the event was handled, and <code>false</code>
 otherwise.</p>
 
-<p>An animation is loaded in the head of a presentation:</p>
+<p>An animation is loaded in the head of a presentation, e.g.:</p>
 
-<pre>&lt;script src='reveal.js'>&lt;/script>
+<pre>&lt;script type='module' src='reveal.mjs'>&lt;/script>
 </pre>
 
 <p>An animation is applied to a slide by adding a <code>data-animate</code>
@@ -712,14 +684,14 @@ animation is already running, or skips to the next slide if the animation is
 already at the end.</p>
 
 <p>A different programming style, one of many, is used to set up the animation
-object. The methods are inner functions of a 'power constructor' function.  This
-style has the advantages that the method names need no distinguishing prefix,
-local variables <code>counter</code>, <code>time</code>, <code>timer</code> are
+object. A non-module script is used, and the methods are inner functions of a
+'power constructor' function.  This style has the advantages that local
+variables <code>counter</code>, <code>time</code>, <code>timer</code> are
 available to the methods without using <code>this</code>, these variables and
 the utility functions which are not exported are private, and no special
-treatment is needed for the <code>tick</code> function, even though it is called
-by the <code>setInterval</code> mechanism without any arguments and without
-<code>this</code> being set to anything useful.  (The style also has
+treatment is needed for the <code>tick</code> function, even though it is
+called by the <code>setInterval</code> mechanism without any arguments and
+without <code>this</code> being set to anything useful.  (The style also has
 disadvantages, such as not working well with inheritance, but it seems
 reasonably clean and clear in this situation.)</p>
 
@@ -785,8 +757,8 @@ browser, with a target of A4 paper size.  Experimentation may be needed to get
 good results in other environments.</p>
 
 <p>The first step is to add style rules to make adjustments.  For example, to
-remove the navigation links and target portrait A4 printing with no gaps round
-the edge, try:</p>
+remove the navigation links, and to target portrait A4 printing with no gaps
+round the edge, try:</p>
 
 <pre>@media print { .back, .next, .up, .down { display: none; } }
 @page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }

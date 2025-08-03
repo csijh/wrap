@@ -6,7 +6,7 @@ conventional presentation tool.  It consists of a viewer, plus an optional
 custom web server for development and/or self-contained delivery:
 
 - [wrap.js](//raw.githubusercontent.com/csijh/wrap/master/wrap.js)
-- [server.js](//raw.githubusercontent.com/csijh/wrap/master/server.js)
+- [server.mjs](//raw.githubusercontent.com/csijh/wrap/master/server.mjs)
 - [documentation](//csijh.github.io/wrap/)
 
 There are perhaps three major advantages of web-based presentations.  One is
