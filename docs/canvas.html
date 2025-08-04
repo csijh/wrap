@@ -9,7 +9,7 @@ h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
 p { margin: 0.6em 1em 0.6em 1em; }
 nav { position: absolute; top:0; right: 0; padding: 0.4em 0.5em; }
 .back, .next { text-decoration: none; }
-canvas.overlay { position: absolute; top:0; right: 0; pointer-events: none; }
+canvas.over { position: absolute; top:0; right: 0; pointer-events: none; }
 canvas.embed { display: block; margin: auto; border: 2px solid black; }
 @media print { .back, .next { display: none; } }
 @page { size: 27cm 20.25cm; margin:0; padding:0; border: "none"; }
@@ -33,7 +33,7 @@ canvas.embed { display: block; margin: auto; border: 2px solid black; }
 
 <section data-animate="draw.mjs">
 <h2>Draw</h2>
-<canvas class="overlay" width="1024" height="768"></canvas>
+<canvas class="over" width="1024" height="768"></canvas>
 </section>
 
 <section data-animate="bounce.mjs">
