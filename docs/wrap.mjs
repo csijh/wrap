@@ -1,0 +1,523 @@
+/* Free and open source: see licence.txt.
+
+The Wrap viewer for web-based slide presentations.
+
+A single web page contains a series of slides forming a presentation. Each
+slide uses 'section', 'aside', or 'template' tags.  Sections are the main
+slides. An aside is a slide which is only shown if a link to it is followed,
+though it is included if the slides are printed. A template contains div
+elements such as icons and navigation links which are copied into every slide
+which is based on that template.  Features are:
+
+- Single-signon ticket parameters are removed from URLs.
+- The current slide is remembered in the browser and restored on returning.
+- Visiting url#42 overrides the remembered slide and loads slide 42.
+- Clicking on the page number produces e.g. url#42 that can be bookmarked.
+- Different slides can be based on different templates.
+- A slide number and navigation links can be added to a slide automatically.
+- Slides are numbered 1,2,3... and asides after slide 3 are named 3a,3b,3c...
+- Program text is automatically resized to fit available width and height.
+- Program text can be highlighted using the hljs library.
+- Program text can have a filename or a link to a file added automatically.
+- Links can be made to jump to other slides or asides.
+- A child window, controlled by the current one, is created with ALT+w.
+- Overlays on the parent window are toggled with ALT+o.
+- The slides can be printed to a PDF file (Alt+p prepares for printing).
+- An animation can be added to a slide.
+*/
+
+// Define the global variables used by the viewer, and set it going.
+// Make doKey a public method, in case this is a child window.
+let url, slides, slide, languages, animation, child, swipeX, swipeY;
+window.addEventListener("resize", resize);
+window.doKey = doKey;
+start();
+
+// Prepare everything. Process program text after fonts are loaded.
+async function start() {
+    child = undefined;
+    removeTicket();
+    url = getURL();
+    slides = getSlides();
+    addNames(slides);
+    applyTemplates(slides);
+    addNavigation(slides);
+    getAnimations(slides);
+    wireUpLinks(slides);
+    getBookmark();
+    findLanguages();
+    loadFonts();
+    document.onkeydown = keyDown;
+    document.fonts.ready.then(processPrograms);
+}
+
+// Get rid of a Single-Sign-On ticket on the URL, if any
+function removeTicket() {
+    let here = location.href;
+    let ticket = here.indexOf('?ticket=');
+    if (ticket < 0) return;
+    here = here.substring(0, ticket);
+    if (history && history.replaceState) history.replaceState('','',here);
+    else location.href = here;
+}
+
+// Get the url of the current page, without query or fragment suffixes.
+function getURL() {
+    let here = location.href;
+    let pos = here.indexOf('?');
+    if (pos >= 0) here = here.substring(0, pos);
+    pos = here.indexOf('#');
+    if (pos >= 0) here = here.substring(0, pos);
+    return here;
+}
+
+// Divide the page into slides, and return a table of slides.  The slides
+// are the top level elements, classified according to their tag names into
+// templates, sections and asides.  The slides are allocated sequential
+// ids, used as keys in the slides table.  If a slide has an explicit id
+// attribute, it acts as a synonym, i.e. an extra key in the table.  The
+// first section slide is given the synonym 'title'.  The default template,
+// with no id attribute, is given the synonym 'template'.
+function getSlides() {
+    let body = document.body;
+    let id = 0;
+    let slides = [];
+    let titleFound = false;
+    for (let i=0; i<body.children.length; i++) {
+        let node = body.children[i];
+        let tag = node.tagName.toLowerCase();
+        let slide = { id: id++ };
+        if (tag == 'template') slide.type = 'template';
+        else if (tag == 'section') slide.type = 'section';
+        else if (tag == 'aside') slide.type = 'aside';
+        else slide.type = "?";
+        slide.node = node;
+        if (slide.type == 'template' && node.content) {
+            slide.node = document.importNode(node.content, true);
+        }
+        slides[slide.id] = slide;
+        if (node.id) slides[node.id] = slide;
+        if (slide.type == 'section' && ! titleFound) {
+            slides['title'] = slide;
+            titleFound = true;
+        }
+        if (slide.type == 'template' && ! node.id) {
+            slides['template'] = slide;
+        }
+    }
+    return slides;
+}
+
+// Create a name for each section slide, and aside, for display. Section
+// slides are main-sequence slides numbered from 1.  Asides are not
+// displayed, other than by following links, and are named according to the
+// preceding section slide, e.g. 3a, 3b,...  Back and next ids are stored
+// for sequential navigation between slides.
+function addNames(slides) {
+    let sections = [];
+    for (let i=0; i<slides.length; i++) {
+        if (slides[i].type == 'section') sections.push(slides[i]);
+    }
+    let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let sectionNo = -1, asideNo = -1;
+    for (let i=0; i<slides.length; i++) {
+        let slide = slides[i];
+        if (slide.type == 'section') {
+            sectionNo++;
+            slide.name = "" + (1 + sectionNo);
+            if (sectionNo == 0) slide.back = null;
+            else slide.back = sections[sectionNo-1].id;
+            if (sectionNo == sections.length - 1) slide.next = null;
+            else slide.next = sections[sectionNo+1].id;
+            asideNo = -1;
+        } else if (slide.type == 'aside') {
+            asideNo++;
+            if (slide.id == 0) slide.back = null;
+            else slide.back = slide.id - 1;
+            if (slide.id == slides.length - 1) slide.next = null;
+            else slide.next = slide.id + 1;
+            slide.name = "" + (1 + sectionNo) + letters.charAt(asideNo);
+        }
+        else continue;
+    }
+}
+
+// For each slide, add the default style, and copy the elements into it from
+// its template.  A class attribute may specify a non-default template.
+function applyTemplates(slides) {
+    for (let id=0; id<slides.length; id++) {
+        let slide = slides[id];
+        if (slide.type != 'section' && slide.type != 'aside') continue;
+        slide.node.style.position = 'relative';
+        slide.node.style.display = "none";
+        let template = slides['template'];
+        let classes = slide.node.classList;
+        for (let c=0; c<classes.length; c++) {
+            let cls = classes[c];
+            if (slides[cls]) template = slides[cls];
+        }
+        if (template) {
+            let templateChildren = template.node.children;
+            for (let t=0; t<templateChildren.length; t++) {
+                let child = templateChildren[t];
+                slide.node.appendChild(child.cloneNode(true));
+            }
+        }
+    }
+}
+
+// Add navigation to each slide.  Replace the contents of .here with the
+// slide name and attach the makeBookmark function. Make .back and .next
+// links point to previous and next slides. Make .up and .down links point
+// to the previous and next section.
+function addNavigation(slides) {
+    let up = slides[0].name, down = slides[0].name;
+    for (let id=0; id<slides.length; id++) {
+        let slide = slides[id];
+        if (slide.type != 'section' && slide.type != 'aside') continue;
+        let thisUp = slide.node.dataset.up;
+        let thisDown = slide.node.dataset.down;
+        if (thisDown) down = thisDown;
+        slide.node.ontouchstart = grab;
+        slide.node.ontouchend = drag;
+        let links = slide.node.getElementsByTagName('a');
+        for (let i=0; i<links.length; i++) {
+            let link = links[i];
+            if (! link.classList) continue;
+            if (link.classList.contains('up')) {
+                if (! slide.back) link.style.visibility = 'hidden';
+                else if (thisUp) link.href = '#' + thisUp;
+                else link.href = '#' + up;
+            }
+            if (link.classList.contains('back')) {
+                if (! slide.back) link.style.visibility = 'hidden';
+                else link.href = '#' + slide.back;
+            }
+            else if (link.classList.contains('here')) {
+                link.href = '#' + slide.id;
+                link.onclick = makeBookmark;
+            }
+            else if (link.classList.contains('next')) {
+                if (! slide.next) link.style.visibility = 'hidden';
+                else link.href = '#' + slide.next;
+            }
+            if (link.classList.contains('down')) {
+                if (! slide.next) link.style.visibility = 'hidden';
+                else link.href = '#' + down;
+            }
+        }
+        if (thisUp) up = slide.name;
+        let here = slide.node.querySelector(".here");
+        if (! here) continue;
+        while (here.firstChild) here.removeChild(here.firstChild);
+        here.appendChild(document.createTextNode(slide.name));
+    }
+}
+
+// Find any animation there might be on each slide.
+async function getAnimations(slides) {
+    for (let id=0; id<slides.length; id++) {
+        let slide = slides[id];
+        if (slide.type != 'section' && slide.type != 'aside') continue;
+        let ann = slide.node.dataset.animate;
+        if (ann) {
+            let mod = await import("./" + ann);
+            slide.animation = mod.default;
+        }
+    }
+}
+
+// Wire up the links which jump between slides.
+function wireUpLinks(slides) {
+    let links = document.getElementsByTagName("a");
+    for (let i=0; i<links.length; i++) {
+        let link = links[i];
+        if (link.classList.contains("jump")) {
+            link.onclick = function(e) { jump(e); }
+        }
+    }
+}
+
+// Follow a jump link. (The browser extends "#name" to "url#name".)
+function jump(e) {
+    let id = e.target.href;
+    id = id.substring(id.indexOf('#') + 1);
+    show(id);
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+}
+
+// Explicitly start loading all the fonts.  Otherwise, fonts which happen
+// not to appear on the initially displayed slide are not loaded by the
+// time resizeProgram is called, leading to incorrect measurements.
+function loadFonts() {
+    let list = document.fonts.values();
+    let item = list.next();
+    while (! item.done) {
+        item.value.load();
+        item = list.next();
+    }
+}
+
+// Adjust program text in pre elements. Do highlighting before resizing, in
+// case it affects the text size.
+function processPrograms() {
+    let pres = document.querySelectorAll('pre');
+    for (let i=0; i<pres.length; i++) {
+        let pre = pres[i];
+        highlightProgram(pre);
+        resizeProgram(pre);
+        labelProgram(pre);
+    }
+}
+
+// On a window resize, re-process the programs.
+function resize() {
+    let pres = document.querySelectorAll('pre');
+    for (let i=0; i<pres.length; i++) {
+        let pre = pres[i];
+        highlightProgram(pre);
+        resizeProgram(pre);
+    }
+}
+
+// Remove an initial newline from a pre, to avoid a gap, and highlight.
+// (The removal may be superfluous, now XHTML is no longer being used.)
+function highlightProgram(pre) {
+    let text = pre.textContent;
+    if (text.startsWith("\n")) text = text.substring(1);
+    else if (text.startsWith("\r\n")) text = text.substring(2);
+    let lang = getLanguage(pre);
+    if (typeof hljs == 'undefined' || lang == undefined) {
+        pre.innerText = text;
+        return;
+    }
+    text = hljs.highlight(lang, text, true).value;
+    pre.innerHTML = text;
+    pre.classList.add("hljs");
+}
+
+// Reduce the font size of a pre element, until the text fits.
+// Even with a monospaced web-font, pixel measurements differ between
+// browsers, because of sub-pixel rendering, so measurement is dynamic.
+function resizeProgram(pre) {
+    let style = getComputedStyle(pre);
+    let size = parseInt(style.fontSize);
+    while (overflow(pre) && size > 10) {
+        size--;
+        pre.style.fontSize = size + "px";
+    }
+}
+
+//  Add a filename to a pre as a top right overlay, possibly as a link.
+function labelProgram(pre) {
+    let path = document.body.dataset.path;
+    let file = pre.dataset.file;
+    let name = pre.dataset.name;
+    if (! file && ! name) return;
+    let label;
+    if (file) {
+        label = document.createElement('a');
+        if (path) label.href = path + file;
+        else label.href = file;
+    }
+    else if (name) {
+        label = document.createElement('span');
+    }
+    label.appendChild(document.createTextNode(file || name));
+    label.style.float = "right";
+    label.style.margin = "0";
+    label.style.color = "green";
+    label.style.backgroundColor = "#bee";
+    pre.insertBefore(label, pre.firstChild);
+}
+
+// Find the language of a node, or undefined if there isn't one or if the
+// language found isn't recognised by hljs.
+function getLanguage(node) {
+    let lang = node.dataset.lang;
+    if (languages.indexOf(lang) >= 0) return lang;
+    if (lang != undefined) return undefined;
+    lang = document.body.dataset.lang;
+    if (languages.indexOf(lang) >= 0) return lang;
+    return undefined;
+}
+
+// Find the languages and aliases that hljs, as currently included in the
+// presentation, supports.
+function findLanguages() {
+    languages = [];
+    if (typeof hljs == 'undefined') return;
+    let list = hljs.listLanguages();
+    for (let i=0; i<list.length; i++) {
+        languages.push(list[i]);
+        let aliases = hljs.getLanguage(list[i]).aliases;
+        if (aliases == undefined) continue;
+        for (let a=0; a<aliases.length; a++) languages.push(aliases[a]);
+    }
+}
+
+// Check whether the text in a (pre) element overflows its container. The
+// element has to be cloned and displayed off-screen to be measured, because
+// the original has display=none. It is assumed that the parent element is a
+// section representing a slide. The parent has to be cloned to make the
+// measurements accurate.
+function overflow(element) {
+    let parent = element.parentNode;
+    let index = Array.prototype.indexOf.call(parent.children, element);
+    let parent2 = parent.cloneNode(true);
+    parent2.style.position = 'relative';
+    parent2.style.top = '2000px';
+    parent2.style.display = "block";
+    document.body.appendChild(parent2);
+    let element2 = parent2.children[index];
+    let result =
+        element2.scrollWidth > element2.clientWidth ||
+        element2.scrollHeight > element2.clientHeight;
+    document.body.removeChild(parent2);
+    return result;
+}
+
+// Remember the current section id using localStorage.
+function setBookmark() {
+    localStorage.setItem(url+"#slide", slide.id);
+}
+
+// Change the url to refer to the current slide, for bookmarking.
+function makeBookmark(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    let mark = url + "#" + slide.id;
+    if (history && history.replaceState) history.pushState({},'',mark);
+}
+
+// Get the remembered slide or aside.  Allow #id on the url to override it.
+function getBookmark() {
+    let here = location.href;
+    let pos = here.indexOf('?');
+    if (pos >= 0) here = here.substring(0, pos);
+    pos = here.indexOf('#');
+    if (pos >= 0) {
+        here = here.substring(pos+1);
+        if (here in slides && slides[here].type != 'template') {
+            show(here);
+            return;
+        }
+    }
+    let id = localStorage.getItem(url+"#slide");
+    if (id in slides && slides[id].type != 'template') show(id);
+    else show('title');
+}
+
+// Display a slide or aside
+function show(id, back) {
+    if (animation) {
+        animation.stop();
+        animation = null;
+    }
+    if (slide) slide.node.style.display = 'none';
+    slide = slides[id];
+    if (! slide) slide = slides['title'];
+    slide.node.style.display = 'block';
+    setBookmark(slide.id);
+    if (slide.animation) {
+        animation = slide.animation;
+        animation.init(slide.node);
+        if (back) animation.end();
+        else animation.start();
+    }
+}
+
+// Catch a key event. Ignore events which have already been processed.
+// Ignore function keys, and most alt or meta combinations, which are likely
+// to be browser shortcuts, other than Alt+w, Alt+p and Alt+o. Ignore Ctrl+c
+// to allow copying. Ignore raw modifier key events. Handle the key, and
+// duplicate it on the child window, if any, unless it is an Alt key.
+function keyDown(event) {
+    let key = event.key, shift = event.shiftKey, ctrl = event.ctrlKey;
+    if (event.defaultPrevented) return;
+    if (key.length > 1 && key[0] == 'F') return;
+    if (ctrl && key == 'c') return;
+    if (event.altKey || event.metaKey) {
+        if (key == 'w') createChild();
+        else if (key == 'p') preview();
+        else if (key == 'o') overlay();
+        else return;
+    }
+    if (key == 'Shift' || key == 'Control') return;
+    event.preventDefault();
+    event.stopPropagation();
+    doKey(key, shift, ctrl);
+    if (event.altKey || event.metaKey) return;
+    if (child) child.doKey(key, shift, ctrl);
+}
+
+// Create a child window, driven from this one.
+function createChild() {
+    child = window.open(url, "child");
+}
+
+// Deal with key press from this window or the parent window.  Offer the
+// key to the animation, if any, otherwise navigate.
+function doKey(key, shift, ctrl) {
+    let used = false;
+    if (animation && animation.key) used = animation.key(key, shift, ctrl);
+    if (used) return;
+
+    if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
+        if (slide.next != undefined) show(slide.next);
+    }
+    else if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
+        if (slide.back != undefined) show(slide.back, true);
+    }
+}
+
+// Deal with the start of a drag/swipe gesture with mouse or touch.
+function grab(e) {
+    if (e.changedTouches) e = e.changedTouches[0];
+    swipeX = e.clientX;
+    swipeY = e.clientY;
+}
+
+// Deal with the end of a drag/swipe gesture with mouse or touch. A swipe
+// has to be more horizontal than vertical and at least 10 pixels.
+function drag(e) {
+    if (e.changedTouches) e = e.changedTouches[0];
+    if (Math.abs(e.clientX - swipeX) <= Math.abs(e.clientY - swipeY)) return;
+    if (e.clientX > swipeX + 10) {
+        if (slide.back != undefined) show(slide.back);
+    } else if (e.clientX < swipeX - 10) {
+        if (slide.next != undefined) show(slide.next);
+    }
+}
+
+// Prepare for printing by making all slides visible, and fast-forwarding
+// all animations to the end.
+function preview() {
+    if (animation) { animation.stop(); animation = null; }
+    for (let i=0; i<slides.length; i++) {
+        let slide = slides[i];
+        if (slide.type == 'section' || slide.type == 'aside') {
+            slide.node.style.position = 'relative';
+            slide.node.style.display = 'block';
+            slide.node.style.width = '1024px';
+            slide.node.style.height = '768px';
+            slide.node.style.minHeight = '0';
+            if (slide.animation) {
+                slide.animation.init(slide.node);
+                slide.animation.end();
+            }
+        }
+    }
+}
+
+// Toggle elements with class overlay between display:none and display:block
+function overlay() {
+    let overlays = document.querySelectorAll('.overlay');
+    for (let element of overlays) {
+        let display = getComputedStyle(element).display;
+        if (display == "none") element.style.display = "block";
+        else element.style.display = "none";
+    }
+}

@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Canvas animation example</title>
-<script src='wrap.js'></script>
-<script src='canvas.js'></script>
+<script type='module' src='wrap.mjs'></script>
 <style>
 body { margin: 0; padding: 0; font-size: 40px; }
 h2 { font-size: 200%; margin: 0; background-color: #4af; text-align: center; }
@@ -32,12 +31,12 @@ canvas.embed { display: block; margin: auto; border: 2px solid black; }
 <p>Use PageDown/PageUp or the arrow keys to navigate.</p>
 </section>
 
-<section data-animate="draw">
+<section data-animate="draw.mjs">
 <h2>Draw</h2>
 <canvas class="overlay" width="1024" height="768"></canvas>
 </section>
 
-<section data-animate="bounce">
+<section data-animate="bounce.mjs">
 <h2>Bounce</h2>
 <p></p>
 <canvas class="embed" width="800" height="600"></canvas>

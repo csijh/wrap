@@ -1,8 +1,6 @@
-// Reveal the paragraphs on a slide one by one.
-
-// The animation object, with the methods required by Wrap.
-// Make it easily accessible by wrap.
-window.reveal = { init, start, stop, end: end, key };
+// Export an animation object to reveal the paragraphs on a slide one by one.
+// It has the methods required by Wrap.
+export default { init, start, stop, end, key };
 
 // Gather an array of the paragraphs to be revealed.
 function init(slide) {

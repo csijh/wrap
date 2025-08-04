@@ -88,16 +88,19 @@ one kind of platform and published on the other.</p>
 
 <p>The viewer is the script:</p>
 
-<p class="indent"><a href="wrap.js">wrap.js</a></p>
+<p class="indent"><a href="wrap.mjs">wrap.mjs</a></p>
 
-<p>A simple presentation consists of a folder containing <code>wrap.js</code>,
+<p>A simple presentation consists of a folder containing <code>wrap.mjs</code>,
 and a web page <code>index.html</code> with an inclusion like this:</p>
 
-<pre class="html">&lt;script src='wrap.js'>&lt;/script>
+<pre class="html">&lt;script type='module' src='wrap.mjs'>&lt;/script>
 </pre>
 
 <p>The page <code>index.html</code> is viewed in a browser, and the F11 key or
-similar is used to make the browser go into full-screen mode.</p>
+similar is used to make the browser go into full-screen mode. All scripts
+associated with Wrap are modules, and their filenames have extension
+<code>.mjs</code> as a reminder that they must be included in pages using
+<code>&lt;script type='module' ...</code></p>
 
 <p>The viewer has been tested on recent Chrome and Firefox browsers.   The
 relevant standards are followed, so that any up-to-date browser should work. No
@@ -114,7 +117,7 @@ browser, or they can be given a PDF version of the presentation.</p>
 &lt;head>
 &lt;meta charset="utf-8">
 &lt;title>Title&lt;/title>
-&lt;script src='wrap.js'>&lt;/script>
+&lt;script type='module' src='wrap.mjs'>&lt;/script>
 &lt;/head>
 &lt;body>
 
@@ -420,8 +423,7 @@ program text in a slide.  It is normal to use a <code>pre</code> (preformatted
 text) element for that:</p>
 
 <pre class="html">&lt;pre>
-#include &amp;lt;stdio.h&amp;gt;
-int main() { printf("Hello World!"); }
+console.log("Hello World!");
 &lt;/pre>
 </pre>
 
@@ -451,10 +453,10 @@ is given an explicit height, e.g.</p>
 </pre>
 
 <p>There is a potential problem with web fonts. If the initially visible slide
-does not contain the font used in <code>pre</code> elements, the browser may not
-load it. The measurements used to resize the text would then be incorrectly
-based on the fallback font.  To avoid this, Wrap explicitly loads all the web
-fonts mentioned in style <code>@font-face</code> rules before resizing.</p>
+does not contain a particular web font, the browser may not load it. The
+measurements used to resize the text would then be incorrectly based on the
+fallback font. To avoid this, Wrap explicitly loads all the web fonts
+mentioned in style <code>@font-face</code> rules before resizing.</p>
 
 <h2 id="highlighting">Highlighting</h2>
 
@@ -467,33 +469,42 @@ href="https://highlightjs.org/">highlight.js</a>.  An example is:</p>
 
 <p>In the head of a presentation, add (for example):</p>
 
-<pre class="html">&lt;link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/xcode.min.css"/>
-&lt;script
-  src="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js">&lt;/script>
+<pre class="html">
+&lt;link rel="stylesheet" href=
+"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/xcode.min.css"
+/>
+&lt;script src=
+"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"
+>&lt;/script>
+&lt;script src=
+"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/haskell.min.js"
+>&lt;/script>
 </pre>
 
 <p>This loads a chosen colour scheme (xcode in this case) and the highlight
-script from a CDN.  The most up-to-date version should be used, rather than the
-one shown, and there are several CDN sites to choose from. Also, the highlight
-script may not support all the languages which <code>highlight.js</code> knows
-about, so a language-specific script may need to be added.</p>
+script from a CDN (<a
+href="https://www.jsdelivr.com/package/npm/highlight.js#id-fetch-via-cdn">jsdelivr</a>).
+The most up-to-date version should be used, rather than the one shown, and
+there are several CDN sites to choose from. Also, the highlight script may not
+support all the languages which <code>highlight.js</code> knows about, so a
+language-specific script may need to be added, as illustrated here with
+Haskell.</p>
 
 <p>If the presentation needs to be self-contained, these files can be
 downloaded, put in the presentation folder, and included into the presentation
 with, e.g.</p>
 <pre class="html">&lt;link rel="stylesheet" href="xcode.min.css"/>
 &lt;script src="highlight.min.js">&lt;/script>
+&lt;script src="haskell.min.js">&lt;/script>
 </pre>
 
-<p>If Wrap detects that <code>highlight.js</code> is present, then Wrap looks at
-each <code>pre</code> element in the presentation.  It uses a
-<code>data-lang</code> attribute on the <code>pre</code> element to decide what
-language the text is in. For example:</p>
+<p>If Wrap detects that <code>highlight.js</code> is present, then Wrap each
+<code>pre</code> element in the presentation is examined. A
+<code>data-lang</code> attribute on the <code>pre</code> element is used to
+decide what language the text is in. For example:</p>
 
-<pre class="html">&lt;pre data-lang="c">
-#include &amp;lt;stdio.h&amp;gt;
-int main() { printf("Hello World!"); }
+<pre class="html">&lt;pre data-lang="js">
+console.log("Hello World!");
 &lt;/pre>
 </pre>
 
@@ -520,9 +531,8 @@ determines the language using <code>data-lang</code> instead of
 extract from a source file.  A link can be made to the original source file
 by adding a <code>data-file</code> attribute like this:</p>
 
-<pre class="html">&lt;pre data-file="hello.c">
-#include &amp;lt;stdio.h&amp;gt;
-int main() { printf("Hello World!"); }
+<pre class="html">&lt;pre data-file="hello.mjs">
+console.log("Hello World!");
 &lt;/pre>
 </pre>
 
@@ -551,22 +561,10 @@ work.</p>
 
 <p>If you know what resolution you are aiming for, either because you know the
 projector is VGA, or because you are taking your own laptop and you know the
-projector is HDMI, it is possible to check in advance.  A good technique is to
+projector is HDMI, it is possible to check in advance.  A useful technique is to
 install a window resizer extension in the browser on your development computer.
 This can be used to check the effect of a presentation on one or more specific
 screen resolutions.</p>
-
-<p>As a practical example, good results were experienced in 2016 with an HP
-Chromebook costing only about &#163;160. It is very easy to carry to venues. It
-only has HDMI output, but a converter cable can be used to handle VGA.  Most
-converter cables don't work, but one from Ugreen, costing around &#163;10, has
-been successful.  As always, there can be no guarantees that this remains a good
-option or that it will work for you.  The natural screen resolution is 1366x768.
-With the VGA converter, presentations can be displayed on an extended desktop at
-1024x768, though only 1024x765 is available because a thin strip is reserved at
-the top of the extended desktop. By checking in advance that presentations work
-both on 1366x768 and 1024x765 resolutions, there is no need to worry about
-whether the projector will be VGA or HDMI.</p>
 
 <p>The best approach seems to be to avoid having too much material on a slide,
 to avoid unnecessary absolute sizing or positioning, and to allow the browser to
@@ -623,89 +621,85 @@ in a slide one by one is illustrated by:</p>
 <a href="reveal.mjs">view the reveal script</a>
 (or <a href="reveal.mjs" download="reveal.mjs">download</a>)</p>
 
-<p>A script should define a global variable holding an animation object with
-methods <code>init</code>, <code>start</code>, <code>stop</code>,
-<code>end</code>, <code>key</code>.  The example script above is written as a
-module and include in the page with <code>&lt;script type='module'...</code>
-to avoid name clashes with functions in other scripts. But a non-module script
-could be used, with some other way of hiding the methods from other
-scripts.</p>
+<p>An animation script must be a module with a default export which is an
+object with methods <code>init</code>, <code>start</code>, <code>stop</code>,
+<code>end</code>, <code>key</code>.</p>
 
-<p>The <code>init</code> method is called whenever a slide is shown, to set up
+<p>This can be omitted, since Wrap dynamically imports animation scripts when
+they are used, but it ensures that the script is pre-loaded. The animation
+methods are:</p>
+
+<ul>
+
+<li><b><code>init</code></b> is called whenever a slide is shown, to set up
 the animation for that slide, allowing the same animation to be used for
-multiple slides. The method is passed, as an argument, the <code>section</code>
-element representing the current slide. The <code>start</code> method is called
-when a slide is reached forwards, i.e. from a preceding slide, and
-<code>end</code> is called when it is reached backwards. The <code>start</code>
-method sets the animation to the start, and also sets it going, if desired,
-while the <code>end</code> method is used to set the animation to its end point
-(perhaps by running it through at maximum speed). The <code>stop</code> method
-is called when moving away from a slide, so that the animation isn't running
-when the slide isn't being displayed. Wrap passes a key and shift and control
-flags as arguments to the <code>key</code> method, which returns
-<code>true</code> to indicate that the event was handled, and <code>false</code>
-otherwise.</p>
+multiple slides. The method is passed, as an argument, the
+<code>section</code> element representing the current slide.</li>
 
-<p>An animation is loaded in the head of a presentation, e.g.:</p>
+<li><b><code>start</code></b> is called when a slide is reached forwards, i.e.
+from a preceding slide. It sets the animation to its start point. It also sets
+the animation going, if desired.</li>
 
-<pre>&lt;script type='module' src='reveal.mjs'>&lt;/script>
-</pre>
+<li><b><code>end</code></b> is called when a slide is reached backwards, i.e.
+from a following slide, to set the animation to its end point (perhaps by
+running it through at maximum speed, if necessary).</li>
+
+<li><b><code>stop</code></b> is called when moving away from a slide, so that
+the animation isn't running when the slide isn't being displayed.</li>
+
+<li><b><code>key</code></b> is called when a key is pressed. It is passed a
+key code, and shift and control flags, as arguments. It returns
+<code>true</code> to indicate that the event was handled, and
+<code>false</code> otherwise.</li>
+
+</ul>
 
 <p>An animation is applied to a slide by adding a <code>data-animate</code>
-attribute:</p>
+attribute to specify the script file to be used:</p>
 
-<pre>&lt;section data-animate="reveal">
+<pre>&lt;section data-animate="reveal.mjs">
 </pre>
 
-<p>The name <code>reveal</code> here is the name of a global variable holding an
-animation (not the name of a script file) so several animations can be defined
-in a single script, if desired.</p>
+<p>Wrap dynamically imports the script, so there is no need to include it at
+the top of the presentation (though it does no harm). The dynamic import
+mechanism itself ensures that the script is only imported once, no many how
+many slides it is applied to.</p>
 
-<p>The example animation above is an event-driven one, where changes only happen
-when the presenter presses a key.  The animation recognises the same keys as
-Wrap uses for navigation, so that the animation steps fit seamlessly in to the
-presentation sequence, e.g. triggered by a clicker.  The presenter can go
-backwards through the animation as well as forwards, and the animation is set to
-the end if the presenter navigates backwards to the slide.</p>
+<p>The example <code>reveal.mjs</code> animation is an event-driven one, where
+changes only happen when the presenter presses a key. The animation recognises
+the same keys as Wrap uses for navigation, so that the animation steps fit
+seamlessly in to the presentation sequence, e.g. triggered by a clicker. The
+presenter can go backwards through the animation as well as forwards, and the
+animation is set to the end if the presenter navigates backwards to the
+slide.</p>
 
 <p>Animations can also be time-driven.  An example is:</p>
 
 <p class="indent"><a href="timer.html">view example of timed animation</a>
 (or <a href="timer.html" download="timer.html">download</a>)<br/>
-<a href="countdown.js">view the countdown script</a>
-(or <a href="countdown.js" download="countdown.js">download</a>)</p>
+<a href="countdown.mjs">view the countdown script</a>
+(or <a href="countdown.mjs" download="countdown.mjs">download</a>)</p>
 
 <p>The animation is a countdown from 10 to 0.  The navigation keys are
-recognised by the animation.  The PageUp key pauses a running animation, or goes
+recognised by the animation. The PageUp key pauses a running animation, or goes
 back to the start if the animation is already paused, or skips to the previous
 slide (i.e. is ignored by the animation) if the animation is already at the
-start.  The PageDown key restarts a paused animation, or skips to the end if the
+start. The PageDown key restarts a paused animation, or skips to the end if the
 animation is already running, or skips to the next slide if the animation is
 already at the end.</p>
-
-<p>A different programming style, one of many, is used to set up the animation
-object. A non-module script is used, and the methods are inner functions of a
-'power constructor' function.  This style has the advantages that local
-variables <code>counter</code>, <code>time</code>, <code>timer</code> are
-available to the methods without using <code>this</code>, these variables and
-the utility functions which are not exported are private, and no special
-treatment is needed for the <code>tick</code> function, even though it is
-called by the <code>setInterval</code> mechanism without any arguments and
-without <code>this</code> being set to anything useful.  (The style also has
-disadvantages, such as not working well with inheritance, but it seems
-reasonably clean and clear in this situation.)</p>
 
 <p>For programmers, HTML's <code>canvas</code> feature provides a lot of
 scope. Here's an example:</p>
 
 <p class="indent"><a href="canvas.html">view example of canvas animations</a>
-(or <a href="canvas.html" download="canvas.html">download</a>)<br/>
-<a href="canvas.js">view the canvas script</a>
-(or <a href="canvas.js" download="canvas.js">download</a>)</p>
+(or <a href="canvas.html" download="canvas.html">download</a>)<br>
+<a href="draw.mjs">view the draw script</a>
+(or <a href="draw.mjs" download="draw.mjs">download</a>)<br>
+<a href="bounce.mjs">view the bounce script</a>
+(or <a href="bounce.mjs" download="bounce.mjs">download</a>)</p>
 
-<p>The example contains two animations, and illustrates that multiple animations
-can be defined in the same script.  The first animation draws a diagram, using
-key presses to go through several stages (forwards or backwards).  The canvas is
+<p>The example contains two animations. The first draws a diagram, using key
+presses to go through several stages (forwards or backwards).  The canvas is
 an overlay over the slide.  This is useful if you want to draw on top of other
 things on the slide, but is only likely to work if you know the screen
 resolution in advance: the example assumes 1024x768.</p>
@@ -713,7 +707,7 @@ resolution in advance: the example assumes 1024x768.</p>
 <p>The second animation is a bouncing ball, illustrating that an image can be
 drawn on a canvas, that the image can contain transparency, and that
 <code>requestAnimationFrame</code> can be used in place of
-<code>setInterval</code> for smooth animation at maximum speed.  The canvas is
+<code>setInterval</code> for smooth animation at maximum speed. The canvas is
 smaller, embedded in the slide, and centred, so that it is relatively
 independent of resolution.</p>
 
@@ -724,30 +718,19 @@ using keys:</p>
 
 <p class="indent"><a href="media.html">view video and audio example</a>
 (or <a href="media.html" download="media.html">download</a>)<br/>
-<a href="play.js">view the play script</a>
-(or <a href="play.js" download="play.js">download</a>)</p>
+<a href="play.mjs">view the play script</a>
+(or <a href="play.mjs" download="play.mjs">download</a>)</p>
 
-<p><b>Warning:</b> the clips in this example may not play immediately. That's
-because browsers prevent audio, or unmuted video, from playing unless the user
-interacts with the controls. A way to get around this in Chrome at the time of
-writing, for example, is to go to <b>settings</b>, then <b>privacy and
-security</b>, then <b>site settings</b>, then <b>additional content
-settings</b>, then <b>sound</b>, and then add the domain which hosts the
-presentation as one allowed to play sounds (even if it is just
-<code>http://localhost:8080</code>.)</p>
+<p>A single <code>play</code> animation is provided which covers both video
+and audio. PageDown starts a clip running, PageUp pauses it, and so on. A clip
+is not auto-played, but is only started on pressing a key. (A browsers usually
+prevents audio, or unmuted video, from playing unless the user starts them
+during a user interaction. However, it may be possible to configure the
+browser to allow auto-start.)</p>
 
-<p>A single <code>play</code> animation is provided which covers both video and
-audio. It is assumed that a clip is not to be played as soon as its slide is
-displayed, but only under the control of the usual keys. PageDown starts a clip
-running, PageUp pauses it, and so on. The script has a custom <code>ended</code>
-flag rather than using <code>media.ended</code> because it isn't easy to
-reliably set a clip into its ended state other than by letting it end. And
-setting <code>media.currentTime</code> to change the position in the clip isn't
-used, because it is also difficult to make that reliable.</p>
-
-<p>Note the style settings <code>video, audio, img { display: block; }</code>.
-These are needed if the media item is to fill the whole screen. Otherwise, they
-may be treated as in-line items, and a few irritating pixels of "leading" may be
+<p>The style settings <code>video, audio, img { display: block; }</code> are
+needed if the media item is to fill the whole screen. Otherwise, they may be
+treated as in-line items, and a few irritating pixels of "leading" may be
 added which cause scroll bars to be added.</p>
 
 <h2 id="print">Printing and PDFs</h2>
@@ -775,9 +758,9 @@ than printing to paper, change the printer target to <em>Save as PDF</em>.</p>
 
 <h2 id="notes">Miscellaneous notes</h2>
 
-<p><strong>Customising:</strong> The <code>wrap.js</code> script can be freely
+<p><strong>Customising:</strong> The <code>wrap.mjs</code> script can be freely
 customised.  However, there is no guarantee that later versions of
-<code>wrap.js</code> will be backwards compatible with the version you
+<code>wrap.mjs</code> will be backwards compatible with the version you
 customise, and there is no version numbering other than the repository commit
 date.  So, care is needed to merge customisations with updates.</p>
 
@@ -804,9 +787,8 @@ possibilities are mentioned here.</p>
 required, then any drawing or painting tool can be used, and an image exported
 for inclusion in a presentation.  For example, <a
 href="http://www.umlet.com/">UMLet</a>, or <a
-href="http://www.umlet.com/umletino/umletino.html">UMLetino</a> is a very useful
-and quick tool for simple diagrams consisting of boxes, ovals, arrows and labels
-(but beware the false download links on the UMLet web site).  <a
+href="https://www.umletino.com/">UMLetino</a> is a very useful and quick tool
+for simple diagrams consisting of boxes, ovals, arrows and labels. <a
 href="https://inkscape.org/en/">InkScape</a> is a full-featured vector-based
 drawing tool.  <a href="https://krita.org/en/">Krita</a> is a full-featured
 pixel-based painting tool.  <a href="https://www.gimp.org/">Gimp</a> is a

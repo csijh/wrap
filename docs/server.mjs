@@ -1,6 +1,6 @@
 /* Free and open source: see licence.txt.
 
-Run a node.js web server for local development of a static web site.
+Run a node web server for local development of a static web site.
 Start with "node server.mjs &" and visit the address printed on the console.
 There should normally be an index.html file in the current folder. */
 
@@ -73,12 +73,13 @@ function findType(url) {
 }
 
 // Deliver the file that has been read in to the browser.
-// Include a length header to allow audio/video to be streamed in a player.
+// Include length and ramge headers for the benefit of audio/video players.
 function deliver(response, type, err, content) {
     if (err) return fail(response, NotFound, "File not found");
     let typeHeader = {
         "Content-Type": type,
-        "Content-Length": Buffer.byteLength(content)
+        "Content-Length": Buffer.byteLength(content),
+        "Accept-Ranges": "bytes"
     };
     response.writeHead(OK, typeHeader);
     response.write(content);
