@@ -1,7 +1,7 @@
-// Count down from 10 to 0.
+// Animation to count down from 10 to 0.
 export default { init, start, stop, end, key};
 
-// Global variables.
+// The counter element, the time, and the interval timer.
 let counter, time, timer;
 
 function init(slide) {

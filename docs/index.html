@@ -623,11 +623,7 @@ in a slide one by one is illustrated by:</p>
 
 <p>An animation script must be a module with a default export which is an
 object with methods <code>init</code>, <code>start</code>, <code>stop</code>,
-<code>end</code>, <code>key</code>.</p>
-
-<p>This can be omitted, since Wrap dynamically imports animation scripts when
-they are used, but it ensures that the script is pre-loaded. The animation
-methods are:</p>
+<code>end</code>, <code>key</code>. These animation methods are:</p>
 
 <ul>
 
@@ -637,8 +633,9 @@ multiple slides. The method is passed, as an argument, the
 <code>section</code> element representing the current slide.</li>
 
 <li><b><code>start</code></b> is called when a slide is reached forwards, i.e.
-from a preceding slide. It sets the animation to its start point. It also sets
-the animation going, if desired.</li>
+from a preceding slide. It sets the animation to its start point. It can also
+set the animation going, if desired, rather than waiting for a key to be
+pressed.</li>
 
 <li><b><code>end</code></b> is called when a slide is reached backwards, i.e.
 from a following slide, to set the animation to its end point (perhaps by
