@@ -1,29 +1,32 @@
 // Animation to count down from 10 to 0.
-export default { init, start, stop, end, key};
+export default countdown;
 
-// The counter element, the time, and the interval timer.
-let counter, time, timer;
-
-function init(slide) {
-    counter = slide.querySelector(".counter");
-    timer = null;
+// Create a countdown animation, displayed in the section's element which has
+// class counter.
+function countdown(section) {
+    let counter = section.querySelector(".counter");
+    let timer = null;
+    let time = 10;
+    return {start, stop, end, key, counter, timer, time, tick};
 }
 
 // Start the animation.
 function start() {
-    setTime(10);
-    startTimer();
+    this.time = 10;
+    this.counter.innerHTML = "" + this.time;
+    this.timer = setTimeout(this.tick.bind(this), 1000);
 }
 
 // Stop the animation.
 function stop() {
-    stopTimer();
+    clearTimeout(this.timer);
+    this.timer = null;
 }
 
 // Go to the end of the animation.
 function end() {
-    setTime(0);
-    stopTimer();
+    this.time = 0;
+    this.counter.innerHTML = "" + this.time;
 }
 
 // Respond to the same key presses as Wrap uses for navigation. PageDown
@@ -32,37 +35,26 @@ function end() {
 // the previous page.
 function key(key, shift, ctrl) {
     if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
-        if (! timer && time == 0) return false;
-        if (! timer) startTimer();
-        else end();
+        if (this.time == 0) return false;
+        if (! this.timer) this.timer = setTimeout(this.tick.bind(this), 1000);
+        else { this.stop(); this.end(); }
         return true;
     }
     if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
-        if (! timer && time == 10) return false;
-        if (timer) stopTimer();
-        else setTime(10);
+        if (this.timer != null) this.stop();
+        else if (this.time == 10) return false;
+        else {
+            this.time = 10;
+            this.counter.innerHTML = "" + this.time;
+        }
         return true;
     }
     return false;
 }
 
-function setTime(t) {
-    time = t;
-    counter.innerHTML = "" + time;
-}
-
-function startTimer() {
-    if (timer != null) clearInterval(timer);
-    timer = setInterval(tick, 1000);
-}
-
-function stopTimer() {
-    if (timer != null) clearInterval(timer);
-    timer = null;
-}
-
 // Called every second.
 function tick() {
-    setTime(time - 1);
-    if (time == 0) stopTimer();
+    this.time--;
+    this.counter.innerHTML = "" + this.time;
+    if (this.time > 0) this.timer = setTimeout(this.tick.bind(this), 1000);
 }

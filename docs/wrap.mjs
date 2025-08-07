@@ -222,7 +222,7 @@ async function getAnimations(slides) {
         let ann = slide.node.dataset.animate;
         if (ann) {
             let mod = await import("./" + ann);
-            slide.animation = mod.default;
+            slide.animation = mod.default(slide.node);
         }
     }
 }
@@ -423,7 +423,6 @@ function show(id, back) {
     setBookmark(slide.id);
     if (slide.animation) {
         animation = slide.animation;
-        animation.init(slide.node);
         if (back) animation.end();
         else animation.start();
     }
@@ -505,7 +504,6 @@ function preview() {
             slide.node.style.height = '768px';
             slide.node.style.minHeight = '0';
             if (slide.animation) {
-                slide.animation.init(slide.node);
                 slide.animation.end();
             }
         }

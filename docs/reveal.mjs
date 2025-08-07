@@ -1,26 +1,25 @@
 // Export an animation object to reveal the paragraphs on a slide one by one.
 // It has the methods required by Wrap.
-export default { init, start, stop, end, key };
+export default reveal;
 
-// The array of paragraphs to be revealed, and the current index into the array.
-let paragraphs, index;
-
-// Gather an array of the paragraphs to be revealed.
-function init (slide) {
-    paragraphs = [];
-    for (let i = 0; i < slide.children.length; i++) {
-        let node = slide.children[i];
+// Create an animation for the paragraphs in a given section. It holds the
+// array of paragraphs and the current index within it.
+function reveal(section) {
+    let paragraphs = [];
+    for (let i = 0; i < section.children.length; i++) {
+        let node = section.children[i];
         let tag = node.tagName.toLowerCase();
         if (tag == "p") paragraphs.push(node);
     }
-    index = 0;
+    let index = 0;
+    return { start, stop, end, key, paragraphs, index };
 }
 
 // Start the animation by making the paragraphs invisible.
 function start() {
-    index = 0;
-    for (let i = 0; i < paragraphs.length; i++) {
-        let para = paragraphs[i];
+    this.index = 0;
+    for (let i = 0; i < this.paragraphs.length; i++) {
+        let para = this.paragraphs[i];
         para.style.visibility = "hidden";
     }
 }
@@ -31,9 +30,9 @@ function stop() {
 
 // Go to the end of the animation by making the paragraphs visible.
 function end() {
-    index = paragraphs.length;
-    for (let i = 0; i < paragraphs.length; i++) {
-        let para = paragraphs[i];
+    this.index = this.paragraphs.length;
+    for (let i = 0; i < this.paragraphs.length; i++) {
+        let para = this.paragraphs[i];
         para.style.visibility = "visible";
     }
 }
@@ -41,15 +40,15 @@ function end() {
 // Respond to the same key presses as Wrap uses for navigation.
 function key(key, shift, ctrl) {
     if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
-        if (index >= paragraphs.length) return false;
-        paragraphs[index].style.visibility = "visible";
-        index++;
+        if (this.index >= this.paragraphs.length) return false;
+        this.paragraphs[this.index].style.visibility = "visible";
+        this.index++;
         return true;
     }
     if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
-        if (index == 0) return false;
-        index--;
-        paragraphs[index].style.visibility = "hidden";
+        if (this.index == 0) return false;
+        this.index--;
+        this.paragraphs[this.index].style.visibility = "hidden";
         return true;
     }
     return false;

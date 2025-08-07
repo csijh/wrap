@@ -1,47 +1,46 @@
 // Media animation to play a video or audio clip.
-export default { init, start, stop, end, key };
+export default play;
 
-// The video or audio player.
-let media;
-
-function init(slide) {
-    media = slide.querySelector("video");
-    if (media == null) media = slide.querySelector("audio");
+// Create animation to play the video or audio in a section.
+function play(section) {
+    let media = section.querySelector("video");
+    if (media == null) media = section.querySelector("audio");
+    return { start, stop, end, key, media };
 }
 
 // Don't autoplay; start the clip with a key press.
 function start() {
-    media.currentTime = 0;
+    this.media.currentTime = 0;
 }
 
 function stop() {
-    media.pause();
+    this.media.pause();
 }
 
 // Note that setting currentTime depends on the server providing
 // Content-Length and Accept-Ranges headers as well as Content-Type.
 function end() {
-    media.currentTime = media.duration;
+    this.media.currentTime = this.media.duration;
 }
 
 // Control the clip with the usual keys.
 function key(key, shift, ctrl) {
     if (key == 'PageDown' || key == 'ArrowRight' || key == 'ArrowDown') {
-        if (media.ended) return false;
-        if (media.currentTime == 0 || media.paused) {
-            media.play();
+        if (this.media.ended) return false;
+        if (this.media.currentTime == 0 || this.media.paused) {
+            this.media.play();
         }
         else {
-            media.pause();
+            this.media.pause();
         }
         return true;
     }
     if (key == 'PageUp' || key == 'ArrowLeft' || key == 'ArrowUp') {
-        if (media.currentTime == 0) return false;
-        if (media.paused || media.ended) {
-            media.currentTime = 0;
+        if (this.media.currentTime == 0) return false;
+        if (this.media.paused || this.media.ended) {
+            this.media.currentTime = 0;
         }
-        else media.pause();
+        else this.media.pause();
         return true;
     }
     return false;

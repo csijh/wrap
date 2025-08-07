@@ -1,60 +1,70 @@
 // Canvas animation to show a bouncing ball.
-export default { init, start, stop, end, key };
+export default bounce;
 
-// Global variables.
-let canvas, brush, ball, loaded, timer, x, y, dx, dy, maxx, maxy;
-
-// Set up the variables and start loading the ball image.
-function init(slide) {
-    loaded = false;
-    timer = null;
-    x = y = 0;
-    dx = 4;
-    dy = 7;
-    canvas = slide.querySelector("canvas");
-    brush = canvas.getContext("2d");
-    ball = new Image();
+function bounce(section) {
+    let canvas = section.querySelector("canvas");
+    let brush = canvas.getContext("2d");
+    let ball = new Image();
+    let loaded = false;
+    let timer = null;
+    let x = 0;
+    let y = 0;
+    let dx = 4;
+    let dy = 7;
+    let maxx = 100;
+    let maxy = 100;
+    let animation = {
+        start, stop, end, key,
+        tick, canvas, brush, ball, loaded, timer, x, y, dx, dy
+    }
     ball.src = "ball.png";
-    ball.onload = measure;
+    ball.onload = measure.bind(animation);
+    return animation;
 }
 
 // Once the image has loaded, measure the limits of movement.
 function measure() {
-    loaded = true;
-    maxx = canvas.width - ball.naturalWidth;
-    maxy = canvas.height - ball.naturalHeight;
+    this.loaded = true;
+    this.maxx = this.canvas.width - this.ball.naturalWidth;
+    this.maxy = this.canvas.height - this.ball.naturalHeight;
 }
 
 // Move the ball, deal with the bounce, and redraw (if loaded).
 // Ignore the time argument and treat each call as a unit of time.
 function tick(time) {
-    x = x + dx;
-    y = y + dy;
-    if (x < 0) { x = -x; dx = -dx; }
-    if (y < 0) { y = -y; dy = -dy; }
-    if (x > maxx) { x = maxx - (x - maxx); dx = -dx; }
-    if (y > maxy) { y = maxy - (y - maxy); dy = -dy; }
-    brush.clearRect(0, 0, canvas.width, canvas.height);
-    if (loaded) brush.drawImage(ball, x, y);
-    timer = requestAnimationFrame(tick);
+    this.x = this.x + this.dx;
+    this.y = this.y + this.dy;
+    if (this.x < 0) { this.x = -this.x; this.dx = -this.dx; }
+    if (this.y < 0) { this.y = -this.y; this.dy = -this.dy; }
+    if (this.x > this.maxx) {
+        this.x = this.maxx - (this.x - this.maxx);
+        this.dx = -this.dx;
+    }
+    if (this.y > this.maxy) {
+        this.y = this.maxy - (this.y - this.maxy);
+        this.dy = -this.dy;
+    }
+    this.brush.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.loaded) this.brush.drawImage(this.ball, this.x, this.y);
+    this.timer = requestAnimationFrame(this.tick.bind(this));
 }
 
 function start() {
-    timer = requestAnimationFrame(tick);
+    this.timer = requestAnimationFrame(this.tick.bind(this));
 }
 
 function stop() {
-    cancelAnimationFrame(timer);
-    timer = null;
+    if (this.timer != null) cancelAnimationFrame(this.timer);
+    this.timer = null;
 }
 
 function end() {
-    stop();
+    this.stop();
 }
 
 // Any key just stops the animation.
 function key(key, shift, ctrl) {
-    if (! timer) return false;
-    stop();
+    if (! this.timer) return false;
+    this.stop();
     return true;
 }

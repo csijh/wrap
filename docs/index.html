@@ -605,7 +605,7 @@ though it can be a bit of a black art.</p>
 JavaScript. There have to be ways to:</p>
 
 <ul>
-<li>specify which slides an animation applies to</li>
+<li>specify which slide an animation applies to</li>
 <li>start and stop when moving onto or away from a relevant slide</li>
 <li>set an animation to the end when you navigate backwards to a slide</li>
 <li>go to the end when preparing a presentation for printing or PDF</li>
@@ -621,25 +621,23 @@ in a slide one by one is illustrated by:</p>
 <a href="reveal.mjs">view the reveal script</a>
 (or <a href="reveal.mjs" download="reveal.mjs">download</a>)</p>
 
-<p>An animation script must be a module with a default export which is an
-object with methods <code>init</code>, <code>start</code>, <code>stop</code>,
-<code>end</code>, <code>key</code>. These animation methods are:</p>
+<p>An animation script must be a module with a default export. The export is a
+function which takes a slide's <code>section</code> element and returns a new
+object representing an animation applied to that slide. The object can contain
+any desired fields representing the current state of the animation, but must
+provide methods <code>start</code>, <code>stop</code>, <code>end</code>,
+<code>key</code>. These animation methods are:</p>
 
 <ul>
 
-<li><b><code>init</code></b> is called whenever a slide is shown, to set up
-the animation for that slide, allowing the same animation to be used for
-multiple slides. The method is passed, as an argument, the
-<code>section</code> element representing the current slide.</li>
-
-<li><b><code>start</code></b> is called when a slide is reached forwards, i.e.
-from a preceding slide. It sets the animation to its start point. It can also
-set the animation going, if desired, rather than waiting for a key to be
+<li><b><code>start</code></b> is called when a slide is reached forwards from
+a preceding slide. It sets the animation to its start point. It can also set
+the animation going, if desired, rather than waiting for a key to be
 pressed.</li>
 
 <li><b><code>end</code></b> is called when a slide is reached backwards, i.e.
-from a following slide, to set the animation to its end point (perhaps by
-running it through at maximum speed, if necessary).</li>
+from a following slide, to set the animation to its end point (if necessary,
+by running through it at maximum speed).</li>
 
 <li><b><code>stop</code></b> is called when moving away from a slide, so that
 the animation isn't running when the slide isn't being displayed.</li>
